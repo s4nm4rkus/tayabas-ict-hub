@@ -8,8 +8,8 @@ class EmploymentInfo extends Model
 {
     protected $table = 'tbl_employment_info';
     protected $primaryKey = 'user_id';
-    public $incrementing = false;
-    protected $keyType = 'string';
+    public $incrementing = true;
+    protected $keyType = 'int';
 
     protected $fillable = [
         'user_id',
@@ -24,7 +24,7 @@ class EmploymentInfo extends Model
         'nature_appoint',
         'status_appoint',
         'plantilla_item_no',
-        'plantilla_incu',
+        'plantilla_inclu',
         'school_office_assign',
         'school_detailed_office_assign',
         'designated_from',
@@ -35,15 +35,15 @@ class EmploymentInfo extends Model
     ];
 
     protected $casts = [
-        'date_orig_appoint' => 'date',
-        'salary_effect_date' => 'date',
-        'designated_from' => 'date',
-        'designated_to' => 'date',
-        'separation_date' => 'date',
+        'date_orig_appoint'   => 'date',
+        'salary_effect_date'  => 'date',
+        'designated_from'     => 'date',
+        'designated_to'       => 'date',
+        'separation_date'     => 'date',
     ];
 
     public function employee()
     {
-        return $this->belongsTo(Employee::class, 'user_id', 'user_id');
+        return $this->belongsTo(Employee::class, 'user_id', 'id');
     }
 }

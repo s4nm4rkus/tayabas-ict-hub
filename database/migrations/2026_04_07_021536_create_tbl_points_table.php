@@ -10,15 +10,9 @@ return new class extends Migration
     {
         Schema::create('tbl_points', function (Blueprint $table) {
             $table->id();
-            $table->string('userid', 100)->nullable();
+            $table->foreignId('userid')->nullable()->constrained('tbl_employee_info')->onDelete('cascade');
             $table->date('t_date')->nullable();
             $table->string('acc_points', 100)->nullable();
-
-            $table->foreign('userid')
-                  ->references('user_id')
-                  ->on('tbl_employee_info')
-                  ->onDelete('cascade');
-
             $table->timestamps();
         });
     }

@@ -10,15 +10,9 @@ return new class extends Migration
     {
         Schema::create('audit_trail', function (Blueprint $table) {
             $table->id();
-            $table->string('user_id', 100)->nullable();
+            $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('cascade');
             $table->string('action_done', 100)->nullable();
             $table->timestamp('action_at')->nullable();
-
-            $table->foreign('user_id')
-                  ->references('id')
-                  ->on('users')
-                  ->onDelete('cascade');
-
             $table->timestamps();
         });
     }

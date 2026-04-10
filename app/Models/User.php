@@ -9,12 +9,13 @@ class User extends Authenticatable
 {
     use Notifiable;
 
-    public $incrementing = false;
-    protected $keyType = 'string';
+    // Standard auto-increment integer primary key
+    public $incrementing = true;
+    protected $keyType = 'int';
     protected $primaryKey = 'id';
 
     protected $fillable = [
-        'id',
+        'user_id',       // ICTHUB-2025-0001 format
         'username',
         'password',
         'user_pos',
@@ -31,7 +32,7 @@ class User extends Authenticatable
     ];
 
     protected $casts = [
-        'pass_change' => 'boolean',
+        'pass_change'    => 'boolean',
         'otp_expires_at' => 'datetime',
     ];
 

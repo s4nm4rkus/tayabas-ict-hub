@@ -9,7 +9,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('tbl_employee_info', function (Blueprint $table) {
-            $table->string('user_id', 100)->primary();
+            $table->id();                                         // own auto-increment pk
+            $table->foreignId('user_id')                         // integer FK to users.id
+                  ->unique()
+                  ->constrained('users')
+                  ->onDelete('cascade');
             $table->string('last_name', 100)->nullable();
             $table->string('first_name', 100)->nullable();
             $table->string('middle_name', 100)->nullable();
@@ -29,15 +33,9 @@ return new class extends Migration
             $table->string('province', 100)->nullable();
             $table->string('region', 100)->nullable();
             $table->string('disability', 100)->nullable();
-            $table->string('photo_path', 100)->nullable();
+            $table->string('photo_path', 255)->nullable();
             $table->string('bp_no', 100)->nullable();
             $table->date('date_encoded')->nullable();
-
-            $table->foreign('user_id')
-                  ->references('id')
-                  ->on('users')
-                  ->onDelete('cascade');
-
             $table->timestamps();
         });
     }

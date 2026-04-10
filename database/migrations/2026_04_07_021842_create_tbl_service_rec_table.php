@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('tbl_service_rec', function (Blueprint $table) {
             $table->id();
-            $table->string('user_id', 100)->nullable();
+            $table->foreignId('user_id')->nullable()->constrained('tbl_employee_info')->onDelete('cascade');
             $table->date('inclu_from')->nullable();
             $table->date('inclu_to')->nullable();
             $table->string('designation', 100)->nullable();
@@ -21,12 +21,6 @@ return new class extends Migration
             $table->string('branch', 100)->nullable();
             $table->string('separation', 50)->nullable();
             $table->string('position', 50)->nullable();
-
-            $table->foreign('user_id')
-                  ->references('user_id')
-                  ->on('tbl_employee_info')
-                  ->onDelete('cascade');
-
             $table->timestamps();
         });
     }

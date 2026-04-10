@@ -10,14 +10,8 @@ return new class extends Migration
     {
         Schema::create('finger_print', function (Blueprint $table) {
             $table->id();
-            $table->string('user_id', 100)->nullable();
+            $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('cascade');
             $table->binary('finger_print')->nullable();
-
-            $table->foreign('user_id')
-                  ->references('id')
-                  ->on('users')
-                  ->onDelete('cascade');
-
             $table->timestamps();
         });
     }

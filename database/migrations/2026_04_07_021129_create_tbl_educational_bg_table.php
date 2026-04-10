@@ -9,7 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('tbl_educational_bg', function (Blueprint $table) {
-            $table->string('user_id', 100)->primary();
+            $table->foreignId('user_id')->primary()->constrained('tbl_employee_info')->onDelete('cascade');
             $table->string('elementary', 200)->nullable();
             $table->string('elem_duration', 100)->nullable();
             $table->string('secondary', 200)->nullable();
@@ -26,12 +26,6 @@ return new class extends Migration
             $table->string('doc_degree', 200)->nullable();
             $table->string('doc_duration', 100)->nullable();
             $table->string('doc_units', 100)->nullable();
-
-            $table->foreign('user_id')
-                  ->references('user_id')
-                  ->on('tbl_employee_info')
-                  ->onDelete('cascade');
-
             $table->timestamps();
         });
     }

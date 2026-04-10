@@ -8,8 +8,8 @@ class Eligibility extends Model
 {
     protected $table = 'tbl_eligibility';
     protected $primaryKey = 'user_id';
-    public $incrementing = false;
-    protected $keyType = 'string';
+    public $incrementing = true;
+    protected $keyType = 'int';
 
     protected $fillable = [
         'user_id',
@@ -24,6 +24,6 @@ class Eligibility extends Model
 
     public function employee()
     {
-        return $this->belongsTo(Employee::class, 'user_id', 'user_id');
+        return $this->belongsTo(Employee::class, 'user_id', 'id');
     }
 }

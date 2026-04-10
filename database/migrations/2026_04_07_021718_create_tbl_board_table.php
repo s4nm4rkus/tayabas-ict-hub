@@ -10,17 +10,11 @@ return new class extends Migration
     {
         Schema::create('tbl_board', function (Blueprint $table) {
             $table->id();
-            $table->string('user_id', 100)->nullable();
+            $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('cascade');
             $table->string('role', 100)->nullable();
             $table->string('title', 100)->nullable();
             $table->string('description', 1000)->nullable();
             $table->timestamp('date_time')->nullable();
-
-            $table->foreign('user_id')
-                  ->references('id')
-                  ->on('users')
-                  ->onDelete('cascade');
-
             $table->timestamps();
         });
     }

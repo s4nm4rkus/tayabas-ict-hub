@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('tbl_leave', function (Blueprint $table) {
             $table->id();
-            $table->string('user_id', 100)->nullable();
+            $table->foreignId('user_id')->nullable()->constrained('tbl_employee_info')->onDelete('cascade');
             $table->string('fullname', 100)->nullable();
             $table->string('position', 100)->nullable();
             $table->string('leavetype', 100)->nullable();
@@ -24,12 +24,6 @@ return new class extends Migration
             $table->string('dept_head', 100)->nullable();
             $table->string('approve_by', 100)->nullable();
             $table->string('leavefile', 100)->nullable();
-
-            $table->foreign('user_id')
-                  ->references('user_id')
-                  ->on('tbl_employee_info')
-                  ->onDelete('cascade');
-
             $table->timestamps();
         });
     }

@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('tbl_request', function (Blueprint $table) {
             $table->id();
-            $table->string('user_id', 100)->nullable();
+            $table->foreignId('user_id')->nullable()->constrained('tbl_employee_info')->onDelete('cascade');
             $table->enum('req_type', ['CSR', 'COE', 'COEC', 'CNA', 'CLB'])->nullable();
             $table->date('date_req')->nullable();
             $table->time('time_req')->nullable();
@@ -18,12 +18,6 @@ return new class extends Migration
             $table->time('approve_time')->nullable();
             $table->string('req_status', 100)->nullable();
             $table->string('approve_by', 100)->nullable();
-
-            $table->foreign('user_id')
-                  ->references('user_id')
-                  ->on('tbl_employee_info')
-                  ->onDelete('cascade');
-
             $table->timestamps();
         });
     }

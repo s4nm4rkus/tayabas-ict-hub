@@ -9,7 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('tbl_employment_info', function (Blueprint $table) {
-            $table->string('user_id', 100)->primary();
+            $table->foreignId('user_id')->primary()->constrained('tbl_employee_info')->onDelete('cascade');
             $table->string('position', 100)->nullable();
             $table->string('sub_position', 100)->nullable();
             $table->date('date_orig_appoint')->nullable();
@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('nature_appoint', 100)->nullable();
             $table->string('status_appoint', 100)->nullable();
             $table->string('plantilla_item_no', 100)->nullable();
-            $table->string('plantilla_incu', 100)->nullable();
+            $table->string('plantilla_inclu', 100)->nullable();
             $table->string('school_office_assign', 100)->nullable();
             $table->string('school_detailed_office_assign', 100)->nullable();
             $table->date('designated_from')->nullable();
@@ -29,12 +29,6 @@ return new class extends Migration
             $table->string('separation', 100)->nullable();
             $table->date('separation_date')->nullable();
             $table->string('head', 100)->nullable();
-
-            $table->foreign('user_id')
-                  ->references('user_id')
-                  ->on('tbl_employee_info')
-                  ->onDelete('cascade');
-
             $table->timestamps();
         });
     }

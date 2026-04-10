@@ -17,39 +17,44 @@ class TwoFactorController extends Controller
         return view('auth.2fa');
     }
 
-    public function verify(Request $request)
-    {
-        $request->validate([
-            'otp' => 'required|digits:6',
+   public function verify(Request $request)
+{
+    $request->validate([
+        'otp' => 'required|digits:6',
+    ]);
+
+    $userId = session('pre_auth_user_id');
+    $user = User::findOrFail($userId);
+
+    if ($user->otp !== $request->otp ||
+        now()->gt($user->otp_expires_at)) {
+        return back()->withErrors([
+            'otp' => 'Invalid or expired OTP. Please try again.',
         ]);
-
-        $userId = session('pre_auth_user_id');
-        $user = User::findOrFail($userId);
-
-        // Check OTP validity
-        if ($user->otp !== $request->otp ||
-            now()->gt($user->otp_expires_at)) {
-            return back()->withErrors([
-                'otp' => 'Invalid or expired OTP. Please try again.',
-            ]);
-        }
-
-        // Clear OTP and log in
-        $user->update([
-            'otp' => null,
-            'otp_expires_at' => null,
-        ]);
-
-        Auth::login($user);
-        session()->forget('pre_auth_user_id');
-
-        // Force password change check
-        if (!$user->pass_change) {
-            return redirect()->route('password.change');
-        }
-
-        return $this->redirectByRole($user);
     }
+
+    $user->update([
+        'otp' => null,
+        'otp_expires_at' => null,
+    ]);
+
+    // Regenerate FIRST, then login
+    session()->forget('pre_auth_user_id');
+    session()->regenerate();
+    Auth::login($user, true);
+    // dd([
+    //     'auth_check'  => Auth::check(),
+    //     'auth_user'   => Auth::user()?->id,
+    //     'user_pos'    => Auth::user()?->user_pos,
+    //     'pass_change' => Auth::user()?->pass_change,
+    //     'session_id'  => session()->getId(),
+    // ]);
+    if (!$user->pass_change) {
+        return redirect()->route('password.change');
+    }
+
+    return $this->redirectByRole($user);
+}
 
     public function redirectByRole(User $user)
 {

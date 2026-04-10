@@ -8,8 +8,8 @@ class EducationalBg extends Model
 {
     protected $table = 'tbl_educational_bg';
     protected $primaryKey = 'user_id';
-    public $incrementing = false;
-    protected $keyType = 'string';
+    public $incrementing = true;
+    protected $keyType = 'int';
 
     protected $fillable = [
         'user_id',
@@ -18,11 +18,11 @@ class EducationalBg extends Model
         'secondary',
         'second_duration',
         'college',
-        'college_duration',
         'college_school',
+        'college_duration',
         'vocational',
-        'voca_duration',
         'voc_school',
+        'voca_duration',
         'masters_degree',
         'master_duration',
         'master_units',
@@ -33,6 +33,6 @@ class EducationalBg extends Model
 
     public function employee()
     {
-        return $this->belongsTo(Employee::class, 'user_id', 'user_id');
+        return $this->belongsTo(Employee::class, 'user_id', 'id');
     }
 }
