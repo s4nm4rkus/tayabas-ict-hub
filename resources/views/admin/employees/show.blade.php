@@ -1,4 +1,4 @@
-@extends('layouts.admin-layout.admin')
+@extends('layouts.admin')
 
 @section('title', $employee->full_name)
 @section('page-title', 'Employee Profile')

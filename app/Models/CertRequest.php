@@ -24,12 +24,11 @@ class CertRequest extends Model
         'approve_date' => 'date',
     ];
 
-    public function employee()
+   public function employee()
     {
-        return $this->belongsTo(Employee::class, 'user_id', 'user_id');
+        return $this->belongsTo(Employee::class, 'user_id', 'id');
     }
-
-    public function approvedBy()
+   public function approvedBy()
     {
         return $this->belongsTo(User::class, 'approve_by', 'id');
     }

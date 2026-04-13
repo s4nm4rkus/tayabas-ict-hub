@@ -319,11 +319,20 @@
             <a href="#" class="nav-link {{ request()->routeIs('admin.leaves.*') ? 'active' : '' }}">
                 <i class="bi bi-calendar-check"></i> Leave Requests
             </a>
-            <a href="#" class="nav-link {{ request()->routeIs('admin.attendance.*') ? 'active' : '' }}">
+            <a href="{{ route('admin.attendance.index') }}"
+                class="nav-link {{ request()->routeIs('admin.attendance.*') ? 'active' : '' }}">
                 <i class="bi bi-clock-history"></i> Attendance
             </a>
             <a href="#" class="nav-link {{ request()->routeIs('admin.certificates.*') ? 'active' : '' }}">
                 <i class="bi bi-file-earmark-text"></i> Certificates
+            </a>
+            <a href="{{ route('admin.messages.index') }}"
+                class="nav-link {{ request()->routeIs('admin.messages.*') ? 'active' : '' }}">
+                <i class="bi bi-chat-dots"></i> Messages
+            </a>
+            <a href="{{ route('admin.board.index') }}"
+                class="nav-link {{ request()->routeIs('admin.board.*') ? 'active' : '' }}">
+                <i class="bi bi-megaphone"></i> Notice Board
             </a>
 
             <div class="nav-section mt-2">System</div>
@@ -331,10 +340,12 @@
                 class="nav-link {{ request()->routeIs('admin.roles.*') ? 'active' : '' }}">
                 <i class="bi bi-person-badge"></i> Roles
             </a>
-            <a href="#" class="nav-link {{ request()->routeIs('admin.salary.*') ? 'active' : '' }}">
+            <a href="{{ route('admin.salary.index') }}"
+                class="nav-link {{ request()->routeIs('admin.salary.*') ? 'active' : '' }}">
                 <i class="bi bi-cash-stack"></i> Salary Grade
             </a>
-            <a href="#" class="nav-link {{ request()->routeIs('admin.audit.*') ? 'active' : '' }}">
+            <a href="{{ route('admin.audit.index') }}"
+                class="nav-link {{ request()->routeIs('admin.audit.*') ? 'active' : '' }}">
                 <i class="bi bi-journal-text"></i> Audit Trail
             </a>
             <a href="#" class="nav-link {{ request()->routeIs('admin.backup.*') ? 'active' : '' }}">

@@ -1,4 +1,4 @@
-@extends('layouts.admin-layout.admin')
+@extends('layouts.admin')
 
 @section('title', 'Edit — ' . $employee->full_name)
 @section('page-title', 'Edit Employee')
@@ -214,8 +214,18 @@
                 <div class="row g-3">
                     <div class="col-md-4">
                         <label class="form-label">Sub Position</label>
-                        <input type="text" name="sub_position" class="form-control"
-                            value="{{ old('sub_position', $employee->employment?->sub_position) }}">
+                        <select name="sub_position" class="form-select">
+                            <option value="">Select Sub Position</option>
+                            @foreach ($subPositions as $sub)
+                                <option value="{{ $sub->sub_position }}"
+                                    {{ old('sub_position', $employee->employment?->sub_position) == $sub->sub_position ? 'selected' : '' }}>
+                                    {{ $sub->sub_position }}
+                                    @if ($sub->main_pos)
+                                        ({{ $sub->main_pos }})
+                                    @endif
+                                </option>
+                            @endforeach
+                        </select>
                     </div>
                     <div class="col-md-4">
                         <label class="form-label">Nature of Appointment</label>
@@ -234,13 +244,28 @@
                     </div>
                     <div class="col-md-4">
                         <label class="form-label">Salary Grade</label>
-                        <input type="text" name="salary_grade" class="form-control"
-                            value="{{ old('salary_grade', $employee->employment?->salary_grade) }}">
+                        <select name="salary_grade" class="form-select" id="salary_grade_select">
+                            <option value="">Select Grade</option>
+                            @foreach ($salaryGrades as $sg)
+                                <option value="{{ $sg->salary_grade }}"
+                                    {{ old('salary_grade', $employee->employment?->salary_grade) == $sg->salary_grade ? 'selected' : '' }}>
+                                    SG {{ $sg->salary_grade }}
+                                </option>
+                            @endforeach
+                        </select>
                     </div>
+
                     <div class="col-md-4">
                         <label class="form-label">Salary Step</label>
-                        <input type="text" name="salary_step" class="form-control"
-                            value="{{ old('salary_step', $employee->employment?->salary_step) }}">
+                        <select name="salary_step" class="form-select" id="salary_step_select">
+                            <option value="">Select Step</option>
+                            @foreach (range(1, 8) as $step)
+                                <option value="{{ $step }}"
+                                    {{ old('salary_step', $employee->employment?->salary_step) == $step ? 'selected' : '' }}>
+                                    Step {{ $step }}
+                                </option>
+                            @endforeach
+                        </select>
                     </div>
                     <div class="col-md-4">
                         <label class="form-label">Salary Effectivity Date</label>

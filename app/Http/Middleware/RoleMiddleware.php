@@ -14,6 +14,7 @@ class RoleMiddleware
             return redirect()->route('login');
         }
 
+
         if (!in_array(Auth::user()->user_pos, $roles)) {
             abort(403, 'Unauthorized.');
         }

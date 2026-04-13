@@ -147,9 +147,13 @@ public function edit(string $id)
     $employee = Employee::with('employment')
         ->where('user_id', $id)
         ->firstOrFail();
-    $roles = Role::all();
-    $subPositions = SubPosition::all();
-    return view('admin.employees.edit', compact('employee', 'roles', 'subPositions'));
+    $roles        = Role::orderBy('role_desc')->get();
+    $subPositions = SubPosition::orderBy('main_pos')->get();
+    $salaryGrades = \App\Models\Salary::orderBy('salary_grade')->get();
+
+    return view('admin.employees.edit', compact(
+        'employee', 'roles', 'subPositions', 'salaryGrades'
+    ));
 }
 public function update(Request $request, string $id)
 {

@@ -51,58 +51,58 @@ class Employee extends Model
     }
 
     // Relationships
-public function user()
-{
-    return $this->belongsTo(User::class, 'user_id', 'id');
-}
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
 
-    public function employment()
-{
-    return $this->hasOne(EmploymentInfo::class, 'user_id', 'id');
-}
+        public function employment()
+    {
+        return $this->hasOne(EmploymentInfo::class, 'user_id', 'id');
+    }
 
-public function education()
-{
-    return $this->hasOne(EducationalBg::class, 'user_id', 'id');
-}
+    public function education()
+    {
+        return $this->hasOne(EducationalBg::class, 'user_id', 'id');
+    }
 
-public function eligibility()
-{
-    return $this->hasOne(Eligibility::class, 'user_id', 'id');
-}
+    public function eligibility()
+    {
+        return $this->hasOne(Eligibility::class, 'user_id', 'id');
+    }
 
-public function leaves()
-{
-    return $this->hasMany(Leave::class, 'user_id', 'id');
-}
+    public function leaves()
+    {
+        return $this->hasMany(Leave::class, 'user_id', 'id');
+    }
 
-public function attendance()
-{
-    return $this->hasMany(Attendance::class, 'user_id', 'id');
-}
+    public function attendance()
+    {
+        return $this->hasMany(Attendance::class, 'user_id', 'id');
+    }
 
-public function points()
-{
-    return $this->hasMany(Point::class, 'userid', 'id');
-}
+    public function points()
+    {
+        return $this->hasMany(Point::class, 'userid', 'id');
+    }
 
-public function serviceRecords()
-{
-    return $this->hasMany(ServiceRecord::class, 'user_id', 'id');
-}
+    public function serviceRecords()
+    {
+        return $this->hasMany(ServiceRecord::class, 'user_id', 'id');
+    }
 
-public function attachments()
-{
-    return $this->hasMany(Attachment::class, 'user_id', 'id');
-}
+    public function attachments()
+    {
+        return $this->hasMany(Attachment::class, 'user_id', 'id');
+    }
 
-public function certRequests()
-{
-    return $this->hasMany(CertRequest::class, 'user_id', 'id');
-}
+    public function certRequests()
+    {
+        return $this->hasMany(CertRequest::class, 'user_id', 'id');
+    }
 
-public function fingerPrint()
-{
-    return $this->hasOne(FingerPrint::class, 'user_id', 'id');
-}
+    public function fingerPrint()
+    {
+        return $this->hasOne(FingerPrint::class, 'user_id', 'id');
+    }
 }

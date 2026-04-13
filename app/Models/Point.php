@@ -20,6 +20,6 @@ class Point extends Model
 
     public function employee()
     {
-        return $this->belongsTo(Employee::class, 'userid', 'user_id');
+        return $this->belongsTo(Employee::class, 'userid', 'id');
     }
 }
