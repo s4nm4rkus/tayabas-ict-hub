@@ -92,6 +92,25 @@ Route::middleware('auth')->group(function () {
         // Audit Trail
         Route::get('audit', [\App\Http\Controllers\Admin\AuditTrailController::class, 'index'])
             ->name('admin.audit.index');
+
+        // Profile
+        Route::get('profile', [\App\Http\Controllers\Shared\ProfileController::class, 'show'])
+            ->name('admin.profile.show');
+        Route::post('profile/photo', [\App\Http\Controllers\Shared\ProfileController::class, 'updatePhoto'])
+            ->name('admin.profile.photo');
+        Route::post('profile/password', [\App\Http\Controllers\Shared\ProfileController::class, 'changePassword'])
+            ->name('admin.profile.password');
+
+        // Leave Requests
+        Route::get('leaves', [\App\Http\Controllers\Admin\LeaveController::class, 'index'])
+            ->name('admin.leaves.index');
+
+        // Backup
+        Route::get('backup', [\App\Http\Controllers\Admin\BackupController::class, 'index'])
+            ->name('admin.backup.index');
+        Route::get('backup/download', [\App\Http\Controllers\Admin\BackupController::class, 'download'])
+            ->name('admin.backup.download');
+
     });
          
    // ── HR ───────────────────────────────────────────────────────────────────
@@ -120,6 +139,12 @@ Route::middleware('auth')->group(function () {
         Route::get('/board', [\App\Http\Controllers\Shared\BoardController::class, 'index'])->name('hr.board.index');
         Route::post('/board', [\App\Http\Controllers\Shared\BoardController::class, 'store'])->name('hr.board.store');
         Route::delete('/board/{id}', [\App\Http\Controllers\Shared\BoardController::class, 'destroy'])->name('hr.board.destroy');
+
+        // Profile
+        Route::get('/profile', [\App\Http\Controllers\Shared\ProfileController::class, 'show'])->name('hr.profile.show');
+        Route::post('/profile/photo', [\App\Http\Controllers\Shared\ProfileController::class, 'updatePhoto'])->name('hr.profile.photo');
+        Route::post('/profile/password', [\App\Http\Controllers\Shared\ProfileController::class, 'changePassword'])->name('hr.profile.password');
+
     });
  
     // ── Department Head ──────────────────────────────────────────────────────
@@ -139,6 +164,12 @@ Route::middleware('auth')->group(function () {
 
         // Notice Board
         Route::get('/board', [\App\Http\Controllers\Shared\BoardController::class, 'index'])->name('head.board.index');
+
+
+        // Profile
+        Route::get('/profile', [\App\Http\Controllers\Shared\ProfileController::class, 'show'])->name('head.profile.show');
+        Route::post('/profile/photo', [\App\Http\Controllers\Shared\ProfileController::class, 'updatePhoto'])->name('head.profile.photo');
+        Route::post('/profile/password', [\App\Http\Controllers\Shared\ProfileController::class, 'changePassword'])->name('head.profile.password');
     });
  
     // ── Employee ─────────────────────────────────────────────────────────────
@@ -166,6 +197,11 @@ Route::middleware('auth')->group(function () {
 
         // Notice Board
         Route::get('/board', [\App\Http\Controllers\Shared\BoardController::class, 'index'])->name('employee.board.index');
+
+        // Profile
+        Route::get('/profile', [\App\Http\Controllers\Shared\ProfileController::class, 'show'])->name('employee.profile.show');
+        Route::post('/profile/photo', [\App\Http\Controllers\Shared\ProfileController::class, 'updatePhoto'])->name('employee.profile.photo');
+        Route::post('/profile/password', [\App\Http\Controllers\Shared\ProfileController::class, 'changePassword'])->name('employee.profile.password');
     });
  
 });

@@ -246,6 +246,11 @@
                 <i class="bi bi-grid"></i> Dashboard
             </a>
 
+            <a href="{{ route('hr.profile.show') }}"
+                class="nav-link {{ request()->routeIs('hr.profile.*') ? 'active' : '' }}">
+                <i class="bi bi-person"></i> My Profile
+            </a>
+
             <div class="nav-section mt-2">Employee</div>
             <a href="#" class="nav-link {{ request()->routeIs('hr.employees.*') ? 'active' : '' }}">
                 <i class="bi bi-people"></i> Employees

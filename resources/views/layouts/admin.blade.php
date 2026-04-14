@@ -316,7 +316,12 @@
             </a>
 
             <div class="nav-section mt-2">Management</div>
-            <a href="#" class="nav-link {{ request()->routeIs('admin.leaves.*') ? 'active' : '' }}">
+            <a href="{{ route('admin.profile.show') }}"
+                class="nav-link {{ request()->routeIs('admin.profile.*') ? 'active' : '' }}">
+                <i class="bi bi-person"></i> My Profile
+            </a>
+            <a href="{{ route('admin.leaves.index') }}"
+                class="nav-link {{ request()->routeIs('admin.leaves.*') ? 'active' : '' }}">
                 <i class="bi bi-calendar-check"></i> Leave Requests
             </a>
             <a href="{{ route('admin.attendance.index') }}"
@@ -348,7 +353,8 @@
                 class="nav-link {{ request()->routeIs('admin.audit.*') ? 'active' : '' }}">
                 <i class="bi bi-journal-text"></i> Audit Trail
             </a>
-            <a href="#" class="nav-link {{ request()->routeIs('admin.backup.*') ? 'active' : '' }}">
+            <a href="{{ route('admin.backup.index') }}"
+                class="nav-link {{ request()->routeIs('admin.backup.*') ? 'active' : '' }}">
                 <i class="bi bi-database"></i> Backup
             </a>
 

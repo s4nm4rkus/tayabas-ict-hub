@@ -4,8 +4,8 @@ namespace App\Http\Controllers\HR;
 
 use App\Http\Controllers\Controller;
 use App\Models\CertRequest;
-use App\Models\Employee;
-use Illuminate\Http\Request;
+// use App\Models\Employee;
+// use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class CertRequestController extends Controller

@@ -244,7 +244,8 @@
                 class="nav-link {{ request()->routeIs('employee.dashboard') ? 'active' : '' }}">
                 <i class="bi bi-grid"></i> Dashboard
             </a>
-            <a href="#" class="nav-link {{ request()->routeIs('employee.profile.*') ? 'active' : '' }}">
+            <a href="{{ route('employee.profile.show') }}"
+                class="nav-link {{ request()->routeIs('employee.profile.*') ? 'active' : '' }}">
                 <i class="bi bi-person"></i> My Profile
             </a>
 

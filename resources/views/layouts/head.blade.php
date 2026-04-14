@@ -262,7 +262,8 @@
                 class="nav-link {{ request()->routeIs('head.messages.*') ? 'active' : '' }}">
                 <i class="bi bi-chat-dots"></i> Messages
             </a>
-            <a href="#" class="nav-link {{ request()->routeIs('head.profile.*') ? 'active' : '' }}">
+            <a href="{{ route('head.profile.show') }}"
+                class="nav-link {{ request()->routeIs('head.profile.*') ? 'active' : '' }}">
                 <i class="bi bi-person"></i> My Profile
             </a>
         </div>
