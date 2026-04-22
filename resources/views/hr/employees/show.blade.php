@@ -1,31 +1,23 @@
-@extends('layouts.admin')
+@extends('layouts.hr')
 @section('title', $employee->full_name)
 @section('page-title', 'Employee Profile')
 
 @section('content')
 
-    @if (session('success'))
-        <div class="alert alert-success alert-dismissible fade show anim-fade-up">
-            <i class="bi bi-check-circle me-2"></i>{{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    @endif
-
     {{-- Profile Header --}}
     <div class="anim-fade-up mb-4"
         style="background:var(--surface);border-radius:var(--radius);
-            border:1px solid var(--border);padding:1.75rem;
-            box-shadow:var(--shadow-sm);">
+            border:1px solid var(--border);padding:1.75rem;box-shadow:var(--shadow-sm);">
         <div class="d-flex align-items-center gap-4 flex-wrap">
             <div style="position:relative;">
                 @if ($employee->photo_path)
                     <img src="{{ asset('storage/' . $employee->photo_path) }}"
                         style="width:80px;height:80px;border-radius:50%;object-fit:cover;
-                            border:3px solid rgba(110,168,254,0.3);">
+                            border:3px solid rgba(52,211,153,0.3);">
                 @else
                     <div
                         style="width:80px;height:80px;border-radius:50%;
-                            background:linear-gradient(135deg,var(--primary-start),var(--accent));
+                            background:linear-gradient(135deg,#34D399,#059669);
                             color:#fff;display:flex;align-items:center;justify-content:center;
                             font-size:28px;font-weight:700;flex-shrink:0;">
                         {{ strtoupper(substr($employee->first_name, 0, 1)) }}
@@ -33,7 +25,8 @@
                 @endif
                 <div
                     style="position:absolute;bottom:2px;right:2px;width:16px;height:16px;
-                        border-radius:50%;background:{{ $employee->user->user_stat === 'Enabled' ? '#22C55E' : '#EF4444' }};
+                        border-radius:50%;
+                        background:{{ $employee->user->user_stat === 'Enabled' ? '#22C55E' : '#EF4444' }};
                         border:2px solid white;">
                 </div>
             </div>
@@ -41,7 +34,7 @@
                 <h4 style="font-size:20px;font-weight:700;color:var(--text-primary);margin-bottom:6px;">
                     {{ $employee->full_name }}
                 </h4>
-                <div class="d-flex flex-wrap gap-2 align-items-center">
+                <div class="d-flex flex-wrap gap-2">
                     <span class="status-badge badge-info">
                         <i class="bi bi-briefcase" style="font-size:10px;"></i>
                         {{ $employee->employment?->position ?? 'No position' }}
@@ -52,24 +45,18 @@
                         {{ $employee->user->user_stat }}
                     </span>
                     <span class="status-badge badge-gray">
-                        <i class="bi bi-hash" style="font-size:10px;"></i>
                         {{ $employee->user?->user_id ?? '—' }}
                     </span>
                 </div>
             </div>
-            <div class="d-flex gap-2">
-                <a href="{{ route('admin.employees.edit', $employee->user_id) }}" class="btn btn-primary btn-sm">
-                    <i class="bi bi-pencil me-1"></i> Edit
-                </a>
-                <a href="{{ route('admin.employees.index') }}" class="btn btn-outline-secondary btn-sm">
-                    <i class="bi bi-arrow-left me-1"></i> Back
-                </a>
-            </div>
+            <a href="{{ route('hr.employees.index') }}" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-arrow-left me-1"></i> Back
+            </a>
         </div>
     </div>
 
     {{-- Tabs --}}
-    <ul class="emp-tabs anim-fade-up delay-1 mb-4" id="profileTabs">
+    <ul class="emp-tabs anim-fade-up delay-1 mb-4">
         <li><a href="#personal" class="tab-link active">Personal</a></li>
         <li><a href="#employment" class="tab-link">Employment</a></li>
         <li><a href="#education" class="tab-link">Education</a></li>
@@ -139,7 +126,7 @@
                     </div>
                     <div class="col-md-6">
                         <div class="info-grid">
-                            @foreach ([['School/Office Assigned', $employee->employment->school_office_assign], ['Detailed Assignment', $employee->employment->school_detailed_office_assign], ['Plantilla Item No.', $employee->employment->plantilla_item_no], ['Designated From', $employee->employment->designated_from?->format('F d, Y')], ['Designated To', $employee->employment->designated_to?->format('F d, Y')], ['Separation', $employee->employment->separation]] as [$label, $value])
+                            @foreach ([['School/Office', $employee->employment->school_office_assign], ['Detailed Assign.', $employee->employment->school_detailed_office_assign], ['Plantilla No.', $employee->employment->plantilla_item_no], ['Designated From', $employee->employment->designated_from?->format('F d, Y')], ['Designated To', $employee->employment->designated_to?->format('F d, Y')], ['Separation', $employee->employment->separation]] as [$label, $value])
                                 <div class="info-item">
                                     <span class="info-label">{{ $label }}</span>
                                     <span class="info-value">{{ $value ?? '—' }}</span>
@@ -192,7 +179,7 @@
             @if ($employee->eligibility)
                 <div class="info-grid">
                     <div class="info-item">
-                        <span class="info-label">Type of Eligibility</span>
+                        <span class="info-label">Type</span>
                         <span class="info-value">{{ $employee->eligibility->type_eligibility ?? '—' }}</span>
                     </div>
                     <div class="info-item">
@@ -324,13 +311,13 @@
 
         .tab-link:hover {
             color: var(--text-primary);
-            background: rgba(110, 168, 254, 0.05);
+            background: rgba(52, 211, 153, 0.05);
         }
 
         .tab-link.active {
-            color: var(--primary-end);
-            border-bottom-color: var(--primary-end);
-            background: rgba(110, 168, 254, 0.06);
+            color: #059669;
+            border-bottom-color: #059669;
+            background: rgba(52, 211, 153, 0.06);
         }
 
         .tab-panel {

@@ -37,28 +37,28 @@ class ProfileController extends Controller
     }
 
     public function changePassword(Request $request)
-{
-    $request->validate([
-        'current_password' => 'required',
-        'password'         => 'required|min:8|confirmed',
-    ]);
-
-    /** @var \App\Models\User $user */
-    $user = Auth::user();
-
-    if (!Hash::check($request->current_password, $user->password)) {
-        return back()->withErrors([
-            'current_password' => 'Current password is incorrect.'
+    {
+        $request->validate([
+            'current_password' => 'required',
+            'password'         => 'required|min:8|confirmed',
         ]);
+
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+
+        if (!Hash::check($request->current_password, $user->password)) {
+            return back()->withErrors([
+                'current_password' => 'Current password is incorrect.'
+            ]);
+        }
+
+        $user->update([
+            'password'    => Hash::make($request->password),
+            'pass_change' => true,
+        ]);
+
+        return redirect()->back()->with('success', 'Password changed successfully.');
     }
-
-    $user->update([
-        'password'    => Hash::make($request->password),
-        'pass_change' => true,
-    ]);
-
-    return redirect()->back()->with('success', 'Password changed successfully.');
-}
 
     private function getPrefix(): string
     {

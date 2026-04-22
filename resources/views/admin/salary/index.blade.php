@@ -19,6 +19,14 @@
         </div>
     @endif
 
+    <div class="page-hero anim-fade-up mb-4">
+        <div style="position:relative;z-index:1;">
+            <div style="font-size:13px;opacity:0.85;font-weight:500;margin-bottom:4px;">System</div>
+            <h4 style="font-size:20px;font-weight:700;margin-bottom:4px;">Salary Grade</h4>
+            <p style="font-size:13px;opacity:0.8;margin:0;">Manage salary grades and step increments.</p>
+        </div>
+    </div>
+
     {{-- Add New Grade --}}
     <div class="info-card mb-4">
         <div class="info-card-title">
@@ -77,7 +85,77 @@
                         <th>Action</th>
                     </tr>
                 </thead>
+
                 <tbody>
+                    @forelse($salaryGrades as $sg)
+                        <tr>
+                            <td>
+                                <span class="status-badge badge-info">SG {{ $sg->salary_grade }}</span>
+                            </td>
+                            <td style="font-size:13.5px;font-weight:500;">
+                                ₱{{ number_format($sg->step_1) }}
+                            </td>
+                            <td style="font-size:13.5px;font-weight:500;">
+                                ₱{{ number_format($sg->step_2) }}
+                            </td>
+                            <td style="font-size:13.5px;font-weight:500;">
+                                ₱{{ number_format($sg->step_3) }}
+                            </td>
+                            <td style="font-size:13.5px;font-weight:500;">
+                                ₱{{ number_format($sg->step_4) }}
+                            </td>
+                            <td style="font-size:13.5px;font-weight:500;">
+                                ₱{{ number_format($sg->step_5) }}
+                            </td>
+                            <td style="font-size:13.5px;font-weight:500;">
+                                ₱{{ number_format($sg->step_6) }}
+                            </td>
+                            <td style="font-size:13.5px;font-weight:500;">
+                                ₱{{ number_format($sg->step_7) }}
+                            </td>
+                            <td style="font-size:13.5px;font-weight:500;">
+                                ₱{{ number_format($sg->step_8) }}
+                            </td>
+                            <td class="flex align-items-center gap-1" style="display: flex !important">
+                                <button class="btn btn-sm"
+                                    style="background:rgba(139,92,246,0.1);color:#8B5CF6;border:1px solid rgba(139,92,246,0.2);
+                                      border-radius:8px;padding:4px 9px;transition:all var(--transition);"
+                                    title="Edit"
+                                    onclick="openEdit(
+                                    {{ $sg->id }},
+                                    {{ $sg->salary_grade }},
+                                    '{{ $sg->step_1 }}',
+                                    '{{ $sg->step_2 }}',
+                                    '{{ $sg->step_3 }}',
+                                    '{{ $sg->step_4 }}',
+                                    '{{ $sg->step_5 }}',
+                                    '{{ $sg->step_6 }}',
+                                    '{{ $sg->step_7 }}',
+                                    '{{ $sg->step_8 }}'
+                                )">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                                <form method="POST" action="{{ route('admin.salary.destroy', $sg->id) }}"
+                                    onsubmit="return confirm('Delete this salary grade?')">
+                                    @csrf @method('DELETE')
+                                    <button type="submit" class="btn btn-sm"
+                                        style="background:rgba(239,68,68,0.08);color:#B91C1C;
+                                               border:1px solid rgba(239,68,68,0.15);border-radius:8px;padding:4px 9px;">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="4" style="text-align:center;padding:2rem;color:var(--text-secondary);">
+                                No salary grades yet.
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+
+                {{-- <tbody>
                     @forelse($salaryGrades as $sg)
                         <tr>
                             <td>
@@ -127,7 +205,7 @@
                             </td>
                         </tr>
                     @endforelse
-                </tbody>
+                </tbody> --}}
             </table>
         </div>
     </div>

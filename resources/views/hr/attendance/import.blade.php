@@ -1,25 +1,24 @@
-@extends('layouts.admin')
-@section('title', 'Import Employees')
-@section('page-title', 'Import Employees')
+@extends('layouts.hr')
+@section('title', 'Import Attendance')
+@section('page-title', 'Import Attendance')
 
 @section('content')
 
     <div class="page-hero anim-fade-up mb-4">
         <div style="position:relative;z-index:1;">
-            <div style="font-size:13px;opacity:0.85;font-weight:500;margin-bottom:4px;">Employee Management</div>
-            <h4 style="font-size:20px;font-weight:700;margin-bottom:4px;">Import Employees</h4>
-            <p style="font-size:13px;opacity:0.8;margin:0;">Upload a CSV or Excel file to bulk register employees.</p>
+            <div style="font-size:13px;opacity:0.85;font-weight:500;margin-bottom:4px;">Attendance</div>
+            <h4 style="font-size:20px;font-weight:700;margin-bottom:4px;">Import Attendance</h4>
+            <p style="font-size:13px;opacity:0.8;margin:0;">Upload a CSV or Excel file to bulk import attendance records.</p>
         </div>
     </div>
 
     <div class="row justify-content-center">
-        <div class="col-md-9">
+        <div class="col-md-8">
 
             {{-- Instructions --}}
             <div class="form-section anim-fade-up delay-1 mb-4">
                 <div class="form-section-header">
-                    <div class="form-section-icon"
-                        style="background:linear-gradient(135deg,var(--primary-start),var(--primary-end));">
+                    <div class="form-section-icon" style="background:linear-gradient(135deg,#34D399,#059669);">
                         <i class="bi bi-info-circle"></i>
                     </div>
                     <div>
@@ -39,16 +38,14 @@
                             </tr>
                         </thead>
                         <tbody style="font-size:13.5px;">
-                            @foreach ([['last_name', 'Required', 'dela Cruz'], ['first_name', 'Required', 'Juan'], ['gov_email', 'Required', 'juan@deped.gov.ph'], ['birthdate', 'Recommended', '1990-01-15 (YYYY-MM-DD)'], ['middle_name', 'Optional', 'Santos'], ['gender', 'Optional', 'Male / Female'], ['contact_num', 'Optional', '09171234567'], ['position', 'Optional', 'Teacher I'], ['employee_no', 'Optional', '2025-001'], ['philhealth', 'Optional', '123456789'], ['pagibig', 'Optional', '123456789'], ['tin', 'Optional', '123-456-789'], ['municipality', 'Optional', 'Tayabas'], ['province', 'Optional', 'Quezon']] as [$col, $req, $ex])
+                            @foreach ([['gov_email', 'Required*', 'juan@deped.gov.ph'], ['employee_id', 'Required*', 'ICTHUB-2026-0001'], ['date', 'Required', '2026-04-16 (YYYY-MM-DD)'], ['am_time_in', 'Optional', '07:30'], ['am_time_out', 'Optional', '12:00'], ['pm_time_in', 'Optional', '13:00'], ['pm_time_out', 'Optional', '17:00']] as [$col, $req, $ex])
                                 <tr>
                                     <td><code
-                                            style="background:rgba(110,168,254,0.1);padding:2px 8px;border-radius:4px;font-size:12px;">{{ $col }}</code>
+                                            style="background:rgba(52,211,153,0.1);padding:2px 8px;border-radius:4px;font-size:12px;">{{ $col }}</code>
                                     </td>
                                     <td>
-                                        @if ($req === 'Required')
-                                            <span class="status-badge badge-danger">Required</span>
-                                        @elseif($req === 'Recommended')
-                                            <span class="status-badge badge-warning">Recommended</span>
+                                        @if (str_contains($req, 'Required'))
+                                            <span class="status-badge badge-danger">{{ $req }}</span>
                                         @else
                                             <span class="status-badge badge-gray">Optional</span>
                                         @endif
@@ -60,19 +57,14 @@
                     </table>
                 </div>
 
-                <div class="alert alert-warning mb-2" style="font-size:13px;">
-                    <i class="bi bi-key me-1"></i>
-                    <strong>Password Policy:</strong> Default = <code>FirstnameBirthdate</code> e.g.
-                    <code>Juan01151990</code>.
-                    Fallback = <code>FirstnameICThub@123</code>. Passwords shown once after import.
-                </div>
                 <div class="alert alert-info mb-3" style="font-size:13px;">
-                    <i class="bi bi-person-badge me-1"></i>
-                    Employee ID (e.g. <code>ICTHUB-2026-0001</code>) is auto-assigned. Employees must change password on
-                    first login.
+                    <i class="bi bi-info-circle me-1"></i>
+                    <strong>* Either</strong> <code>gov_email</code> or <code>employee_id</code> is required to identify the
+                    employee.
+                    Leave points are auto-calculated from total hours on import.
                 </div>
 
-                <a href="{{ route('admin.employees.import.template') }}" class="btn btn-outline-primary btn-sm">
+                <a href="{{ route('hr.attendance.template') }}" class="btn btn-outline-primary btn-sm">
                     <i class="bi bi-download me-1"></i> Download Template
                 </a>
             </div>
@@ -80,7 +72,7 @@
             {{-- Upload Form --}}
             <div class="form-section anim-fade-up delay-2">
                 <div class="form-section-header">
-                    <div class="form-section-icon" style="background:linear-gradient(135deg,#34D399,#059669);">
+                    <div class="form-section-icon" style="background:linear-gradient(135deg,#6EA8FE,#4A90E2);">
                         <i class="bi bi-upload"></i>
                     </div>
                     <div>
@@ -90,28 +82,19 @@
                     </div>
                 </div>
 
-                @if (session('import_errors'))
-                    <div class="alert alert-warning mb-3">
-                        <strong>Some rows were skipped:</strong>
-                        <ul class="mb-0 mt-2">
-                            @foreach (session('import_errors') as $err)
-                                <li style="font-size:13px;">{{ $err }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
-
-                <form method="POST" action="{{ route('admin.employees.import') }}" enctype="multipart/form-data">
+                <form method="POST" action="{{ route('hr.attendance.import') }}" enctype="multipart/form-data">
                     @csrf
                     <div class="mb-3">
-                        <label class="form-label">Select CSV or Excel File</label>
+                        <label class="form-label">Select File</label>
                         <input type="file" name="file" class="form-control" accept=".csv,.xlsx,.xls" required>
                     </div>
                     <div class="d-flex gap-2">
                         <button type="submit" class="btn btn-primary">
-                            <i class="bi bi-upload me-2"></i> Import Employees
+                            <i class="bi bi-upload me-2"></i> Import Attendance
                         </button>
-                        <a href="{{ route('admin.employees.index') }}" class="btn btn-outline-secondary">Cancel</a>
+                        <a href="{{ route('hr.attendance.index') }}" class="btn btn-outline-secondary">
+                            Cancel
+                        </a>
                     </div>
                 </form>
             </div>

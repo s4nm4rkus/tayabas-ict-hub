@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('layouts.hr')
 @section('title', 'Attendance')
 @section('page-title', 'Attendance')
 
@@ -11,28 +11,38 @@
         </div>
     @endif
 
+    @if (session('import_errors'))
+        <div class="alert alert-warning alert-dismissible fade show anim-fade-up">
+            <strong>Some rows were skipped:</strong>
+            <ul class="mb-0 mt-2">
+                @foreach (session('import_errors') as $err)
+                    <li style="font-size:13px;">{{ $err }}</li>
+                @endforeach
+            </ul>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    @endif
+
     <div class="page-hero anim-fade-up mb-4">
         <div style="position:relative;z-index:1;">
             <div style="font-size:13px;opacity:0.85;font-weight:500;margin-bottom:4px;">Management</div>
             <h4 style="font-size:20px;font-weight:700;margin-bottom:4px;">Attendance</h4>
-            <p style="font-size:13px;opacity:0.8;margin:0;">Record and monitor daily employee attendance.</p>
+            <p style="font-size:13px;opacity:0.8;margin:0;">Record, import and export employee attendance data.</p>
         </div>
     </div>
 
     <div class="row g-3">
 
-        {{-- Add Attendance --}}
+        {{-- Record Form --}}
         <div class="col-md-4 anim-fade-up delay-1">
-            <div class="stat-card">
+            <div class="stat-card mb-3">
                 <div class="info-card-title">
                     <i class="bi bi-plus-circle"></i> Record Attendance
                 </div>
                 @if ($errors->any())
-                    <div class="alert alert-danger" style="font-size:13px;">
-                        {{ $errors->first() }}
-                    </div>
+                    <div class="alert alert-danger" style="font-size:13px;">{{ $errors->first() }}</div>
                 @endif
-                <form method="POST" action="{{ route('admin.attendance.store') }}">
+                <form method="POST" action="{{ route('hr.attendance.store') }}">
                     @csrf
                     <div class="mb-3">
                         <label class="form-label">Employee <span class="text-danger">*</span></label>
@@ -93,6 +103,74 @@
                     </button>
                 </form>
             </div>
+
+            {{-- Import / Export Tools --}}
+            <div class="stat-card">
+                <div class="info-card-title">
+                    <i class="bi bi-arrow-left-right"></i> Import / Export
+                </div>
+                <div class="d-flex flex-column gap-2">
+                    <a href="{{ route('hr.attendance.import.form') }}"
+                        style="display:flex;align-items:center;gap:10px;padding:10px 12px;
+                          border-radius:10px;text-decoration:none;
+                          background:rgba(52,211,153,0.08);border:1px solid rgba(52,211,153,0.15);
+                          transition:all 0.2s;"
+                        onmouseover="this.style.background='rgba(52,211,153,0.14)'"
+                        onmouseout="this.style.background='rgba(52,211,153,0.08)'">
+                        <div
+                            style="width:30px;height:30px;border-radius:8px;flex-shrink:0;
+                                background:linear-gradient(135deg,#34D399,#059669);
+                                display:flex;align-items:center;justify-content:center;">
+                            <i class="bi bi-upload" style="font-size:13px;color:white;"></i>
+                        </div>
+                        <div>
+                            <div style="font-size:13px;font-weight:600;color:var(--text-primary);">Import CSV/Excel</div>
+                            <div style="font-size:11px;color:var(--text-secondary);">Bulk upload attendance</div>
+                        </div>
+                        <i class="bi bi-chevron-right ms-auto" style="font-size:12px;color:var(--text-secondary);"></i>
+                    </a>
+
+                    <a href="{{ route('hr.attendance.export.csv') }}"
+                        style="display:flex;align-items:center;gap:10px;padding:10px 12px;
+                          border-radius:10px;text-decoration:none;
+                          background:rgba(110,168,254,0.08);border:1px solid rgba(110,168,254,0.15);
+                          transition:all 0.2s;"
+                        onmouseover="this.style.background='rgba(110,168,254,0.14)'"
+                        onmouseout="this.style.background='rgba(110,168,254,0.08)'">
+                        <div
+                            style="width:30px;height:30px;border-radius:8px;flex-shrink:0;
+                                background:linear-gradient(135deg,#6EA8FE,#4A90E2);
+                                display:flex;align-items:center;justify-content:center;">
+                            <i class="bi bi-download" style="font-size:13px;color:white;"></i>
+                        </div>
+                        <div>
+                            <div style="font-size:13px;font-weight:600;color:var(--text-primary);">Export CSV</div>
+                            <div style="font-size:11px;color:var(--text-secondary);">Download attendance data</div>
+                        </div>
+                        <i class="bi bi-chevron-right ms-auto" style="font-size:12px;color:var(--text-secondary);"></i>
+                    </a>
+
+                    <a href="{{ route('hr.attendance.template') }}"
+                        style="display:flex;align-items:center;gap:10px;padding:10px 12px;
+                          border-radius:10px;text-decoration:none;
+                          background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.15);
+                          transition:all 0.2s;"
+                        onmouseover="this.style.background='rgba(245,158,11,0.14)'"
+                        onmouseout="this.style.background='rgba(245,158,11,0.08)'">
+                        <div
+                            style="width:30px;height:30px;border-radius:8px;flex-shrink:0;
+                                background:linear-gradient(135deg,#FCD34D,#F59E0B);
+                                display:flex;align-items:center;justify-content:center;">
+                            <i class="bi bi-file-earmark-arrow-down" style="font-size:13px;color:white;"></i>
+                        </div>
+                        <div>
+                            <div style="font-size:13px;font-weight:600;color:var(--text-primary);">Download Template</div>
+                            <div style="font-size:11px;color:var(--text-secondary);">CSV import template</div>
+                        </div>
+                        <i class="bi bi-chevron-right ms-auto" style="font-size:12px;color:var(--text-secondary);"></i>
+                    </a>
+                </div>
+            </div>
         </div>
 
         {{-- Attendance List --}}
@@ -101,7 +179,8 @@
                 <div class="info-card-title">
                     <i class="bi bi-clock-history"></i> Attendance Records
                 </div>
-                <form method="GET" action="{{ route('admin.attendance.index') }}" class="d-flex gap-2 mb-3 flex-wrap">
+
+                <form method="GET" action="{{ route('hr.attendance.index') }}" class="d-flex gap-2 mb-3 flex-wrap">
                     <input type="date" name="date" class="form-control" style="max-width:180px;"
                         value="{{ request('date') }}">
                     <select name="employee_id" class="form-select" style="max-width:200px;">
@@ -115,7 +194,7 @@
                     <button type="submit" class="btn btn-outline-primary btn-sm">
                         <i class="bi bi-search me-1"></i> Filter
                     </button>
-                    <a href="{{ route('admin.attendance.index') }}" class="btn btn-outline-secondary btn-sm">Clear</a>
+                    <a href="{{ route('hr.attendance.index') }}" class="btn btn-outline-secondary btn-sm">Clear</a>
                 </form>
 
                 <div class="table-responsive">
@@ -146,19 +225,18 @@
                                     </td>
                                     <td style="font-size:12px;color:var(--text-secondary);">{{ $att->pm_time_out ?? '—' }}
                                     </td>
-                                    <td>
-                                        <span class="status-badge badge-info">{{ $att->total_hours }}h</span>
-                                    </td>
-                                    <td style="font-size:12px;color:#8B5CF6;font-weight:600;">
+                                    <td><span class="status-badge badge-info">{{ $att->total_hours }}h</span></td>
+                                    <td style="font-size:12px;color:#059669;font-weight:600;">
                                         {{ round((0.42 / 8) * (float) $att->total_hours, 4) }}
                                     </td>
                                     <td>
-                                        <form method="POST" action="{{ route('admin.attendance.destroy', $att->id) }}"
+                                        <form method="POST" action="{{ route('hr.attendance.destroy', $att->id) }}"
                                             onsubmit="return confirm('Delete this record?')">
                                             @csrf @method('DELETE')
-                                            <button type="submit" class="btn btn-sm"
+                                            <button type="submit"
                                                 style="background:rgba(239,68,68,0.08);color:#B91C1C;
-                                               border:1px solid rgba(239,68,68,0.15);border-radius:8px;padding:4px 9px;">
+                                               border:1px solid rgba(239,68,68,0.15);border-radius:8px;
+                                               padding:4px 9px;cursor:pointer;">
                                                 <i class="bi bi-trash"></i>
                                             </button>
                                         </form>

@@ -1,44 +1,69 @@
 @extends('layouts.employee')
-
 @section('title', 'My Attendance')
-@section('page-title', 'My Attendance & Leave Points')
+@section('page-title', 'Attendance')
 
 @section('content')
 
+    <div class="page-hero anim-fade-up mb-4">
+        <div style="position:relative;z-index:1;">
+            <div style="font-size:13px;opacity:0.85;font-weight:500;margin-bottom:4px;">Attendance</div>
+            <h4 style="font-size:20px;font-weight:700;margin-bottom:4px;">My Attendance & Leave Points</h4>
+            <p style="font-size:13px;opacity:0.8;margin:0;">View your daily attendance records and accumulated points.</p>
+        </div>
+    </div>
+
     {{-- Points Summary --}}
-    <div class="row g-3 mb-4">
+    <div class="row g-3 mb-4 anim-fade-up delay-1">
         <div class="col-md-4">
-            <div class="stat-card text-center">
-                <div style="font-size:12px;color:#8892a4;margin-bottom:4px;">
-                    Total Accumulated Points
+            <div class="stat-card text-center" style="padding:1.75rem;">
+                <div
+                    style="width:56px;height:56px;border-radius:16px;margin:0 auto 12px;
+                        background:linear-gradient(135deg,var(--accent-light),var(--accent));
+                        display:flex;align-items:center;justify-content:center;">
+                    <i class="bi bi-star-fill" style="font-size:22px;color:white;"></i>
                 </div>
-                <div style="font-size:32px;font-weight:600;color:#4f8ef7;">
-                    {{ round($totalPoints, 4) }}
+                <div
+                    style="font-size:11px;font-weight:700;color:var(--text-secondary);
+                        text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">
+                    Total Leave Points
                 </div>
-                <div style="font-size:12px;color:#8892a4;">leave points earned</div>
+                <div style="font-size:36px;font-weight:700;color:var(--text-primary);line-height:1;">
+                    {{ round($totalPoints, 2) }}
+                </div>
+                <div style="font-size:12px;color:var(--text-secondary);margin-top:4px;">
+                    accumulated points
+                </div>
             </div>
         </div>
         <div class="col-md-8">
-            <div class="stat-card">
-                <div style="font-size:13px;color:#555;line-height:1.7;">
-                    <i class="bi bi-info-circle me-1 text-primary"></i>
-                    Leave points are computed as:
-                    <strong>(0.42 ÷ 8) × total hours worked</strong> per day.
-                    Every 8 hours = 0.42 points earned.
+            <div class="stat-card h-100 d-flex align-items-center">
+                <div
+                    style="background:rgba(110,168,254,0.08);border:1px solid rgba(110,168,254,0.2);
+                        border-radius:var(--radius-sm);padding:14px 16px;width:100%;">
+                    <div style="font-size:12px;font-weight:700;color:#1D4ED8;margin-bottom:6px;">
+                        <i class="bi bi-calculator me-1"></i> How Points Are Calculated
+                    </div>
+                    <div style="font-size:13px;color:var(--text-secondary);line-height:1.7;">
+                        Leave points are computed as:
+                        <strong style="color:var(--text-primary);">(0.42 ÷ 8) × total hours worked</strong> per day.<br>
+                        Every full 8-hour day = <strong style="color:var(--text-primary);">0.42 points</strong> earned.
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     {{-- Attendance Table --}}
-    <div class="stat-card">
-        <div class="info-card-title">
-            <i class="bi bi-clock-history"></i> Attendance Records
+    <div class="stat-card anim-fade-up delay-2">
+        <div
+            style="font-size:15px;font-weight:700;color:var(--text-primary);margin-bottom:1rem;
+                padding-bottom:0.75rem;border-bottom:1px solid var(--border);">
+            <i class="bi bi-clock-history me-2" style="color:#8B5CF6;"></i>Attendance Records
         </div>
         <div class="table-responsive">
-            <table class="table table-hover align-middle" style="font-size:14px;">
+            <table class="table table-hover mb-0">
                 <thead>
-                    <tr style="font-size:13px;color:#8892a4;">
+                    <tr>
                         <th>Date</th>
                         <th>AM In</th>
                         <th>AM Out</th>
@@ -51,19 +76,25 @@
                 <tbody>
                     @forelse($attendance as $att)
                         <tr>
-                            <td>{{ $att->t_date?->format('M d, Y') }}</td>
-                            <td>{{ $att->am_time_in ?? '—' }}</td>
-                            <td>{{ $att->am_time_out ?? '—' }}</td>
-                            <td>{{ $att->pm_time_in ?? '—' }}</td>
-                            <td>{{ $att->pm_time_out ?? '—' }}</td>
-                            <td>{{ $att->total_hours }}</td>
-                            <td style="color:#4f8ef7;font-weight:500;">
-                                {{ round((0.42 / 8) * (float) $att->total_hours, 4) }}
+                            <td style="font-weight:600;font-size:13.5px;">
+                                {{ $att->t_date?->format('M d, Y') }}
+                            </td>
+                            <td style="font-size:13px;color:var(--text-secondary);">{{ $att->am_time_in ?? '—' }}</td>
+                            <td style="font-size:13px;color:var(--text-secondary);">{{ $att->am_time_out ?? '—' }}</td>
+                            <td style="font-size:13px;color:var(--text-secondary);">{{ $att->pm_time_in ?? '—' }}</td>
+                            <td style="font-size:13px;color:var(--text-secondary);">{{ $att->pm_time_out ?? '—' }}</td>
+                            <td><span class="status-badge badge-info">{{ $att->total_hours }}h</span></td>
+                            <td>
+                                <span style="font-weight:700;color:#8B5CF6;font-size:13.5px;">
+                                    {{ round((0.42 / 8) * (float) $att->total_hours, 4) }}
+                                </span>
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="text-center text-muted py-4">
+                            <td colspan="7" style="text-align:center;padding:3rem;color:var(--text-secondary);">
+                                <i class="bi bi-clock"
+                                    style="font-size:28px;display:block;margin-bottom:8px;opacity:0.3;"></i>
                                 No attendance records yet.
                             </td>
                         </tr>
@@ -71,28 +102,7 @@
                 </tbody>
             </table>
         </div>
-        {{ $attendance->links() }}
+        <div class="mt-3">{{ $attendance->links() }}</div>
     </div>
-
-    <style>
-        .stat-card {
-            background: #fff;
-            border-radius: 10px;
-            padding: 1.25rem;
-            border: 1px solid #e9ecef;
-        }
-
-        .info-card-title {
-            font-size: 14px;
-            font-weight: 600;
-            color: #1a1f2e;
-            margin-bottom: 1rem;
-            padding-bottom: 0.75rem;
-            border-bottom: 1px solid #f0f0f0;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-    </style>
 
 @endsection

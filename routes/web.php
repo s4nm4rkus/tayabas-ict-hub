@@ -4,10 +4,17 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\TwoFactorController;
 use App\Http\Controllers\Auth\PasswordController;
+use App\Models\SubPosition;
+
 // use Illuminate\Support\Facades\Auth;
 
+// Landing page — public
+Route::get('/', function () {
+    return view('welcome');
+})->name('home');
+
 Route::middleware('guest')->group(function () {
-    Route::get('/', [LoginController::class, 'showLogin'])->name('login');
+    Route::get('/login', [LoginController::class, 'showLogin'])->name('login');
     Route::post('/login', [LoginController::class, 'authenticate'])->name('login.post');
 });
 
@@ -118,7 +125,7 @@ Route::middleware('auth')->group(function () {
 
         // HR Dashboard
         Route::get('/dashboard', [\App\Http\Controllers\HR\DashboardController::class, 'index'])->name('hr.dashboard');
-
+        
         // Leave approvals
         Route::get('/leave', [\App\Http\Controllers\HR\HRLeaveController::class, 'index'])->name('hr.leave.index');
         Route::put('/leave/{id}/approve', [\App\Http\Controllers\HR\HRLeaveController::class, 'approve'])->name('hr.leave.approve');
@@ -129,6 +136,21 @@ Route::middleware('auth')->group(function () {
         Route::put('/certificates/{id}/accept', [\App\Http\Controllers\HR\CertRequestController::class, 'accept'])->name('hr.certificates.accept');
         Route::put('/certificates/{id}/decline', [\App\Http\Controllers\HR\CertRequestController::class, 'decline'])->name('hr.certificates.decline');
         Route::get('/certificates/{id}/pdf', [\App\Http\Controllers\HR\CertRequestController::class, 'generatePdf'])->name('hr.certificates.pdf');
+
+        // HR Employees
+        Route::get('/employees', [\App\Http\Controllers\HR\EmployeeController::class, 'index'])->name('hr.employees.index');
+        Route::get('/employees/export/csv', [\App\Http\Controllers\HR\EmployeeController::class, 'exportCsv'])->name('hr.employees.export.csv');
+        Route::get('/employees/export/pdf', [\App\Http\Controllers\HR\EmployeeController::class, 'exportPdf'])->name('hr.employees.export.pdf');
+        Route::get('/employees/{id}', [\App\Http\Controllers\HR\EmployeeController::class, 'show'])->name('hr.employees.show');   
+        
+        // HR Attendance
+        Route::get('/attendance', [\App\Http\Controllers\HR\AttendanceController::class, 'index'])->name('hr.attendance.index');
+        Route::post('/attendance', [\App\Http\Controllers\HR\AttendanceController::class, 'store'])->name('hr.attendance.store');
+        Route::delete('/attendance/{id}', [\App\Http\Controllers\HR\AttendanceController::class, 'destroy'])->name('hr.attendance.destroy');
+        Route::get('/attendance/export/csv', [\App\Http\Controllers\HR\AttendanceController::class, 'exportCsv'])->name('hr.attendance.export.csv');
+        Route::get('/attendance/import', [\App\Http\Controllers\HR\AttendanceController::class, 'importForm'])->name('hr.attendance.import.form');
+        Route::post('/attendance/import', [\App\Http\Controllers\HR\AttendanceController::class, 'import'])->name('hr.attendance.import');
+        Route::get('/attendance/template', [\App\Http\Controllers\HR\AttendanceController::class, 'downloadTemplate'])->name('hr.attendance.template');
 
         // Messages
         Route::get('/messages', [\App\Http\Controllers\Shared\MessageController::class, 'index'])->name('hr.messages.index');
