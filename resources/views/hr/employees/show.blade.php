@@ -49,9 +49,14 @@
                     </span>
                 </div>
             </div>
-            <a href="{{ route('hr.employees.index') }}" class="btn btn-outline-secondary btn-sm">
-                <i class="bi bi-arrow-left me-1"></i> Back
-            </a>
+            <div class="d-flex gap-2">
+                <a href="{{ route('hr.employees.edit', $employee->user_id) }}" class="btn btn-primary btn-sm">
+                    <i class="bi bi-pencil me-1"></i> Edit
+                </a>
+                <a href="{{ route('hr.employees.index') }}" class="btn btn-outline-secondary btn-sm">
+                    <i class="bi bi-arrow-left me-1"></i> Back
+                </a>
+            </div>
         </div>
     </div>
 

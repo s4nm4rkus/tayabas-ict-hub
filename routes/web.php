@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\TwoFactorController;
 use App\Http\Controllers\Auth\PasswordController;
-use App\Models\SubPosition;
+// use App\Models\SubPosition;
 
 // use Illuminate\Support\Facades\Auth;
 
@@ -12,6 +12,15 @@ use App\Models\SubPosition;
 Route::get('/', function () {
     return view('welcome');
 })->name('home');
+
+// Personnel Unit page
+Route::get('/units/personnel', function () {
+    return view('units.personnel');
+})->name('unit.personnel');
+
+// Route::get('/units/{unit}', function($unit) {
+//     return view('units.'.$unit);
+// })->name('unit.page');
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [LoginController::class, 'showLogin'])->name('login');
@@ -138,10 +147,15 @@ Route::middleware('auth')->group(function () {
         Route::get('/certificates/{id}/pdf', [\App\Http\Controllers\HR\CertRequestController::class, 'generatePdf'])->name('hr.certificates.pdf');
 
         // HR Employees
+        Route::get('/employees/create', [\App\Http\Controllers\HR\EmployeeController::class, 'create'])->name('hr.employees.create');
         Route::get('/employees', [\App\Http\Controllers\HR\EmployeeController::class, 'index'])->name('hr.employees.index');
         Route::get('/employees/export/csv', [\App\Http\Controllers\HR\EmployeeController::class, 'exportCsv'])->name('hr.employees.export.csv');
         Route::get('/employees/export/pdf', [\App\Http\Controllers\HR\EmployeeController::class, 'exportPdf'])->name('hr.employees.export.pdf');
         Route::get('/employees/{id}', [\App\Http\Controllers\HR\EmployeeController::class, 'show'])->name('hr.employees.show');   
+        Route::post('/employees', [\App\Http\Controllers\HR\EmployeeController::class, 'store'])->name('hr.employees.store');
+        Route::get('/employees/{id}/edit', [\App\Http\Controllers\HR\EmployeeController::class, 'edit'])->name('hr.employees.edit');
+        Route::put('/employees/{id}', [\App\Http\Controllers\HR\EmployeeController::class, 'update'])->name('hr.employees.update');
+        Route::post('/employees/{id}/service', [\App\Http\Controllers\HR\EmployeeController::class, 'storeServiceRecord'])->name('hr.employees.service.store');
         
         // HR Attendance
         Route::get('/attendance', [\App\Http\Controllers\HR\AttendanceController::class, 'index'])->name('hr.attendance.index');

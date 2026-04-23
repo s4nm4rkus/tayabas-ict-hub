@@ -145,9 +145,7 @@
             box-shadow: 0 6px 20px rgba(26, 74, 138, 0.40);
         }
 
-        /* ════════════════════════════════════
-           HERO
-        ════════════════════════════════════ */
+        /* ── Hero (UNCHANGED) ── */
         .hero {
             position: relative;
             min-height: 90vh;
@@ -171,13 +169,7 @@
             position: absolute;
             inset: 0;
             z-index: 1;
-            background: linear-gradient(to right,
-                    #ffffff 0%,
-                    #ffffff 32%,
-                    rgba(255, 255, 255, 0.96) 42%,
-                    rgba(255, 255, 255, 0.75) 52%,
-                    rgba(255, 255, 255, 0) 64%,
-                    rgba(255, 255, 255, 0) 78%);
+            background: linear-gradient(to right, #ffffff 0%, #ffffff 32%, rgba(255, 255, 255, 0.96) 42%, rgba(255, 255, 255, 0.75) 52%, rgba(255, 255, 255, 0) 64%, rgba(255, 255, 255, 0) 78%);
             pointer-events: none;
         }
 
@@ -360,9 +352,7 @@
             }
         }
 
-        /* ════════════════════════════════════
-           SHARED SECTIONS
-        ════════════════════════════════════ */
+        /* ── Shared ── */
         section {
             padding: 96px 8%;
         }
@@ -402,7 +392,6 @@
             max-width: 560px;
         }
 
-        /* Scroll reveal */
         .reveal {
             opacity: 0;
             transform: translateY(28px);
@@ -430,9 +419,244 @@
             transition-delay: 0.4s;
         }
 
-        /* ════════════════════════════════════
-           MISSION STRIP
-        ════════════════════════════════════ */
+        /* ── Units Section ── */
+        .units-section {
+            background: var(--light);
+            padding: 96px 8%;
+        }
+
+        .units-header {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 48px;
+            align-items: center;
+            margin-bottom: 64px;
+        }
+
+        .units-header-left {}
+
+        .units-header-right {
+            padding: 24px 28px;
+            background: var(--white);
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 20px rgba(11, 31, 58, 0.06);
+        }
+
+        .units-header-right p {
+            font-size: 13.5px;
+            color: var(--muted);
+            line-height: 1.75;
+            margin-bottom: 16px;
+        }
+
+        .units-header-right .stat-row {
+            display: flex;
+            gap: 20px;
+        }
+
+        .mini-stat {
+            text-align: center;
+            flex: 1;
+            padding: 12px;
+            background: var(--light);
+            border-radius: 10px;
+        }
+
+        .mini-stat-num {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--navy);
+            line-height: 1;
+        }
+
+        .mini-stat-label {
+            font-size: 10px;
+            color: var(--muted);
+            font-weight: 500;
+            margin-top: 3px;
+        }
+
+        /* Cluster rows */
+        .units-cluster {
+            margin-bottom: 48px;
+        }
+
+        .cluster-label {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .cluster-label-text {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+
+        .cluster-label-line {
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        /* Unit card — NEW design */
+        .units-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 16px;
+        }
+
+        .units-grid-wide {
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        }
+
+        .unit-card {
+            background: var(--white);
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            padding: 0;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            text-decoration: none;
+            position: relative;
+            group: true;
+        }
+
+        .unit-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 50px rgba(11, 31, 58, 0.13);
+            border-color: transparent;
+        }
+
+        .unit-card-top {
+            padding: 24px 24px 18px;
+            flex: 1;
+        }
+
+        .unit-card-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 14px;
+        }
+
+        .unit-icon {
+            width: 46px;
+            height: 46px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 19px;
+            flex-shrink: 0;
+        }
+
+        .unit-arrow {
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            background: var(--light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--muted);
+            font-size: 13px;
+            transition: all 0.25s;
+            flex-shrink: 0;
+        }
+
+        .unit-card:hover .unit-arrow {
+            background: var(--navy);
+            color: #fff;
+            transform: rotate(45deg);
+        }
+
+        .unit-name {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--navy);
+            line-height: 1.35;
+            margin-bottom: 7px;
+        }
+
+        .unit-desc {
+            font-size: 12px;
+            color: var(--muted);
+            line-height: 1.65;
+        }
+
+        .unit-card-footer {
+            padding: 12px 24px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: background 0.25s;
+        }
+
+        .unit-card:hover .unit-card-footer {
+            background: rgba(26, 74, 138, 0.03);
+        }
+
+        .unit-tag {
+            font-size: 10.5px;
+            font-weight: 600;
+            padding: 3px 10px;
+            border-radius: 99px;
+            letter-spacing: 0.05em;
+        }
+
+        .unit-link-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--blue);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            opacity: 0;
+            transform: translateX(-4px);
+            transition: all 0.25s;
+        }
+
+        .unit-card:hover .unit-link-label {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        /* Featured card (Personnel — has portal) */
+        .unit-card-featured {
+            border: 2px solid rgba(26, 74, 138, 0.2);
+            background: linear-gradient(135deg, #FAFCFF, var(--white));
+        }
+
+        .unit-card-featured .unit-card-footer {
+            background: rgba(26, 74, 138, 0.04);
+            border-top-color: rgba(26, 74, 138, 0.15);
+        }
+
+        .featured-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 99px;
+            background: rgba(201, 168, 76, 0.15);
+            color: #9A6F28;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        /* ── Mission Strip ── */
         .mission-strip {
             background: linear-gradient(135deg, var(--navy) 0%, #1A3560 100%);
             padding: 72px 8%;
@@ -489,100 +713,7 @@
             line-height: 1.7;
         }
 
-        /* ════════════════════════════════════
-           UNITS
-        ════════════════════════════════════ */
-        .units-section {
-            background: var(--light);
-        }
-
-        .units-header {
-            display: flex;
-            align-items: flex-end;
-            justify-content: space-between;
-            margin-bottom: 48px;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
-
-        .units-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px;
-        }
-
-        .unit-card {
-            background: var(--white);
-            border-radius: 16px;
-            border: 1px solid var(--border);
-            padding: 28px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            cursor: default;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .unit-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, var(--blue), var(--gold));
-            transform: scaleX(0);
-            transform-origin: left;
-            transition: transform 0.3s ease;
-        }
-
-        .unit-card:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 16px 48px rgba(11, 31, 58, 0.12);
-            border-color: rgba(26, 74, 138, 0.2);
-        }
-
-        .unit-card:hover::before {
-            transform: scaleX(1);
-        }
-
-        .unit-icon {
-            width: 50px;
-            height: 50px;
-            border-radius: 13px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            margin-bottom: 18px;
-        }
-
-        .unit-name {
-            font-size: 15px;
-            font-weight: 700;
-            color: var(--navy);
-            margin-bottom: 8px;
-            line-height: 1.3;
-        }
-
-        .unit-desc {
-            font-size: 13px;
-            color: var(--muted);
-            line-height: 1.65;
-        }
-
-        .unit-tag {
-            display: inline-block;
-            margin-top: 14px;
-            font-size: 11px;
-            font-weight: 600;
-            padding: 3px 10px;
-            border-radius: 99px;
-            letter-spacing: 0.05em;
-        }
-
-        /* ════════════════════════════════════
-           ANNOUNCEMENTS
-        ════════════════════════════════════ */
+        /* ── Announcements ── */
         .announcements-section {
             padding: 96px 8%;
         }
@@ -669,9 +800,7 @@
             line-height: 1.6;
         }
 
-        /* ════════════════════════════════════
-           FOOTER
-        ════════════════════════════════════ */
+        /* ── Footer ── */
         footer {
             background: var(--navy);
             padding: 60px 8% 32px;
@@ -760,10 +889,8 @@
             color: var(--gold);
         }
 
-        /* ════════════════════════════════════
-           RESPONSIVE — TABLET
-        ════════════════════════════════════ */
-        @media (max-width: 900px) {
+        /* ── Responsive ── */
+        @media (max-width:900px) {
             .hero-video {
                 right: auto;
                 left: 0;
@@ -776,13 +903,7 @@
             }
 
             .hero-overlay {
-                background: linear-gradient(to top,
-                        #ffffff 0%,
-                        #ffffff 35%,
-                        rgba(255, 255, 255, 0.97) 48%,
-                        rgba(255, 255, 255, 0.80) 62%,
-                        rgba(255, 255, 255, 0.20) 78%,
-                        rgba(255, 255, 255, 0.00) 100%);
+                background: linear-gradient(to top, #ffffff 0%, #ffffff 35%, rgba(255, 255, 255, 0.97) 48%, rgba(255, 255, 255, 0.80) 62%, rgba(255, 255, 255, 0.20) 78%, rgba(255, 255, 255, 0.00) 100%);
             }
 
             .hero-content {
@@ -814,12 +935,13 @@
                 grid-template-columns: 1fr 1fr;
                 gap: 32px;
             }
+
+            .units-header {
+                grid-template-columns: 1fr;
+            }
         }
 
-        /* ════════════════════════════════════
-           RESPONSIVE — MOBILE
-        ════════════════════════════════════ */
-        @media (max-width: 600px) {
+        @media (max-width:600px) {
             nav {
                 padding: 0 4%;
             }
@@ -888,11 +1010,12 @@
 
 <body>
 
+    {{-- ── Navbar ── --}}
     <nav id="navbar">
         <a href="#" class="nav-brand">
             <div class="nav-brand-icon">
-                <img src="{{ asset('storage/logo-nav.png') }}" alt="SDO Logo" id="nav-logo"
-                    onload="this.style.display='block'" onerror="this.style.display='none'">
+                <img src="{{ asset('storage/logo-nav.png') }}" alt="SDO Logo" onload="this.style.display='block'"
+                    onerror="this.style.display='none'">
             </div>
             <div class="nav-brand-text">
                 <strong>SDO Tayabas City</strong>
@@ -905,37 +1028,32 @@
             <li><a href="#announcements">Announcements</a></li>
             <li><a href="#contact">Contact</a></li>
         </ul>
-        <a href="{{ route('login') }}" class="btn-nav">
-            <i class="bi bi-box-arrow-in-right"></i> Employee Portal
+        <a href="#units" class="btn-nav">
+            <i class="bi bi-grid-1x2"></i> Our Units
         </a>
     </nav>
 
+    {{-- ── Hero (UNCHANGED) ── --}}
     <section class="hero" id="home">
-
         <div class="hero-content">
-
             <div class="hero-eyebrow">Republic of the Philippines</div>
-
             <h1 class="hero-title">
                 <span class="line-sm">Schools Division Office of</span>
                 <span class="highlight">Tayabas City</span>
             </h1>
-
             <p class="hero-subtitle">
                 Empowering educators, nurturing learners, and building a
                 future-ready community through quality, accessible, and
                 inclusive education in Tayabas City, Quezon Province.
             </p>
-
             <div class="hero-actions">
-                <a href="{{ route('login') }}" class="btn-primary">
-                    <i class="bi bi-person-badge"></i> Employee Portal
+                <a href="#units" class="btn-primary">
+                    <i class="bi bi-grid-1x2"></i> Explore Our Units
                 </a>
-                <a href="#units" class="btn-outline">
-                    <i class="bi bi-grid-1x2"></i> Our Units
+                <a href="#about" class="btn-outline">
+                    <i class="bi bi-info-circle"></i> About SDO
                 </a>
             </div>
-
             <div class="hero-stats">
                 <div class="stat">
                     <div class="stat-num">DepEd</div>
@@ -950,231 +1068,441 @@
                     <div class="stat-label">Division Level Office</div>
                 </div>
             </div>
-
         </div>
-
         <video class="hero-video" src="{{ asset('storage/logo-3d.mp4') }}" autoplay loop muted playsinline
             poster="#">
         </video>
-
         <div class="hero-overlay"></div>
+    </section>
+
+    {{-- ── Units ── --}}
+    <section class="units-section" id="units">
+
+        <div class="units-header reveal">
+            <div class="units-header-left">
+                <div class="section-label">Our Offices</div>
+                <h2 class="section-title">Division Office Units</h2>
+                <p class="section-desc">
+                    Each office plays a distinct role in delivering quality education services
+                    across Tayabas City. Select an office to learn more about their services,
+                    programs, and announcements.
+                </p>
+            </div>
+            <div class="units-header-right reveal reveal-delay-2">
+                <p>The SDO Tayabas City operates through <strong>14 specialized offices and units</strong>,
+                    each dedicated to a specific area of service delivery in support of our schools,
+                    teachers, and learners.</p>
+                <div class="stat-row">
+                    <div class="mini-stat">
+                        <div class="mini-stat-num">14</div>
+                        <div class="mini-stat-label">Office Units</div>
+                    </div>
+                    <div class="mini-stat">
+                        <div class="mini-stat-num">K–12</div>
+                        <div class="mini-stat-label">Curriculum</div>
+                    </div>
+                    <div class="mini-stat">
+                        <div class="mini-stat-num">IV-A</div>
+                        <div class="mini-stat-label">CALABARZON</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- ─── Cluster 1: Leadership ─── --}}
+        <div class="units-cluster">
+            <div class="cluster-label">
+                <span class="cluster-label-text">Leadership & Direction</span>
+                <div class="cluster-label-line"></div>
+            </div>
+            <div class="units-grid">
+
+                {{-- Office of the SDS --}}
+                <a href="#" class="unit-card reveal reveal-delay-1">
+                    <div class="unit-card-top">
+                        <div class="unit-card-header">
+                            <div class="unit-icon" style="background:rgba(26,74,138,0.1);color:#1A4A8A;">
+                                <i class="bi bi-person-workspace"></i>
+                            </div>
+                            <div class="unit-arrow"><i class="bi bi-arrow-up-right"></i></div>
+                        </div>
+                        <div class="unit-name">Office of the Schools Division Superintendent</div>
+                        <div class="unit-desc">Provides overall leadership, strategic direction, and management of all
+                            programs across the division.</div>
+                    </div>
+                    <div class="unit-card-footer">
+                        <span class="unit-tag" style="background:rgba(26,74,138,0.08);color:#1A4A8A;">SDS Office</span>
+                        <span class="unit-link-label"><i class="bi bi-arrow-right"></i> Visit</span>
+                    </div>
+                </a>
+
+                {{-- Office of the ASDS --}}
+                <a href="#" class="unit-card reveal reveal-delay-2">
+                    <div class="unit-card-top">
+                        <div class="unit-card-header">
+                            <div class="unit-icon" style="background:rgba(26,74,138,0.08);color:#2A5EAA;">
+                                <i class="bi bi-person-badge"></i>
+                            </div>
+                            <div class="unit-arrow"><i class="bi bi-arrow-up-right"></i></div>
+                        </div>
+                        <div class="unit-name">Office of the Assistant Schools Division Superintendent</div>
+                        <div class="unit-desc">Assists the SDS in managing division-wide operations, programs, and
+                            supervising school governance.</div>
+                    </div>
+                    <div class="unit-card-footer">
+                        <span class="unit-tag" style="background:rgba(26,74,138,0.07);color:#2A5EAA;">ASDS
+                            Office</span>
+                        <span class="unit-link-label"><i class="bi bi-arrow-right"></i> Visit</span>
+                    </div>
+                </a>
+
+            </div>
+        </div>
+
+        {{-- ─── Cluster 2: Academic ─── --}}
+        <div class="units-cluster">
+            <div class="cluster-label">
+                <span class="cluster-label-text">Academic & Governance</span>
+                <div class="cluster-label-line"></div>
+            </div>
+            <div class="units-grid">
+
+                {{-- CID --}}
+                <a href="#" class="unit-card reveal reveal-delay-1">
+                    <div class="unit-card-top">
+                        <div class="unit-card-header">
+                            <div class="unit-icon" style="background:rgba(5,150,105,0.1);color:#059669;">
+                                <i class="bi bi-book-half"></i>
+                            </div>
+                            <div class="unit-arrow"><i class="bi bi-arrow-up-right"></i></div>
+                        </div>
+                        <div class="unit-name">Curriculum Implementation Division</div>
+                        <div class="unit-desc">Oversees K-12 curriculum implementation, instructional supervision, and
+                            learning delivery.</div>
+                    </div>
+                    <div class="unit-card-footer">
+                        <span class="unit-tag"
+                            style="background:rgba(5,150,105,0.08);color:#059669;">Curriculum</span>
+                        <span class="unit-link-label"><i class="bi bi-arrow-right"></i> Visit</span>
+                    </div>
+                </a>
+
+                {{-- SGOD --}}
+                <a href="#" class="unit-card reveal reveal-delay-2">
+                    <div class="unit-card-top">
+                        <div class="unit-card-header">
+                            <div class="unit-icon" style="background:rgba(139,92,246,0.1);color:#8B5CF6;">
+                                <i class="bi bi-building"></i>
+                            </div>
+                            <div class="unit-arrow"><i class="bi bi-arrow-up-right"></i></div>
+                        </div>
+                        <div class="unit-name">School Governance & Operations Division</div>
+                        <div class="unit-desc">Manages school governance, facilities, human resources, legal matters,
+                            and operational concerns.</div>
+                    </div>
+                    <div class="unit-card-footer">
+                        <span class="unit-tag"
+                            style="background:rgba(139,92,246,0.08);color:#8B5CF6;">Governance</span>
+                        <span class="unit-link-label"><i class="bi bi-arrow-right"></i> Visit</span>
+                    </div>
+                </a>
+
+            </div>
+        </div>
+
+        {{-- ─── Cluster 3: Administrative Services ─── --}}
+        <div class="units-cluster">
+            <div class="cluster-label">
+                <span class="cluster-label-text">Administrative Services</span>
+                <div class="cluster-label-line"></div>
+            </div>
+            <div class="units-grid units-grid-wide">
+
+                {{-- Administrative --}}
+                <a href="#" class="unit-card reveal reveal-delay-1">
+                    <div class="unit-card-top">
+                        <div class="unit-card-header">
+                            <div class="unit-icon" style="background:rgba(245,158,11,0.1);color:#D97706;">
+                                <i class="bi bi-briefcase"></i>
+                            </div>
+                            <div class="unit-arrow"><i class="bi bi-arrow-up-right"></i></div>
+                        </div>
+                        <div class="unit-name">Administrative Services Unit</div>
+                        <div class="unit-desc">Handles general administrative functions, records, correspondence, and
+                            office support services.</div>
+                    </div>
+                    <div class="unit-card-footer">
+                        <span class="unit-tag" style="background:rgba(245,158,11,0.08);color:#B45309;">Admin</span>
+                        <span class="unit-link-label"><i class="bi bi-arrow-right"></i> Visit</span>
+                    </div>
+                </a>
+
+                {{-- Accounting --}}
+                <a href="#" class="unit-card reveal reveal-delay-2">
+                    <div class="unit-card-top">
+                        <div class="unit-card-header">
+                            <div class="unit-icon" style="background:rgba(16,185,129,0.1);color:#10B981;">
+                                <i class="bi bi-calculator"></i>
+                            </div>
+                            <div class="unit-arrow"><i class="bi bi-arrow-up-right"></i></div>
+                        </div>
+                        <div class="unit-name">Accounting Unit</div>
+                        <div class="unit-desc">Manages financial accounts, budget utilization, financial reporting, and
+                            audit compliance.</div>
+                    </div>
+                    <div class="unit-card-footer">
+                        <span class="unit-tag"
+                            style="background:rgba(16,185,129,0.08);color:#059669;">Accounting</span>
+                        <span class="unit-link-label"><i class="bi bi-arrow-right"></i> Visit</span>
+                    </div>
+                </a>
+
+                {{-- Budget --}}
+                <a href="#" class="unit-card reveal reveal-delay-3">
+                    <div class="unit-card-top">
+                        <div class="unit-card-header">
+                            <div class="unit-icon" style="background:rgba(201,168,76,0.12);color:#C9A84C;">
+                                <i class="bi bi-cash-stack"></i>
+                            </div>
+                            <div class="unit-arrow"><i class="bi bi-arrow-up-right"></i></div>
+                        </div>
+                        <div class="unit-name">Budget Unit</div>
+                        <div class="unit-desc">Prepares, monitors, and controls budget allocations to ensure proper
+                            fund utilization.</div>
+                    </div>
+                    <div class="unit-card-footer">
+                        <span class="unit-tag" style="background:rgba(201,168,76,0.1);color:#9A6F28;">Budget</span>
+                        <span class="unit-link-label"><i class="bi bi-arrow-right"></i> Visit</span>
+                    </div>
+                </a>
+
+                {{-- Cash --}}
+                <a href="#" class="unit-card reveal reveal-delay-4">
+                    <div class="unit-card-top">
+                        <div class="unit-card-header">
+                            <div class="unit-icon" style="background:rgba(34,197,94,0.1);color:#16A34A;">
+                                <i class="bi bi-coin"></i>
+                            </div>
+                            <div class="unit-arrow"><i class="bi bi-arrow-up-right"></i></div>
+                        </div>
+                        <div class="unit-name">Cash Unit</div>
+                        <div class="unit-desc">Processes salary disbursements, cash advances, remittances, and official
+                            receipts.</div>
+                    </div>
+                    <div class="unit-card-footer">
+                        <span class="unit-tag" style="background:rgba(34,197,94,0.08);color:#15803D;">Cash</span>
+                        <span class="unit-link-label"><i class="bi bi-arrow-right"></i> Visit</span>
+                    </div>
+                </a>
+
+            </div>
+        </div>
+
+        {{-- ─── Cluster 4: Personnel & Support ─── --}}
+        <div class="units-cluster">
+            <div class="cluster-label">
+                <span class="cluster-label-text">Personnel & Support Services</span>
+                <div class="cluster-label-line"></div>
+            </div>
+            <div class="units-grid units-grid-wide">
+
+                {{-- Personnel — FEATURED (has Employee Portal) --}}
+                <a href="{{ route('unit.personnel') }}" class="unit-card  reveal reveal-delay-1">
+                    <div class="unit-card-top">
+                        <div class="unit-card-header">
+                            <div class="unit-icon" style="background:rgba(26,74,138,0.12);color:#1A4A8A;">
+                                <i class="bi bi-people-fill"></i>
+                            </div>
+                            <div class="unit-arrow"><i class="bi bi-arrow-up-right"></i></div>
+                        </div>
+                        {{-- <span class="featured-badge">
+                            <i class="bi bi-star-fill" style="font-size:9px;"></i> Employee Portal Available
+                        </span> --}}
+                        <div class="unit-name">Personnel Unit</div>
+                        <div class="unit-desc">Manages appointments, leaves, personnel records, and employee services.
+                            Home of the SDO Employee Portal.</div>
+                    </div>
+                    <div class="unit-card-footer">
+                        <span class="unit-tag" style="background:rgba(26,74,138,0.1);color:#1A4A8A;">Personnel</span>
+                        <span class="unit-link-label" style="opacity:1;transform:none;color:#1A4A8A;">
+                            <i class="bi bi-box-arrow-in-right"></i> Access Portal
+                        </span>
+                    </div>
+                </a>
+
+                {{-- Procurement --}}
+                <a href="#" class="unit-card reveal reveal-delay-2">
+                    <div class="unit-card-top">
+                        <div class="unit-card-header">
+                            <div class="unit-icon" style="background:rgba(239,68,68,0.1);color:#EF4444;">
+                                <i class="bi bi-bag-check"></i>
+                            </div>
+                            <div class="unit-arrow"><i class="bi bi-arrow-up-right"></i></div>
+                        </div>
+                        <div class="unit-name">Procurement Unit</div>
+                        <div class="unit-desc">Handles procurement planning, canvassing, purchase orders, and
+                            compliance with RA 9184.</div>
+                    </div>
+                    <div class="unit-card-footer">
+                        <span class="unit-tag"
+                            style="background:rgba(239,68,68,0.08);color:#B91C1C;">Procurement</span>
+                        <span class="unit-link-label"><i class="bi bi-arrow-right"></i> Visit</span>
+                    </div>
+                </a>
+
+                {{-- Records --}}
+                <a href="#" class="unit-card reveal reveal-delay-3">
+                    <div class="unit-card-top">
+                        <div class="unit-card-header">
+                            <div class="unit-icon" style="background:rgba(99,102,241,0.1);color:#6366F1;">
+                                <i class="bi bi-archive"></i>
+                            </div>
+                            <div class="unit-arrow"><i class="bi bi-arrow-up-right"></i></div>
+                        </div>
+                        <div class="unit-name">Records Unit</div>
+                        <div class="unit-desc">Maintains official documents, processes requests for records, and
+                            ensures proper archiving.</div>
+                    </div>
+                    <div class="unit-card-footer">
+                        <span class="unit-tag" style="background:rgba(99,102,241,0.08);color:#4338CA;">Records</span>
+                        <span class="unit-link-label"><i class="bi bi-arrow-right"></i> Visit</span>
+                    </div>
+                </a>
+
+                {{-- Property & Supply --}}
+                <a href="#" class="unit-card reveal reveal-delay-4">
+                    <div class="unit-card-top">
+                        <div class="unit-card-header">
+                            <div class="unit-icon" style="background:rgba(234,179,8,0.1);color:#CA8A04;">
+                                <i class="bi bi-box-seam"></i>
+                            </div>
+                            <div class="unit-arrow"><i class="bi bi-arrow-up-right"></i></div>
+                        </div>
+                        <div class="unit-name">Property & Supply Unit</div>
+                        <div class="unit-desc">Manages inventory of division property, supply distribution, and
+                            accountability of assets.</div>
+                    </div>
+                    <div class="unit-card-footer">
+                        <span class="unit-tag" style="background:rgba(234,179,8,0.08);color:#A16207;">Property</span>
+                        <span class="unit-link-label"><i class="bi bi-arrow-right"></i> Visit</span>
+                    </div>
+                </a>
+
+            </div>
+        </div>
+
+        {{-- ─── Cluster 5: Technology & Legal ─── --}}
+        <div class="units-cluster" style="margin-bottom:0;">
+            <div class="cluster-label">
+                <span class="cluster-label-text">Technology & Legal</span>
+                <div class="cluster-label-line"></div>
+            </div>
+            <div class="units-grid">
+
+                {{-- ICT --}}
+                <a href="#" class="unit-card reveal reveal-delay-1">
+                    <div class="unit-card-top">
+                        <div class="unit-card-header">
+                            <div class="unit-icon" style="background:rgba(11,31,58,0.08);color:#0B1F3A;">
+                                <i class="bi bi-cpu"></i>
+                            </div>
+                            <div class="unit-arrow"><i class="bi bi-arrow-up-right"></i></div>
+                        </div>
+                        <div class="unit-name">ICT Unit</div>
+                        <div class="unit-desc">Provides ICT support, digital infrastructure, and technology integration
+                            across all schools in the division.</div>
+                    </div>
+                    <div class="unit-card-footer">
+                        <span class="unit-tag" style="background:rgba(11,31,58,0.06);color:#0B1F3A;">Technology</span>
+                        <span class="unit-link-label"><i class="bi bi-arrow-right"></i> Visit</span>
+                    </div>
+                </a>
+
+                {{-- Legal --}}
+                <a href="#" class="unit-card reveal reveal-delay-2">
+                    <div class="unit-card-top">
+                        <div class="unit-card-header">
+                            <div class="unit-icon" style="background:rgba(245,158,11,0.1);color:#F59E0B;">
+                                <i class="bi bi-journal-text"></i>
+                            </div>
+                            <div class="unit-arrow"><i class="bi bi-arrow-up-right"></i></div>
+                        </div>
+                        <div class="unit-name">Legal Unit</div>
+                        <div class="unit-desc">Provides legal counsel, handles administrative cases, and ensures
+                            compliance with education laws and policies.</div>
+                    </div>
+                    <div class="unit-card-footer">
+                        <span class="unit-tag" style="background:rgba(245,158,11,0.08);color:#B45309;">Legal</span>
+                        <span class="unit-link-label"><i class="bi bi-arrow-right"></i> Visit</span>
+                    </div>
+                </a>
+
+            </div>
+        </div>
 
     </section>
 
-    <!-- ══ MISSION / VISION / CORE VALUES ══ -->
+    {{-- ── Mission / Vision / Core Values ── --}}
     <div class="mission-strip" id="about">
         <div class="mission-item reveal">
             <div class="mission-icon"><i class="bi bi-eye"></i></div>
             <div class="mission-title">Our Vision</div>
-            <div class="mission-desc">
-                We dream of Filipinos who passionately love their country and whose values and competencies enable them
-                to realize their full potential and contribute meaningfully to building the nation.
-            </div>
+            <div class="mission-desc">We dream of Filipinos who passionately love their country and whose values and
+                competencies enable them to realize their full potential and contribute meaningfully to building the
+                nation.</div>
         </div>
         <div class="mission-item reveal reveal-delay-2">
             <div class="mission-icon"><i class="bi bi-bullseye"></i></div>
             <div class="mission-title">Our Mission</div>
-            <div class="mission-desc">
-                To protect and promote the right of every Filipino to quality, equitable, culture-based, and complete
-                basic education where students learn in a child-friendly, gender-sensitive, safe, and motivating
-                environment.
-            </div>
+            <div class="mission-desc">To protect and promote the right of every Filipino to quality, equitable,
+                culture-based, and complete basic education where students learn in a child-friendly, gender-sensitive,
+                safe, and motivating environment.</div>
         </div>
         <div class="mission-item reveal reveal-delay-3">
             <div class="mission-icon"><i class="bi bi-star"></i></div>
             <div class="mission-title">Core Values</div>
-            <div class="mission-desc">
-                Maka-Diyos, Maka-tao, Makakalikasan, at Makabansa — guided by integrity, excellence, and a deep
-                commitment to Filipino identity and values.
-            </div>
+            <div class="mission-desc">Maka-Diyos, Maka-tao, Makakalikasan, at Makabansa — guided by integrity,
+                excellence, and a deep commitment to Filipino identity and values.</div>
         </div>
     </div>
 
-    <!-- ══ UNITS ══ -->
-    <section class="units-section" id="units">
-        <div class="units-header">
-            <div>
-                <div class="section-label">Our Units</div>
-                <h2 class="section-title">Division Office Units</h2>
-                <p class="section-desc">
-                    The Schools Division Office of Tayabas City is composed of dedicated units
-                    working together to deliver quality education services.
-                </p>
-            </div>
-        </div>
-
-        <div class="units-grid">
-
-            <div class="unit-card reveal reveal-delay-1">
-                <div class="unit-icon" style="background:rgba(26,74,138,0.1);color:#1A4A8A;">
-                    <i class="bi bi-person-workspace"></i>
-                </div>
-                <div class="unit-name">Office of the Schools Division Superintendent</div>
-                <div class="unit-desc">Provides overall leadership, direction, and management of all programs, projects,
-                    and activities of the division.</div>
-                <span class="unit-tag" style="background:rgba(26,74,138,0.08);color:#1A4A8A;">Leadership</span>
-            </div>
-
-            <div class="unit-card reveal reveal-delay-2">
-                <div class="unit-icon" style="background:rgba(5,150,105,0.1);color:#059669;">
-                    <i class="bi bi-book"></i>
-                </div>
-                <div class="unit-name">Curriculum Implementation Division</div>
-                <div class="unit-desc">Oversees the implementation of the K-12 curriculum, instructional supervision,
-                    and learning delivery modalities.</div>
-                <span class="unit-tag" style="background:rgba(5,150,105,0.08);color:#059669;">Curriculum</span>
-            </div>
-
-            <div class="unit-card reveal reveal-delay-3">
-                <div class="unit-icon" style="background:rgba(139,92,246,0.1);color:#8B5CF6;">
-                    <i class="bi bi-building"></i>
-                </div>
-                <div class="unit-name">School Governance &amp; Operations Division</div>
-                <div class="unit-desc">Manages school governance, facilities, human resources, legal matters, and
-                    operational concerns across the division.</div>
-                <span class="unit-tag" style="background:rgba(139,92,246,0.08);color:#8B5CF6;">Governance</span>
-            </div>
-
-            <div class="unit-card reveal reveal-delay-4">
-                <div class="unit-icon" style="background:rgba(201,168,76,0.12);color:#C9A84C;">
-                    <i class="bi bi-cash-coin"></i>
-                </div>
-                <div class="unit-name">Administrative &amp; Finance Division</div>
-                <div class="unit-desc">Handles budget management, financial reporting, procurement, payroll, and
-                    general administrative services.</div>
-                <span class="unit-tag" style="background:rgba(201,168,76,0.1);color:#9A6F28;">Finance</span>
-            </div>
-
-            <div class="unit-card reveal reveal-delay-1">
-                <div class="unit-icon" style="background:rgba(239,68,68,0.1);color:#EF4444;">
-                    <i class="bi bi-people"></i>
-                </div>
-                <div class="unit-name">Human Resource Management Office</div>
-                <div class="unit-desc">Manages recruitment, appointments, welfare, development, and performance of all
-                    division personnel.</div>
-                <span class="unit-tag" style="background:rgba(239,68,68,0.08);color:#B91C1C;">HR Management</span>
-            </div>
-
-            <div class="unit-card reveal reveal-delay-2">
-                <div class="unit-icon" style="background:rgba(11,31,58,0.08);color:#0B1F3A;">
-                    <i class="bi bi-cpu"></i>
-                </div>
-                <div class="unit-name">Information &amp; Communication Technology</div>
-                <div class="unit-desc">Provides ICT support, digital infrastructure, and technology integration across
-                    all schools in the division.</div>
-                <span class="unit-tag" style="background:rgba(11,31,58,0.06);color:#0B1F3A;">Technology</span>
-            </div>
-
-            <div class="unit-card reveal reveal-delay-3">
-                <div class="unit-icon" style="background:rgba(245,158,11,0.1);color:#F59E0B;">
-                    <i class="bi bi-journal-text"></i>
-                </div>
-                <div class="unit-name">Legal &amp; Legislative Affairs</div>
-                <div class="unit-desc">Provides legal counsel, handles administrative cases, and ensures compliance
-                    with education laws and policies.</div>
-                <span class="unit-tag" style="background:rgba(245,158,11,0.08);color:#B45309;">Legal</span>
-            </div>
-
-            <div class="unit-card reveal reveal-delay-4">
-                <div class="unit-icon" style="background:rgba(236,72,153,0.1);color:#EC4899;">
-                    <i class="bi bi-heart"></i>
-                </div>
-                <div class="unit-name">Inclusive Education Unit</div>
-                <div class="unit-desc">Champions programs for learners with disabilities, indigenous peoples education,
-                    and alternative learning systems.</div>
-                <span class="unit-tag" style="background:rgba(236,72,153,0.08);color:#BE185D;">Inclusion</span>
-            </div>
-
-        </div>
-    </section>
-
-    <!-- ══ ANNOUNCEMENTS ══ -->
+    {{-- ── Announcements ── --}}
     <section class="announcements-section" id="announcements">
         <div class="section-label reveal">Announcements</div>
         <h2 class="section-title reveal reveal-delay-1">Latest Updates</h2>
-        <p class="section-desc reveal reveal-delay-2">
-            Stay informed with the latest memoranda, advisories, and announcements
-            from the Schools Division Office.
-        </p>
-
+        <p class="section-desc reveal reveal-delay-2">Stay informed with the latest memoranda, advisories, and
+            announcements from the Schools Division Office.</p>
         <div class="announce-grid">
-
-            <div class="announce-card reveal reveal-delay-1">
-                <div class="announce-date-box">
-                    <div class="announce-day">22</div>
-                    <div class="announce-month">Apr</div>
+            @foreach ([['22', 'Apr', 'Advisory', 'School Year 2025-2026 Opening Ceremonies', 'All public schools are directed to conduct opening ceremonies following the prescribed DepEd guidelines.', '1'], ['20', 'Apr', 'Memorandum', 'Division Cluster Training on K-12 Assessment', 'All school heads and subject teachers are required to attend the scheduled cluster training sessions.', '2'], ['18', 'Apr', 'Notice', 'Submission of Quarterly Reports Due April 30', 'School heads are reminded to submit complete Q3 reports through the designated online portal.', '1'], ['15', 'Apr', 'Advisory', 'Mental Health Awareness Program for Teachers', 'The HRMO announces a series of webinars on teacher wellness and mental health support.', '2']] as [$day, $month, $tag, $title, $desc, $delay])
+                <div class="announce-card reveal reveal-delay-{{ $delay }}">
+                    <div class="announce-date-box">
+                        <div class="announce-day">{{ $day }}</div>
+                        <div class="announce-month">{{ $month }}</div>
+                    </div>
+                    <div class="announce-divider"></div>
+                    <div class="announce-content">
+                        <span class="announce-tag">{{ $tag }}</span>
+                        <div class="announce-title">{{ $title }}</div>
+                        <div class="announce-desc">{{ $desc }}</div>
+                    </div>
                 </div>
-                <div class="announce-divider"></div>
-                <div class="announce-content">
-                    <span class="announce-tag">Advisory</span>
-                    <div class="announce-title">School Year 2025-2026 Opening Ceremonies</div>
-                    <div class="announce-desc">All public schools are directed to conduct opening ceremonies following
-                        the prescribed DepEd guidelines.</div>
-                </div>
-            </div>
-
-            <div class="announce-card reveal reveal-delay-2">
-                <div class="announce-date-box">
-                    <div class="announce-day">20</div>
-                    <div class="announce-month">Apr</div>
-                </div>
-                <div class="announce-divider"></div>
-                <div class="announce-content">
-                    <span class="announce-tag">Memorandum</span>
-                    <div class="announce-title">Division Cluster Training on K-12 Assessment</div>
-                    <div class="announce-desc">All school heads and subject teachers are required to attend the
-                        scheduled cluster training sessions.</div>
-                </div>
-            </div>
-
-            <div class="announce-card reveal reveal-delay-1">
-                <div class="announce-date-box">
-                    <div class="announce-day">18</div>
-                    <div class="announce-month">Apr</div>
-                </div>
-                <div class="announce-divider"></div>
-                <div class="announce-content">
-                    <span class="announce-tag">Notice</span>
-                    <div class="announce-title">Submission of Quarterly Reports Due April 30</div>
-                    <div class="announce-desc">School heads are reminded to submit complete Q3 reports through the
-                        designated online portal.</div>
-                </div>
-            </div>
-
-            <div class="announce-card reveal reveal-delay-2">
-                <div class="announce-date-box">
-                    <div class="announce-day">15</div>
-                    <div class="announce-month">Apr</div>
-                </div>
-                <div class="announce-divider"></div>
-                <div class="announce-content">
-                    <span class="announce-tag">Advisory</span>
-                    <div class="announce-title">Mental Health Awareness Program for Teachers</div>
-                    <div class="announce-desc">The HRMO announces a series of webinars on teacher wellness and mental
-                        health support.</div>
-                </div>
-            </div>
-
+            @endforeach
         </div>
     </section>
 
-    <!-- ══ FOOTER ══ -->
+    {{-- ── Footer ── --}}
     <footer id="contact">
         <div class="footer-grid">
             <div class="footer-brand">
                 <h3>SDO Tayabas City</h3>
-                <p>
-                    Schools Division Office of Tayabas City<br>
-                    Department of Education · Region IV-A CALABARZON<br>
-                    Tayabas City, Quezon Province, Philippines
-                </p>
+                <p>Schools Division Office of Tayabas City<br>Department of Education · Region IV-A
+                    CALABARZON<br>Tayabas City, Quezon Province, Philippines</p>
                 <div style="margin-top:16px;display:flex;gap:10px;">
                     <a href="#" class="footer-social-btn"><i class="bi bi-facebook"></i></a>
                     <a href="#" class="footer-social-btn"><i class="bi bi-envelope"></i></a>
                     <a href="#" class="footer-social-btn"><i class="bi bi-telephone"></i></a>
                 </div>
             </div>
-
             <div class="footer-col">
                 <h4>Quick Links</h4>
                 <ul>
@@ -1182,10 +1510,9 @@
                     <li><a href="#about">About SDO</a></li>
                     <li><a href="#units">Our Units</a></li>
                     <li><a href="#announcements">Announcements</a></li>
-                    <li><a href="{{ route('login') }}">Employee Portal</a></li>
+                    <li><a href="{{ route('unit.personnel') }}">Personnel Unit</a></li>
                 </ul>
             </div>
-
             <div class="footer-col">
                 <h4>DepEd Links</h4>
                 <ul>
@@ -1196,7 +1523,6 @@
                     <li><a href="#" target="_blank">HRIS</a></li>
                 </ul>
             </div>
-
             <div class="footer-col">
                 <h4>Contact</h4>
                 <ul>
@@ -1207,9 +1533,7 @@
                 </ul>
             </div>
         </div>
-
         <hr class="footer-divider">
-
         <div class="footer-bottom">
             <span>© {{ date('Y') }} Schools Division Office — Tayabas City. All rights reserved.</span>
             <span>Powered by Tayabas ICT Hub · DepEd Philippines</span>
@@ -1220,7 +1544,6 @@
         window.addEventListener('scroll', () => {
             document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 40);
         });
-
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -1231,7 +1554,6 @@
         }, {
             threshold: 0.12
         });
-
         document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
     </script>
 

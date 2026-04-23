@@ -728,6 +728,10 @@
                 class="nav-link {{ request()->routeIs('hr.employees.*') ? 'active' : '' }}">
                 <i class="bi bi-people"></i> Employees
             </a>
+            <a href="{{ route('hr.employees.create') }}"
+                class="nav-link {{ request()->routeIs('hr.employees.create') ? 'active' : '' }}">
+                <i class="bi bi-person-plus"></i> Add Employee
+            </a>
             <div class="nav-section mt-2">Leave</div>
             <a href="{{ route('hr.leave.index') }}"
                 class="nav-link {{ request()->routeIs('hr.leave.*') ? 'active' : '' }}"><i
