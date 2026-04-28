@@ -20,12 +20,14 @@ class LeaveObserver
 
     private function log(string $action): void
     {
-        if (!Auth::check()) return;
+        if (! Auth::check()) {
+            return;
+        }
 
         AuditTrail::create([
-            'user_id'     => Auth::id(),
+            'user_id' => Auth::id(),
             'action_done' => $action,
-            'action_at'   => now(),
+            'action_at' => now(),
         ]);
     }
 }

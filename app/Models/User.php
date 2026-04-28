@@ -11,7 +11,9 @@ class User extends Authenticatable
 
     // Standard auto-increment integer primary key
     public $incrementing = true;
+
     protected $keyType = 'int';
+
     protected $primaryKey = 'id';
 
     protected $fillable = [
@@ -32,7 +34,7 @@ class User extends Authenticatable
     ];
 
     protected $casts = [
-        'pass_change'    => 'boolean',
+        'pass_change' => 'boolean',
         'otp_expires_at' => 'datetime',
     ];
 

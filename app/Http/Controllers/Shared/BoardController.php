@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Shared;
 
 use App\Http\Controllers\Controller;
 use App\Models\Board;
+use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -12,11 +13,11 @@ class BoardController extends Controller
     public function index()
     {
         $posts = Board::with('user')
-                      ->orderBy('date_time', 'desc')
-                      ->paginate(10);
+            ->orderBy('date_time', 'desc')
+            ->paginate(10);
 
         $canPost = in_array(Auth::user()->user_pos, [
-            'Super Administrator', 'HR'
+            'Super Administrator', 'HR',
         ]);
 
         return view('shared.board.index', compact('posts', 'canPost'));
@@ -25,20 +26,20 @@ class BoardController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'title'       => 'required|string|max:100',
+            'title' => 'required|string|max:100',
             'description' => 'required|string|max:1000',
         ]);
 
         Board::create([
-            'user_id'     => Auth::id(),
-            'role'        => Auth::user()->user_pos,
-            'title'       => $request->title,
+            'user_id' => Auth::id(),
+            'role' => Auth::user()->user_pos,
+            'title' => $request->title,
             'description' => $request->description,
-            'date_time'   => now(),
+            'date_time' => now(),
         ]);
 
         return redirect()->route(
-            $this->routePrefix() . '.board.index'
+            $this->routePrefix().'.board.index'
         )->with('success', 'Post published successfully.');
     }
 
@@ -55,22 +56,23 @@ class BoardController extends Controller
         $post->delete();
 
         return redirect()->route(
-            $this->routePrefix() . '.board.index'
+            $this->routePrefix().'.board.index'
         )->with('success', 'Post deleted.');
     }
 
     private function routePrefix(): string
     {
-        return match(Auth::user()->user_pos) {
+        return match (Auth::user()->user_pos) {
             'Super Administrator' => 'admin',
-            'HR'                  => 'hr',
-            default               => $this->getDeptHeadOrEmployee(),
+            'HR' => 'hr',
+            default => $this->getDeptHeadOrEmployee(),
         };
     }
 
     private function getDeptHeadOrEmployee(): string
     {
-        $role = \App\Models\Role::where('role_desc', Auth::user()->user_pos)->first();
+        $role = Role::where('role_desc', Auth::user()->user_pos)->first();
+
         return $role?->role_type === 'Department Head' ? 'head' : 'employee';
     }
 }

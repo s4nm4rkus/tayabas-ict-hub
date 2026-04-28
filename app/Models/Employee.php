@@ -3,21 +3,16 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Models\EmploymentInfo;
-use App\Models\EducationalBg;
-use App\Models\Eligibility;
-use App\Models\ServiceRecord;
-use App\Models\Attachment;
-use App\Models\Leave;
-use App\Models\User;
 
 class Employee extends Model
 {
     protected $table = 'tbl_employee_info';
+
     protected $casts = [
         'birthdate' => 'date',
         'date_encoded' => 'datetime',
     ];
+
     protected $fillable = [
         'user_id',        // integer FK to users.id
         'last_name',
@@ -47,7 +42,7 @@ class Employee extends Model
     // Computed full name
     public function getFullNameAttribute(): string
     {
-        return trim("{$this->last_name}, {$this->first_name} " . ($this->middle_name ?? ''));
+        return trim("{$this->last_name}, {$this->first_name} ".($this->middle_name ?? ''));
     }
 
     // Relationships
@@ -56,7 +51,7 @@ class Employee extends Model
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
-        public function employment()
+    public function employment()
     {
         return $this->hasOne(EmploymentInfo::class, 'user_id', 'id');
     }

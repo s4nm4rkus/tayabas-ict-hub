@@ -3,12 +3,13 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Mail\OtpMail;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
-use App\Mail\OtpMail;
-use Illuminate\Support\Facades\Auth;
+
 class LoginController extends Controller
 {
     public function showLogin()
@@ -24,10 +25,10 @@ class LoginController extends Controller
         ]);
 
         $user = User::where('username', $request->username)
-                    ->where('user_stat', 'Enabled')
-                    ->first();
+            ->where('user_stat', 'Enabled')
+            ->first();
 
-        if (!$user || !Hash::check($request->password, $user->password)) {
+        if (! $user || ! Hash::check($request->password, $user->password)) {
             return back()->withErrors([
                 'username' => 'Invalid username or password.',
             ]);
@@ -49,11 +50,12 @@ class LoginController extends Controller
         return redirect()->route('2fa.show');
     }
 
-   public function logout(Request $request)
-{
-    Auth::logout();
-    $request->session()->invalidate();
-    $request->session()->regenerateToken();
-    return redirect()->route('login');
-}
+    public function logout(Request $request)
+    {
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('login');
+    }
 }

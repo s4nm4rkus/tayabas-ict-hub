@@ -3,21 +3,21 @@
 namespace App\Http\Controllers\HR;
 
 use App\Http\Controllers\Controller;
-use App\Models\Employee;
-use App\Models\EmploymentInfo;
+use App\Mail\EmployeeCredentialsMail;
 use App\Models\EducationalBg;
 use App\Models\Eligibility;
-use App\Models\ServiceRecord;
-use App\Models\User;
+use App\Models\Employee;
+use App\Models\EmploymentInfo;
 use App\Models\Role;
 use App\Models\Salary;
+use App\Models\ServiceRecord;
 use App\Models\SubPosition;
-use App\Mail\EmployeeCredentialsMail;
+use App\Models\User;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Str;
-use Barryvdh\DomPDF\Facade\Pdf;
 
 class EmployeeController extends Controller
 {
@@ -26,22 +26,23 @@ class EmployeeController extends Controller
         $query = Employee::with(['user', 'employment'])->orderBy('last_name');
 
         if ($request->filled('search')) {
-            $query->where(function($q) use ($request) {
-                $q->where('last_name',   'like', '%'.$request->search.'%')
-                  ->orWhere('first_name','like', '%'.$request->search.'%')
-                  ->orWhere('gov_email', 'like', '%'.$request->search.'%');
+            $query->where(function ($q) use ($request) {
+                $q->where('last_name', 'like', '%'.$request->search.'%')
+                    ->orWhere('first_name', 'like', '%'.$request->search.'%')
+                    ->orWhere('gov_email', 'like', '%'.$request->search.'%');
             });
         }
 
         $employees = $query->get();
+
         return view('hr.employees.index', compact('employees'));
     }
 
     public function show(string $id)
     {
         $employee = Employee::with([
-            'user','employment','education',
-            'eligibility','serviceRecords','leaves',
+            'user', 'employment', 'education',
+            'eligibility', 'serviceRecords', 'leaves',
         ])->where('user_id', $id)->firstOrFail();
 
         return view('hr.employees.show', compact('employee'));
@@ -50,43 +51,44 @@ class EmployeeController extends Controller
     public function create()
     {
         $roles = Role::orderBy('role_desc')->get();
+
         return view('hr.employees.create', compact('roles'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'last_name'  => 'required|string|max:100',
+            'last_name' => 'required|string|max:100',
             'first_name' => 'required|string|max:100',
-            'gov_email'  => 'required|email|unique:users,username',
-            'user_pos'   => 'required|string',
-            'birthdate'  => 'nullable|date',
-            'gender'     => 'nullable|string',
+            'gov_email' => 'required|email|unique:users,username',
+            'user_pos' => 'required|string',
+            'birthdate' => 'nullable|date',
+            'gender' => 'nullable|string',
         ]);
 
         // Generate Employee ID
-        $year   = now()->year;
+        $year = now()->year;
         $prefix = "ICTHUB-{$year}-";
-        $last   = User::where('user_id', 'like', "{$prefix}%")
-                      ->orderBy('user_id', 'desc')->first();
-        $next   = $last
+        $last = User::where('user_id', 'like', "{$prefix}%")
+            ->orderBy('user_id', 'desc')->first();
+        $next = $last
             ? str_pad((int) substr($last->user_id, -4) + 1, 4, '0', STR_PAD_LEFT)
             : '0001';
-        $employeeCode = $prefix . $next;
+        $employeeCode = $prefix.$next;
 
         // Generate password
         $password = $request->first_name
-            . ($request->birthdate
-                ? \Carbon\Carbon::parse($request->birthdate)->format('mdY')
+            .($request->birthdate
+                ? Carbon::parse($request->birthdate)->format('mdY')
                 : 'ICThub@123');
 
         // Create user account
         $user = User::create([
-            'user_id'     => $employeeCode,
-            'username'    => $request->gov_email,
-            'password'    => Hash::make($password),
-            'user_pos'    => $request->user_pos,
-            'user_stat'   => 'Enabled',
+            'user_id' => $employeeCode,
+            'username' => $request->gov_email,
+            'password' => Hash::make($password),
+            'user_pos' => $request->user_pos,
+            'user_stat' => 'Enabled',
             'pass_change' => false,
         ]);
 
@@ -98,28 +100,28 @@ class EmployeeController extends Controller
 
         // Create employee info
         $employee = Employee::create([
-            'user_id'       => $user->id,
-            'last_name'     => $request->last_name,
-            'first_name'    => $request->first_name,
-            'middle_name'   => $request->middle_name,
-            'ex_name'       => $request->ex_name,
-            'gender'        => $request->gender,
-            'birthdate'     => $request->birthdate,
-            'place_of_birth'=> $request->place_of_birth,
-            'contact_num'   => $request->contact_num,
-            'bp_no'         => $request->bp_no,
-            'disability'    => $request->disability,
-            'gov_email'     => $request->gov_email,
-            'employee_no'   => $request->employee_no,
-            'philhealth'    => $request->philhealth,
-            'pagibig'       => $request->pagibig,
-            'TIN'           => $request->TIN,
-            'street'        => $request->street,
-            'street_brgy'   => $request->street_brgy,
-            'municipality'  => $request->municipality,
-            'province'      => $request->province,
-            'region'        => $request->region,
-            'photo_path'    => $photoPath,
+            'user_id' => $user->id,
+            'last_name' => $request->last_name,
+            'first_name' => $request->first_name,
+            'middle_name' => $request->middle_name,
+            'ex_name' => $request->ex_name,
+            'gender' => $request->gender,
+            'birthdate' => $request->birthdate,
+            'place_of_birth' => $request->place_of_birth,
+            'contact_num' => $request->contact_num,
+            'bp_no' => $request->bp_no,
+            'disability' => $request->disability,
+            'gov_email' => $request->gov_email,
+            'employee_no' => $request->employee_no,
+            'philhealth' => $request->philhealth,
+            'pagibig' => $request->pagibig,
+            'TIN' => $request->TIN,
+            'street' => $request->street,
+            'street_brgy' => $request->street_brgy,
+            'municipality' => $request->municipality,
+            'province' => $request->province,
+            'region' => $request->region,
+            'photo_path' => $photoPath,
         ]);
 
         // Send credentials email
@@ -138,15 +140,15 @@ class EmployeeController extends Controller
     public function edit(string $id)
     {
         $employee = Employee::with([
-            'user','employment','education','eligibility','serviceRecords'
+            'user', 'employment', 'education', 'eligibility', 'serviceRecords',
         ])->where('user_id', $id)->firstOrFail();
 
-        $roles        = Role::orderBy('role_desc')->get();
+        $roles = Role::orderBy('role_desc')->get();
         $subPositions = SubPosition::orderBy('main_pos')->get();
         $salaryGrades = Salary::orderBy('salary_grade')->get();
 
         return view('hr.employees.edit', compact(
-            'employee','roles','subPositions','salaryGrades'
+            'employee', 'roles', 'subPositions', 'salaryGrades'
         ));
     }
 
@@ -155,10 +157,10 @@ class EmployeeController extends Controller
         $employee = Employee::where('user_id', $id)->firstOrFail();
 
         $request->validate([
-            'last_name'  => 'required|string|max:100',
+            'last_name' => 'required|string|max:100',
             'first_name' => 'required|string|max:100',
-            'gov_email'  => 'required|email',
-            'birthdate'  => 'nullable|date',
+            'gov_email' => 'required|email',
+            'birthdate' => 'nullable|date',
         ]);
 
         // Handle photo
@@ -168,27 +170,27 @@ class EmployeeController extends Controller
 
         // Update employee info
         $employee->update([
-            'last_name'      => $request->last_name,
-            'first_name'     => $request->first_name,
-            'middle_name'    => $request->middle_name,
-            'ex_name'        => $request->ex_name,
-            'gender'         => $request->gender,
-            'birthdate'      => $request->birthdate,
+            'last_name' => $request->last_name,
+            'first_name' => $request->first_name,
+            'middle_name' => $request->middle_name,
+            'ex_name' => $request->ex_name,
+            'gender' => $request->gender,
+            'birthdate' => $request->birthdate,
             'place_of_birth' => $request->place_of_birth,
-            'contact_num'    => $request->contact_num,
-            'bp_no'          => $request->bp_no,
-            'disability'     => $request->disability,
-            'gov_email'      => $request->gov_email,
-            'employee_no'    => $request->employee_no,
-            'philhealth'     => $request->philhealth,
-            'pagibig'        => $request->pagibig,
-            'TIN'            => $request->TIN,
-            'street'         => $request->street,
-            'street_brgy'    => $request->street_brgy,
-            'municipality'   => $request->municipality,
-            'province'       => $request->province,
-            'region'         => $request->region,
-            'photo_path'     => $employee->photo_path,
+            'contact_num' => $request->contact_num,
+            'bp_no' => $request->bp_no,
+            'disability' => $request->disability,
+            'gov_email' => $request->gov_email,
+            'employee_no' => $request->employee_no,
+            'philhealth' => $request->philhealth,
+            'pagibig' => $request->pagibig,
+            'TIN' => $request->TIN,
+            'street' => $request->street,
+            'street_brgy' => $request->street_brgy,
+            'municipality' => $request->municipality,
+            'province' => $request->province,
+            'region' => $request->region,
+            'photo_path' => $employee->photo_path,
         ]);
 
         // Update user email/position (HR cannot change account status)
@@ -201,24 +203,24 @@ class EmployeeController extends Controller
         EmploymentInfo::updateOrCreate(
             ['user_id' => $employee->id],
             [
-                'position'                    => $request->user_pos,
-                'sub_position'                => $request->sub_position,
-                'nature_appoint'              => $request->nature_appoint,
-                'status_appoint'              => $request->status_appoint,
-                'date_orig_appoint'           => $request->date_orig_appoint,
-                'salary_grade'                => $request->salary_grade,
-                'salary_step'                 => $request->salary_step,
-                'salary_effect_date'          => $request->salary_effect_date,
-                'plantilla_item_no'           => $request->plantilla_item_no,
-                'plantilla_inclu'             => $request->plantilla_inclu,
-                'school_office_assign'        => $request->school_office_assign,
-                'school_detailed_office_assign'=> $request->school_detailed_office_assign,
-                'vice'                        => $request->vice,
-                'vice_reason'                 => $request->vice_reason,
-                'designated_from'             => $request->designated_from,
-                'designated_to'               => $request->designated_to,
-                'separation'                  => $request->separation,
-                'separation_date'             => $request->separation_date,
+                'position' => $request->user_pos,
+                'sub_position' => $request->sub_position,
+                'nature_appoint' => $request->nature_appoint,
+                'status_appoint' => $request->status_appoint,
+                'date_orig_appoint' => $request->date_orig_appoint,
+                'salary_grade' => $request->salary_grade,
+                'salary_step' => $request->salary_step,
+                'salary_effect_date' => $request->salary_effect_date,
+                'plantilla_item_no' => $request->plantilla_item_no,
+                'plantilla_inclu' => $request->plantilla_inclu,
+                'school_office_assign' => $request->school_office_assign,
+                'school_detailed_office_assign' => $request->school_detailed_office_assign,
+                'vice' => $request->vice,
+                'vice_reason' => $request->vice_reason,
+                'designated_from' => $request->designated_from,
+                'designated_to' => $request->designated_to,
+                'separation' => $request->separation,
+                'separation_date' => $request->separation_date,
             ]
         );
 
@@ -226,22 +228,22 @@ class EmployeeController extends Controller
         EducationalBg::updateOrCreate(
             ['user_id' => $employee->id],
             [
-                'elementary'      => $request->elementary,
-                'elem_duration'   => $request->elem_duration,
-                'secondary'       => $request->secondary,
+                'elementary' => $request->elementary,
+                'elem_duration' => $request->elem_duration,
+                'secondary' => $request->secondary,
                 'second_duration' => $request->second_duration,
-                'college'         => $request->college,
-                'college_school'  => $request->college_school,
-                'college_duration'=> $request->college_duration,
-                'vocational'      => $request->vocational,
-                'voc_school'      => $request->voc_school,
-                'voca_duration'   => $request->voca_duration,
-                'masters_degree'  => $request->masters_degree,
+                'college' => $request->college,
+                'college_school' => $request->college_school,
+                'college_duration' => $request->college_duration,
+                'vocational' => $request->vocational,
+                'voc_school' => $request->voc_school,
+                'voca_duration' => $request->voca_duration,
+                'masters_degree' => $request->masters_degree,
                 'master_duration' => $request->master_duration,
-                'master_units'    => $request->master_units,
-                'doc_degree'      => $request->doc_degree,
-                'doc_duration'    => $request->doc_duration,
-                'doc_units'       => $request->doc_units,
+                'master_units' => $request->master_units,
+                'doc_degree' => $request->doc_degree,
+                'doc_duration' => $request->doc_duration,
+                'doc_units' => $request->doc_units,
             ]
         );
 
@@ -250,8 +252,8 @@ class EmployeeController extends Controller
             ['user_id' => $employee->id],
             [
                 'type_eligibility' => $request->type_eligibility,
-                'date_issue'       => $request->date_issue,
-                'validity'         => $request->validity,
+                'date_issue' => $request->date_issue,
+                'validity' => $request->validity,
             ]
         );
 
@@ -264,17 +266,17 @@ class EmployeeController extends Controller
         $employee = Employee::where('user_id', $id)->firstOrFail();
 
         ServiceRecord::create([
-            'user_id'        => $employee->id,
-            'position'       => $request->position,
-            'designation'    => $request->designation,
-            'station'        => $request->station,
-            'branch'         => $request->branch,
-            'salary_grade'   => $request->salary_grade,
-            'salary_step'    => $request->salary_step,
+            'user_id' => $employee->id,
+            'position' => $request->position,
+            'designation' => $request->designation,
+            'station' => $request->station,
+            'branch' => $request->branch,
+            'salary_grade' => $request->salary_grade,
+            'salary_step' => $request->salary_step,
             'service_status' => $request->service_status,
-            'inclu_from'     => $request->inclu_from,
-            'inclu_to'       => $request->inclu_to,
-            'separation'     => $request->separation,
+            'inclu_from' => $request->inclu_from,
+            'inclu_to' => $request->inclu_to,
+            'separation' => $request->separation,
         ]);
 
         return redirect()->route('hr.employees.edit', $id)
@@ -283,19 +285,19 @@ class EmployeeController extends Controller
 
     public function exportCsv()
     {
-        $employees = Employee::with(['user','employment'])->orderBy('last_name')->get();
+        $employees = Employee::with(['user', 'employment'])->orderBy('last_name')->get();
 
         $headers = [
-            'Content-Type'        => 'text/csv',
+            'Content-Type' => 'text/csv',
             'Content-Disposition' => 'attachment; filename=employees_'.now()->format('Ymd').'.csv',
         ];
 
-        $callback = function() use ($employees) {
+        $callback = function () use ($employees) {
             $file = fopen('php://output', 'w');
             fputcsv($file, [
-                'Employee ID','Last Name','First Name','Middle Name',
-                'Gender','Birthdate','Position','Email','Status',
-                'Salary Grade','School/Office','Date of Appointment',
+                'Employee ID', 'Last Name', 'First Name', 'Middle Name',
+                'Gender', 'Birthdate', 'Position', 'Email', 'Status',
+                'Salary Grade', 'School/Office', 'Date of Appointment',
             ]);
             foreach ($employees as $emp) {
                 fputcsv($file, [
@@ -321,9 +323,10 @@ class EmployeeController extends Controller
 
     public function exportPdf()
     {
-        $employees = Employee::with(['user','employment'])->orderBy('last_name')->get();
+        $employees = Employee::with(['user', 'employment'])->orderBy('last_name')->get();
         $pdf = Pdf::loadView('hr.employees.export-pdf', compact('employees'));
         $pdf->setPaper('a4', 'landscape');
+
         return $pdf->download('employees_'.now()->format('Ymd').'.pdf');
     }
 }

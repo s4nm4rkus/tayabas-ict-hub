@@ -20,6 +20,6 @@ class OtpMail extends Mailable
     public function build()
     {
         return $this->subject('Your OTP for Tayabas ICT Hub')
-                    ->view('emails.otp');
+            ->view('emails.otp');
     }
 }

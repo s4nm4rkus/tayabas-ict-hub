@@ -2,13 +2,13 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
+use App\Models\CertRequest;
 use App\Models\Employee;
 use App\Models\Leave;
-use App\Models\CertRequest;
+use App\Observers\CertRequestObserver;
 use App\Observers\EmployeeObserver;
 use App\Observers\LeaveObserver;
-use App\Observers\CertRequestObserver;
+use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {

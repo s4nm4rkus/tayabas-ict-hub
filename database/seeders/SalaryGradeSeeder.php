@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\Salary;
+use Illuminate\Database\Seeder;
 
 class SalaryGradeSeeder extends Seeder
 {

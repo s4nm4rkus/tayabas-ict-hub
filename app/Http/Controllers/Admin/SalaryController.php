@@ -11,6 +11,7 @@ class SalaryController extends Controller
     public function index()
     {
         $salaryGrades = Salary::orderBy('salary_grade')->get();
+
         return view('admin.salary.index', compact('salaryGrades'));
     }
 
@@ -18,7 +19,7 @@ class SalaryController extends Controller
     {
         $request->validate([
             'salary_grade' => 'required|integer|unique:tbl_salary,salary_grade',
-            'step_1'       => 'required',
+            'step_1' => 'required',
         ]);
 
         Salary::create($request->only([
@@ -47,6 +48,7 @@ class SalaryController extends Controller
     public function destroy(int $id)
     {
         Salary::findOrFail($id)->delete();
+
         return redirect()->route('admin.salary.index')
             ->with('success', 'Salary grade deleted.');
     }

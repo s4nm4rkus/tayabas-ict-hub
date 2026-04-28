@@ -10,7 +10,7 @@ class ForcePasswordChange
 {
     public function handle(Request $request, Closure $next): mixed
     {
-        if (!Auth::check()) {
+        if (! Auth::check()) {
             return $next($request);
         }
 
@@ -28,17 +28,18 @@ class ForcePasswordChange
         }
 
         // Don't interrupt POST requests — let CSRF verify first
-        if ($request->isMethod('POST') || 
-            $request->isMethod('PUT') || 
-            $request->isMethod('PATCH') || 
+        if ($request->isMethod('POST') ||
+            $request->isMethod('PUT') ||
+            $request->isMethod('PATCH') ||
             $request->isMethod('DELETE')) {
             return $next($request);
         }
 
-        if (!Auth::user()->pass_change) {
+        if (! Auth::user()->pass_change) {
             if ($request->routeIs('password.change') || $request->routeIs('password.update')) {
                 return $next($request);
             }
+
             return redirect()->route('password.change');
         }
 

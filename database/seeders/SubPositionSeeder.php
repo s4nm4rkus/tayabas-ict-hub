@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\SubPosition;
+use Illuminate\Database\Seeder;
 
 class SubPositionSeeder extends Seeder
 {
@@ -19,8 +19,8 @@ class SubPositionSeeder extends Seeder
             ['main_pos' => 'Teacher III',      'sub_position' => 'Department Coordinator'],
             ['main_pos' => 'Master Teacher I', 'sub_position' => 'Grade Level Chairman'],
             ['main_pos' => 'Master Teacher I', 'sub_position' => 'Department Head'],
-            ['main_pos' => 'Master Teacher II','sub_position' => 'Grade Level Chairman'],
-            ['main_pos' => 'Master Teacher II','sub_position' => 'OIC Principal'],
+            ['main_pos' => 'Master Teacher II', 'sub_position' => 'Grade Level Chairman'],
+            ['main_pos' => 'Master Teacher II', 'sub_position' => 'OIC Principal'],
             ['main_pos' => 'Head Teacher',     'sub_position' => 'Grade Level Chairman'],
             ['main_pos' => 'Head Teacher',     'sub_position' => 'Department Head'],
 
@@ -43,7 +43,7 @@ class SubPositionSeeder extends Seeder
         foreach ($subPositions as $sub) {
             SubPosition::firstOrCreate(
                 [
-                    'main_pos'     => $sub['main_pos'],
+                    'main_pos' => $sub['main_pos'],
                     'sub_position' => $sub['sub_position'],
                 ],
                 $sub

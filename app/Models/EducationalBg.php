@@ -7,8 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 class EducationalBg extends Model
 {
     protected $table = 'tbl_educational_bg';
+
     protected $primaryKey = 'user_id';
+
     public $incrementing = true;
+
     protected $keyType = 'int';
 
     protected $fillable = [

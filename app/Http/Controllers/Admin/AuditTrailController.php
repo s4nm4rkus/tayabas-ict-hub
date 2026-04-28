@@ -11,7 +11,7 @@ class AuditTrailController extends Controller
     public function index(Request $request)
     {
         $query = AuditTrail::with('user')
-                           ->orderBy('action_at', 'desc');
+            ->orderBy('action_at', 'desc');
 
         if ($request->filled('search')) {
             $query->where('action_done', 'like', '%'.$request->search.'%');
@@ -22,6 +22,7 @@ class AuditTrailController extends Controller
         }
 
         $logs = $query->paginate(30);
+
         return view('admin.audit.index', compact('logs'));
     }
 }

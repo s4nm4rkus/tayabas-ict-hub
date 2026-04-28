@@ -2,16 +2,17 @@
 
 namespace App\Mail;
 
+use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
-use App\Models\User;
 
 class EmployeeCredentialsMail extends Mailable
 {
     use Queueable, SerializesModels;
 
     public User $user;
+
     public string $password;
 
     public function __construct(User $user, string $password)
@@ -23,10 +24,10 @@ class EmployeeCredentialsMail extends Mailable
     public function build()
     {
         return $this->subject('Your ICT Hub Account Credentials')
-                    ->view('emails.employee_credentials')
-                    ->with([
-                        'user' => $this->user,
-                        'password' => $this->password,
-                    ]);
+            ->view('emails.employee_credentials')
+            ->with([
+                'user' => $this->user,
+                'password' => $this->password,
+            ]);
     }
 }

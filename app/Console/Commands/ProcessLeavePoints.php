@@ -8,7 +8,8 @@ use Illuminate\Console\Command;
 
 class ProcessLeavePoints extends Command
 {
-    protected $signature   = 'leavepoints:process';
+    protected $signature = 'leavepoints:process';
+
     protected $description = 'Calculate leave points from attendance records';
 
     public function handle(): void
@@ -17,7 +18,7 @@ class ProcessLeavePoints extends Command
 
         foreach ($records as $record) {
             $totalHours = (float) $record->total_hours;
-            $accPoints  = (0.42 / 8) * $totalHours;
+            $accPoints = (0.42 / 8) * $totalHours;
 
             Point::updateOrCreate(
                 [

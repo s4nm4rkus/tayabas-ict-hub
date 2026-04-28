@@ -13,15 +13,15 @@ class HRLeaveController extends Controller
     public function index()
     {
         $leaves = Leave::with('employee')
-                       ->whereIn('leave_status', ['Pending HR'])
-                       ->orderBy('date_applied', 'asc')
-                       ->get();
+            ->whereIn('leave_status', ['Pending HR'])
+            ->orderBy('date_applied', 'asc')
+            ->get();
 
         $processed = Leave::with('employee')
-                          ->whereNotIn('leave_status', ['Pending HR', 'Pending Head'])
-                          ->orderBy('updated_at', 'desc')
-                          ->take(20)
-                          ->get();
+            ->whereNotIn('leave_status', ['Pending HR', 'Pending Head'])
+            ->orderBy('updated_at', 'desc')
+            ->take(20)
+            ->get();
 
         return view('hr.leave.index', compact('leaves', 'processed'));
     }
@@ -31,7 +31,7 @@ class HRLeaveController extends Controller
         $leave = Leave::findOrFail($id);
         $leave->update([
             'leave_status' => 'Approved',
-            'approve_by'   => Auth::id(),
+            'approve_by' => Auth::id(),
             'approve_date' => now()->toDateString(),
             'approve_time' => now()->toTimeString(),
         ]);
@@ -49,8 +49,8 @@ class HRLeaveController extends Controller
         $leave = Leave::findOrFail($id);
         $leave->update([
             'leave_status' => 'Declined',
-            'remarks'      => $request->remarks,
-            'approve_by'   => Auth::id(),
+            'remarks' => $request->remarks,
+            'approve_by' => Auth::id(),
         ]);
 
         return redirect()->route('hr.leave.index')

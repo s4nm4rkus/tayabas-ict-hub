@@ -7,8 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 class EmploymentInfo extends Model
 {
     protected $table = 'tbl_employment_info';
+
     protected $primaryKey = 'user_id';
+
     public $incrementing = true;
+
     protected $keyType = 'int';
 
     protected $fillable = [
@@ -35,11 +38,11 @@ class EmploymentInfo extends Model
     ];
 
     protected $casts = [
-        'date_orig_appoint'   => 'date',
-        'salary_effect_date'  => 'date',
-        'designated_from'     => 'date',
-        'designated_to'       => 'date',
-        'separation_date'     => 'date',
+        'date_orig_appoint' => 'date',
+        'salary_effect_date' => 'date',
+        'designated_from' => 'date',
+        'designated_to' => 'date',
+        'separation_date' => 'date',
     ];
 
     public function employee()

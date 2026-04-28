@@ -7,8 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 class Eligibility extends Model
 {
     protected $table = 'tbl_eligibility';
+
     protected $primaryKey = 'user_id';
+
     public $incrementing = true;
+
     protected $keyType = 'int';
 
     protected $fillable = [

@@ -12,7 +12,7 @@ class LeaveController extends Controller
     public function index(Request $request)
     {
         $query = Leave::with('employee')
-                      ->orderBy('date_applied', 'desc');
+            ->orderBy('date_applied', 'desc');
 
         if ($request->filled('status')) {
             $query->where('leave_status', $request->status);
@@ -31,7 +31,7 @@ class LeaveController extends Controller
     {
         Leave::findOrFail($id)->update([
             'leave_status' => 'Approved',
-            'approve_by'   => Auth::id(),
+            'approve_by' => Auth::id(),
             'approve_date' => now()->toDateString(),
             'approve_time' => now()->toTimeString(),
         ]);
@@ -46,8 +46,8 @@ class LeaveController extends Controller
 
         Leave::findOrFail($id)->update([
             'leave_status' => 'Declined',
-            'remarks'      => $request->remarks,
-            'approve_by'   => Auth::id(),
+            'remarks' => $request->remarks,
+            'approve_by' => Auth::id(),
         ]);
 
         return redirect()->route('admin.leaves.index')

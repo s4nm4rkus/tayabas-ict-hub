@@ -10,12 +10,11 @@ class RoleMiddleware
 {
     public function handle(Request $request, Closure $next, string ...$roles): mixed
     {
-        if (!Auth::check()) {
+        if (! Auth::check()) {
             return redirect()->route('login');
         }
 
-
-        if (!in_array(Auth::user()->user_pos, $roles)) {
+        if (! in_array(Auth::user()->user_pos, $roles)) {
             abort(403, 'Unauthorized.');
         }
 

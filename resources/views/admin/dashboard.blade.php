@@ -519,7 +519,8 @@
                                     margin-right:5px;"></span>{{ $lt->leavetype }}
                                 </span>
                                 <span style="color:var(--text-secondary);">{{ $lt->total }}
-                                    ({{ $pct }}%)</span>
+                                    ({{ $pct }}%)
+                                </span>
                             </div>
                             <div style="height:5px;border-radius:99px;background:var(--border);overflow:hidden;">
                                 <div
@@ -586,7 +587,7 @@
                     @foreach ($certStatuses as $cs)
                         <div
                             style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:10px;
-                    background:var(--bg-secondary,rgba(0,0,0,0.03));border:1px solid var(--border);">
+                            background:var(--bg-secondary,rgba(0,0,0,0.03));border:1px solid var(--border);">
                             <i class="bi {{ $cs['icon'] }}"
                                 style="color:{{ $cs['color'] }};font-size:15px;flex-shrink:0;"></i>
                             <span style="font-size:12.5px;color:var(--text-secondary);flex:1;">{{ $cs['label'] }}</span>

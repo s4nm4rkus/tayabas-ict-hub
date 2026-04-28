@@ -14,8 +14,9 @@ class CertRequestController extends Controller
     {
         $employee = Employee::where('user_id', Auth::id())->firstOrFail();
         $requests = CertRequest::where('user_id', $employee->id)
-                               ->orderBy('created_at', 'desc')
-                               ->get();
+            ->orderBy('created_at', 'desc')
+            ->get();
+
         return view('employee.certificates.index', compact('requests'));
     }
 
@@ -28,10 +29,10 @@ class CertRequestController extends Controller
         $employee = Employee::where('user_id', Auth::id())->firstOrFail();
 
         CertRequest::create([
-            'user_id'    => $employee->id,
-            'req_type'   => $request->req_type,
-            'date_req'   => now()->toDateString(),
-            'time_req'   => now()->toTimeString(),
+            'user_id' => $employee->id,
+            'req_type' => $request->req_type,
+            'date_req' => now()->toDateString(),
+            'time_req' => now()->toTimeString(),
             'req_status' => 'Pending HR',
         ]);
 

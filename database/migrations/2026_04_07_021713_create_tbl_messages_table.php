@@ -19,7 +19,7 @@ return new class extends Migration
                 'Unread',
                 'Read',
                 'Deleted',
-                'DeletedBySender'
+                'DeletedBySender',
             ])->default('Unread');
 
             $table->timestamps();

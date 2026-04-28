@@ -16,12 +16,12 @@ class BackupController extends Controller
 
     public function download()
     {
-        $tables  = DB::select('SHOW TABLES');
-        $dbName  = config('database.connections.mysql.database');
+        $tables = DB::select('SHOW TABLES');
+        $dbName = config('database.connections.mysql.database');
         $tableKey = "Tables_in_{$dbName}";
 
-        $sql  = "-- Tayabas ICT Hub Database Backup\n";
-        $sql .= "-- Generated: " . now()->format('Y-m-d H:i:s') . "\n";
+        $sql = "-- Tayabas ICT Hub Database Backup\n";
+        $sql .= '-- Generated: '.now()->format('Y-m-d H:i:s')."\n";
         $sql .= "-- Database: {$dbName}\n\n";
         $sql .= "SET FOREIGN_KEY_CHECKS=0;\n\n";
 
@@ -31,7 +31,7 @@ class BackupController extends Controller
             // Drop & create
             $createTable = DB::select("SHOW CREATE TABLE `{$tableName}`");
             $sql .= "DROP TABLE IF EXISTS `{$tableName}`;\n";
-            $sql .= $createTable[0]->{'Create Table'} . ";\n\n";
+            $sql .= $createTable[0]->{'Create Table'}.";\n\n";
 
             // Insert data
             $rows = DB::table($tableName)->get();
@@ -40,13 +40,16 @@ class BackupController extends Controller
                 $values = [];
                 foreach ($rows as $row) {
                     $rowArray = (array) $row;
-                    $escaped  = array_map(function ($val) {
-                        if (is_null($val)) return 'NULL';
-                        return "'" . addslashes($val) . "'";
+                    $escaped = array_map(function ($val) {
+                        if (is_null($val)) {
+                            return 'NULL';
+                        }
+
+                        return "'".addslashes($val)."'";
                     }, $rowArray);
-                    $values[] = '(' . implode(', ', $escaped) . ')';
+                    $values[] = '('.implode(', ', $escaped).')';
                 }
-                $sql .= implode(",\n", $values) . ";\n\n";
+                $sql .= implode(",\n", $values).";\n\n";
             }
         }
 
@@ -54,15 +57,15 @@ class BackupController extends Controller
 
         // Log backup action
         AuditTrail::create([
-            'user_id'     => Auth::id(),
+            'user_id' => Auth::id(),
             'action_done' => 'Downloaded database backup',
-            'action_at'   => now(),
+            'action_at' => now(),
         ]);
 
-        $filename = "icthub_backup_" . now()->format('Ymd_His') . ".sql";
+        $filename = 'icthub_backup_'.now()->format('Ymd_His').'.sql';
 
         return response($sql, 200, [
-            'Content-Type'        => 'application/sql',
+            'Content-Type' => 'application/sql',
             'Content-Disposition' => "attachment; filename={$filename}",
         ]);
     }

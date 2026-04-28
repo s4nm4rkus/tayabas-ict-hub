@@ -12,6 +12,7 @@ class CheckUserStatus
     {
         if (Auth::check() && Auth::user()->user_stat === 'Disabled') {
             Auth::logout();
+
             return redirect()->route('login')->withErrors([
                 'username' => 'Your account has been disabled. Contact the administrator.',
             ]);

@@ -11,9 +11,9 @@ return new class extends Migration
         Schema::create('tbl_employee_info', function (Blueprint $table) {
             $table->id();                                         // own auto-increment pk
             $table->foreignId('user_id')                         // integer FK to users.id
-                  ->unique()
-                  ->constrained('users')
-                  ->onDelete('cascade');
+                ->unique()
+                ->constrained('users')
+                ->onDelete('cascade');
             $table->string('last_name', 100)->nullable();
             $table->string('first_name', 100)->nullable();
             $table->string('middle_name', 100)->nullable();

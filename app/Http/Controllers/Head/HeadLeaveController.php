@@ -14,15 +14,15 @@ class HeadLeaveController extends Controller
     {
         // Head only sees Non-Teaching staff leaves
         $leaves = Leave::with('employee')
-                       ->where('leave_status', 'Pending Head')
-                       ->orderBy('date_applied', 'asc')
-                       ->get();
+            ->where('leave_status', 'Pending Head')
+            ->orderBy('date_applied', 'asc')
+            ->get();
 
         $processed = Leave::with('employee')
-                          ->whereIn('leave_status', ['Approved', 'Declined'])
-                          ->orderBy('updated_at', 'desc')
-                          ->take(20)
-                          ->get();
+            ->whereIn('leave_status', ['Approved', 'Declined'])
+            ->orderBy('updated_at', 'desc')
+            ->take(20)
+            ->get();
 
         return view('head.leave.index', compact('leaves', 'processed'));
     }
@@ -32,7 +32,7 @@ class HeadLeaveController extends Controller
         $leave = Leave::findOrFail($id);
         $leave->update([
             'leave_status' => 'Pending HR',
-            'dept_head'    => Auth::id(),
+            'dept_head' => Auth::id(),
         ]);
 
         return redirect()->route('head.leave.index')
@@ -48,8 +48,8 @@ class HeadLeaveController extends Controller
         $leave = Leave::findOrFail($id);
         $leave->update([
             'leave_status' => 'Declined',
-            'remarks'      => $request->remarks,
-            'dept_head'    => Auth::id(),
+            'remarks' => $request->remarks,
+            'dept_head' => Auth::id(),
         ]);
 
         return redirect()->route('head.leave.index')

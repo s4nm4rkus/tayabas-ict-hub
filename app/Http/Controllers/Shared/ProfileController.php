@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Shared;
 
 use App\Http\Controllers\Controller;
 use App\Models\Employee;
+use App\Models\Role;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -40,20 +42,20 @@ class ProfileController extends Controller
     {
         $request->validate([
             'current_password' => 'required',
-            'password'         => 'required|min:8|confirmed',
+            'password' => 'required|min:8|confirmed',
         ]);
 
-        /** @var \App\Models\User $user */
+        /** @var User $user */
         $user = Auth::user();
 
-        if (!Hash::check($request->current_password, $user->password)) {
+        if (! Hash::check($request->current_password, $user->password)) {
             return back()->withErrors([
-                'current_password' => 'Current password is incorrect.'
+                'current_password' => 'Current password is incorrect.',
             ]);
         }
 
         $user->update([
-            'password'    => Hash::make($request->password),
+            'password' => Hash::make($request->password),
             'pass_change' => true,
         ]);
 
@@ -62,19 +64,19 @@ class ProfileController extends Controller
 
     private function getPrefix(): string
     {
-        return match(Auth::user()->user_pos) {
+        return match (Auth::user()->user_pos) {
             'Super Administrator' => 'admin',
-            'HR'                  => 'hr',
-            default               => (\App\Models\Role::where('role_desc', Auth::user()->user_pos)->first()?->role_type === 'Department Head') ? 'head' : 'employee',
+            'HR' => 'hr',
+            default => (Role::where('role_desc', Auth::user()->user_pos)->first()?->role_type === 'Department Head') ? 'head' : 'employee',
         };
     }
 
     private function getLayout(string $prefix): string
     {
-        return match($prefix) {
+        return match ($prefix) {
             'admin' => 'layouts.admin',
-            'hr'    => 'layouts.hr',
-            'head'  => 'layouts.head',
+            'hr' => 'layouts.hr',
+            'head' => 'layouts.head',
             default => 'layouts.employee',
         };
     }
