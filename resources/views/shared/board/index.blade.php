@@ -1,16 +1,26 @@
 @php
-    $prefix = match (Auth::user()->user_pos) {
+    $exact = match (Auth::user()->user_pos) {
         'Super Administrator' => 'admin',
         'HR' => 'hr',
-        default => \App\Models\Role::where('role_desc', Auth::user()->user_pos)->first()?->role_type ===
-        'Department Head'
-            ? 'head'
-            : 'employee',
+        'Administrative Officer' => 'ao',
+        'ASDS' => 'asds',
+        'Department Head' => 'head',
+        default => null,
     };
+
+    if (!$exact) {
+        $roleType = \App\Models\Role::where('role_desc', Auth::user()->user_pos)->value('role_type');
+        $exact = $roleType === 'Department Head' ? 'head' : 'employee';
+    }
+
+    $prefix = $exact;
+
     $layout = match ($prefix) {
         'admin' => 'layouts.admin',
         'hr' => 'layouts.hr',
         'head' => 'layouts.head',
+        'ao' => 'layouts.ao',
+        'asds' => 'layouts.asds',
         default => 'layouts.employee',
     };
 @endphp

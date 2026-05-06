@@ -4,22 +4,76 @@
 
 @section('content')
 
+    @if (session('success'))
+        <div class="alert alert-success alert-dismissible fade show anim-fade-up">
+            <i class="bi bi-check-circle me-2"></i>{{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    @endif
+
+    @if (session('import_passwords'))
+        <div class="alert alert-info alert-dismissible fade show anim-fade-up mb-4">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+                <div>
+                    <i class="bi bi-key me-2"></i>
+                    <strong>Generated Passwords</strong> — Save or print this now. It will not show again.
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-sm mb-0" style="background:#fff;border-radius:8px;overflow:hidden;">
+                    <thead>
+                        <tr style="background:rgba(52,211,153,0.12);">
+                            <th>Employee ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Default Password</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (session('import_passwords') as $pw)
+                            <tr>
+                                <td>{{ $pw['id'] }}</td>
+                                <td>{{ $pw['name'] }}</td>
+                                <td>{{ $pw['email'] }}</td>
+                                <td>
+                                    <code style="background:rgba(52,211,153,0.1);padding:2px 8px;border-radius:4px;">
+                                        {{ $pw['password'] }}
+                                    </code>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+            <div class="mt-2" style="font-size:12px;opacity:0.8;">
+                <i class="bi bi-info-circle me-1"></i>
+                Password format: First name + Birthdate (MMDDYYYY). Employees must change on first login.
+            </div>
+        </div>
+    @endif
+
+
+
+    {{-- Page Hero --}}
     <div class="page-hero anim-fade-up mb-4">
         <div style="position:relative;z-index:1;">
             <div style="font-size:13px;opacity:0.85;font-weight:500;margin-bottom:4px;">Employee Management</div>
             <h4 style="font-size:20px;font-weight:700;margin-bottom:4px;">All Employees</h4>
-            <p style="font-size:13px;opacity:0.8;margin:0;">View and export employee records.</p>
+            <p style="font-size:13px;opacity:0.8;margin:0;">Manage, search and export your workforce.</p>
         </div>
     </div>
 
     <div class="stat-card anim-fade-up delay-1">
+
+        {{-- Toolbar --}}
         <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-3">
             <div class="d-flex align-items-center gap-2">
                 <span style="font-size:15px;font-weight:700;color:var(--text-primary);">Employee List</span>
                 <span id="rowCount"
                     style="font-size:12px;font-weight:500;color:var(--text-secondary);
-                background:var(--bg);padding:2px 10px;border-radius:99px;
-                border:1px solid var(--border);"></span>
+                           background:var(--bg);padding:2px 10px;border-radius:99px;
+                           border:1px solid var(--border);"></span>
             </div>
             <div class="d-flex align-items-center gap-2 flex-wrap">
                 <div class="dropdown">
@@ -43,6 +97,12 @@
                         </li>
                     </ul>
                 </div>
+                <a href="{{ route('hr.employees.import.form') }}" class="btn btn-outline-primary btn-sm">
+                    <i class="bi bi-upload me-1"></i> Import
+                </a>
+                <a href="{{ route('hr.employees.create') }}" class="btn btn-primary btn-sm">
+                    <i class="bi bi-person-plus me-1"></i> Add Employee
+                </a>
             </div>
         </div>
 
@@ -50,8 +110,8 @@
         <div class="d-flex gap-2 mb-4 flex-wrap">
             <div style="position:relative;flex:1;min-width:200px;max-width:320px;">
                 <i class="bi bi-search"
-                    style="position:absolute;left:12px;top:50%;
-               transform:translateY(-50%);color:var(--text-secondary);font-size:14px;pointer-events:none;"></i>
+                    style="position:absolute;left:12px;top:50%;transform:translateY(-50%);
+                           color:var(--text-secondary);font-size:14px;pointer-events:none;"></i>
                 <input type="text" id="searchInput" class="form-control" style="padding-left:36px;"
                     placeholder="Search name, email, position...">
             </div>
@@ -62,11 +122,12 @@
             </select>
         </div>
 
+        {{-- Table --}}
         <div class="table-responsive">
             <table class="table table-hover mb-0" id="employeeTable">
                 <thead>
                     <tr>
-                        <th class="sortable" data-col="0" style="cursor:pointer;">
+                        <th class="sortable" data-col="0" style="cursor:pointer;white-space:nowrap;">
                             Employee ID <span class="sort-icon"
                                 style="color:var(--text-secondary);margin-left:4px;">↕</span>
                         </th>
@@ -87,11 +148,11 @@
                 </thead>
                 <tbody>
                     @forelse($employees as $emp)
-                        <tr>
+                        <tr style="transition:background var(--transition);">
                             <td>
                                 <span
                                     style="font-size:12px;font-weight:600;padding:2px 8px;border-radius:6px;
-                                     background:rgba(52,211,153,0.1);color:#059669;">
+                                             background:rgba(52,211,153,0.1);color:#059669;">
                                     {{ $emp->user?->user_id ?? '—' }}
                                 </span>
                             </td>
@@ -99,26 +160,30 @@
                                 <div class="d-flex align-items-center gap-2">
                                     @if ($emp->photo_path)
                                         <img src="{{ asset('storage/' . $emp->photo_path) }}"
-                                            style="width:34px;height:34px;border-radius:50%;
-                                            object-fit:cover;border:2px solid var(--border);">
+                                            style="width:34px;height:34px;border-radius:50%;object-fit:cover;
+                                                   border:2px solid var(--border);">
                                     @else
                                         <div
                                             style="width:34px;height:34px;border-radius:50%;
-                                            background:linear-gradient(135deg,#34D399,#059669);
-                                            color:#fff;display:flex;align-items:center;
-                                            justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;">
+                                                    background:linear-gradient(135deg,#34D399,#059669);
+                                                    color:#fff;display:flex;align-items:center;
+                                                    justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;">
                                             {{ strtoupper(substr($emp->first_name, 0, 1)) }}
                                         </div>
                                     @endif
-                                    <div style="font-weight:600;font-size:13.5px;color:var(--text-primary);">
-                                        {{ $emp->full_name }}
+                                    <div>
+                                        <div style="font-weight:600;font-size:13.5px;color:var(--text-primary);">
+                                            {{ $emp->full_name }}
+                                        </div>
                                     </div>
                                 </div>
                             </td>
                             <td style="font-size:13.5px;color:var(--text-secondary);">
                                 {{ $emp->employment?->position ?? '—' }}
                             </td>
-                            <td style="font-size:13px;color:var(--text-secondary);">{{ $emp->gov_email }}</td>
+                            <td style="font-size:13px;color:var(--text-secondary);">
+                                {{ $emp->gov_email }}
+                            </td>
                             <td>
                                 @if ($emp->user?->user_stat === 'Enabled')
                                     <span class="status-badge badge-success">
@@ -131,13 +196,22 @@
                                 @endif
                             </td>
                             <td>
-                                <a href="{{ route('hr.employees.show', $emp->user_id) }}" class="btn btn-sm"
-                                    style="background:rgba(52,211,153,0.1);color:#059669;
-                                  border:1px solid rgba(52,211,153,0.2);border-radius:8px;
-                                  padding:5px 10px;"
-                                    title="View Profile">
-                                    <i class="bi bi-eye"></i>
-                                </a>
+                                <div class="d-flex gap-1">
+                                    <a href="{{ route('hr.employees.show', $emp->user_id) }}" class="btn btn-sm"
+                                        style="background:rgba(52,211,153,0.1);color:#059669;
+                                               border:1px solid rgba(52,211,153,0.2);border-radius:8px;
+                                               padding:5px 10px;transition:all var(--transition);"
+                                        title="View">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    <a href="{{ route('hr.employees.edit', $emp->user_id) }}" class="btn btn-sm"
+                                        style="background:rgba(139,92,246,0.1);color:#8B5CF6;
+                                               border:1px solid rgba(139,92,246,0.2);border-radius:8px;
+                                               padding:5px 10px;transition:all var(--transition);"
+                                        title="Edit">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                </div>
                             </td>
                         </tr>
                     @empty
@@ -157,6 +231,7 @@
             <i class="bi bi-search" style="font-size:28px;display:block;margin-bottom:8px;opacity:0.3;"></i>
             No employees match your search.
         </div>
+
     </div>
 
     @push('scripts')

@@ -14,6 +14,15 @@ class LoginController extends Controller
 {
     public function showLogin()
     {
+        // If already authenticated, log them out first before showing login.
+        // This fixes the issue where being logged in on one tab/role
+        // blocks the login page from loading in the same browser.
+        if (Auth::check()) {
+            Auth::logout();
+            request()->session()->invalidate();
+            request()->session()->regenerateToken();
+        }
+
         return view('auth.login');
     }
 
@@ -31,7 +40,7 @@ class LoginController extends Controller
         if (! $user || ! Hash::check($request->password, $user->password)) {
             return back()->withErrors([
                 'username' => 'Invalid username or password.',
-            ]);
+            ])->withInput(['username' => $request->username]);
         }
 
         // Store user temporarily before OTP verification
@@ -40,7 +49,7 @@ class LoginController extends Controller
         // Generate OTP
         $otp = rand(100000, 999999);
         $user->update([
-            'otp' => $otp,
+            'otp'            => $otp,
             'otp_expires_at' => now()->addMinutes(10),
         ]);
 

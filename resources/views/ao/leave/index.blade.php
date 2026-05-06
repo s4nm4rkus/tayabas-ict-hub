@@ -1,4 +1,4 @@
-@extends('layouts.head')
+@extends('layouts.ao')
 @section('title', 'Leave Requests')
 @section('page-title', 'Leave Requests')
 
@@ -15,29 +15,33 @@
         <div style="position:relative;z-index:1;">
             <div style="font-size:13px;opacity:0.85;font-weight:500;margin-bottom:4px;">Leave Management</div>
             <h4 style="font-size:20px;font-weight:700;margin-bottom:4px;">Leave Requests</h4>
-            <p style="font-size:13px;opacity:0.8;margin:0;">Review and endorse non-teaching staff leave requests.</p>
+            <p style="font-size:13px;opacity:0.8;margin:0;">Review and approve leave applications endorsed by HR.</p>
         </div>
     </div>
 
-    {{-- Pending --}}
+    {{-- ── Pending ── --}}
     <div class="stat-card anim-fade-up delay-1 mb-3">
         <div class="d-flex align-items-center justify-content-between mb-3">
             <div>
-                <div style="font-size:15px;font-weight:700;color:var(--text-primary);">Pending Your Endorsement</div>
-                <div style="font-size:12px;color:var(--text-secondary);margin-top:2px;">Awaiting your review</div>
+                <div style="font-size:15px;font-weight:700;color:var(--text-primary);">Pending Your Approval</div>
+                <div style="font-size:12px;color:var(--text-secondary);margin-top:2px;">
+                    Endorsed by HR — awaiting your review
+                </div>
             </div>
             <span
                 style="font-size:12px;font-weight:600;padding:4px 12px;border-radius:99px;
-                     background:rgba(245,158,11,0.12);color:#B45309;border:1px solid rgba(245,158,11,0.2);">
+                     background:rgba(139,92,246,0.12);color:#6D28D9;border:1px solid rgba(139,92,246,0.2);">
                 {{ $leaves->count() }} pending
             </span>
         </div>
+
         <div class="table-responsive">
             <table class="table table-hover mb-0">
                 <thead>
                     <tr>
                         <th>Employee</th>
                         <th>Position</th>
+                        <th>Department</th>
                         <th>Leave Type</th>
                         <th>Start</th>
                         <th>End</th>
@@ -51,9 +55,11 @@
                         <tr>
                             <td style="font-weight:600;font-size:13.5px;">{{ $leave->fullname }}</td>
                             <td style="font-size:13px;color:var(--text-secondary);">{{ $leave->position }}</td>
+                            <td style="font-size:13px;color:var(--text-secondary);">{{ $leave->department ?? '—' }}</td>
                             <td>
-                                <span class="status-badge badge-info">
-                                    {{ Str::limit($leave->leave_types ?? $leave->leavetype, 25) }}
+                                <span class="status-badge badge-purple"
+                                    style="background:rgba(139,92,246,0.12);color:#6D28D9;">
+                                    {{ Str::limit($leave->leave_types ?? $leave->leavetype, 20) }}
                                 </span>
                             </td>
                             <td style="font-size:13px;">{{ $leave->start_date?->format('M d, Y') }}</td>
@@ -63,14 +69,14 @@
                                 {{ $leave->date_applied?->format('M d, Y') }}
                             </td>
                             <td>
-                                <a href="{{ route('head.leave.show', $leave->id) }}" class="btn btn-primary btn-sm">
+                                <a href="{{ route('ao.leave.show', $leave->id) }}" class="btn btn-primary btn-sm">
                                     <i class="bi bi-eye me-1"></i> Review
                                 </a>
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="8" style="text-align:center;padding:3rem;color:var(--text-secondary);">
+                            <td colspan="9" style="text-align:center;padding:3rem;color:var(--text-secondary);">
                                 <i class="bi bi-calendar-check"
                                     style="font-size:28px;display:block;margin-bottom:8px;opacity:0.3;"></i>
                                 No pending leave requests.
@@ -82,7 +88,7 @@
         </div>
     </div>
 
-    {{-- Recently Processed --}}
+    {{-- ── Recently Processed ── --}}
     <div class="stat-card anim-fade-up delay-2">
         <div class="d-flex align-items-center justify-content-between mb-3">
             <div>
@@ -115,9 +121,6 @@
                                 @php
                                     $cls = match (true) {
                                         str_contains($leave->leave_status, 'Approved') => 'badge-success',
-                                        str_contains($leave->leave_status, 'Pending HR') => 'badge-info',
-                                        str_contains($leave->leave_status, 'Pending AO') => 'badge-warning',
-                                        str_contains($leave->leave_status, 'Pending ASDS') => 'badge-warning',
                                         str_contains($leave->leave_status, 'Declined') => 'badge-danger',
                                         default => 'badge-warning',
                                     };
@@ -125,16 +128,17 @@
                                 <span class="status-badge {{ $cls }}">{{ $leave->leave_status }}</span>
                             </td>
                             <td>
-                                <a href="{{ route('head.leave.show', $leave->id) }}"
-                                    style="font-size:12px;color:#D97706;font-weight:600;text-decoration:none;">
+                                <a href="{{ route('ao.leave.show', $leave->id) }}"
+                                    style="font-size:12px;color:#6D28D9;font-weight:600;text-decoration:none;">
                                     <i class="bi bi-eye"></i> View
                                 </a>
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" style="text-align:center;padding:2rem;color:var(--text-secondary);">No
-                                processed leaves yet.</td>
+                            <td colspan="7" style="text-align:center;padding:2rem;color:var(--text-secondary);">
+                                No processed leaves yet.
+                            </td>
                         </tr>
                     @endforelse
                 </tbody>

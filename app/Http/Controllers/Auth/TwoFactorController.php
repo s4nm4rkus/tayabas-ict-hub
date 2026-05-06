@@ -26,7 +26,7 @@ class TwoFactorController extends Controller
         ]);
 
         $userId = session('pre_auth_user_id');
-        $user = User::findOrFail($userId);
+        $user   = User::findOrFail($userId);
 
         if ($user->otp !== $request->otp ||
             now()->gt($user->otp_expires_at)) {
@@ -36,21 +36,14 @@ class TwoFactorController extends Controller
         }
 
         $user->update([
-            'otp' => null,
+            'otp'            => null,
             'otp_expires_at' => null,
         ]);
 
-        // Regenerate FIRST, then login
         session()->forget('pre_auth_user_id');
         session()->regenerate();
         Auth::login($user, true);
-        // dd([
-        //     'auth_check'  => Auth::check(),
-        //     'auth_user'   => Auth::user()?->id,
-        //     'user_pos'    => Auth::user()?->user_pos,
-        //     'pass_change' => Auth::user()?->pass_change,
-        //     'session_id'  => session()->getId(),
-        // ]);
+
         if (! $user->pass_change) {
             return redirect()->route('password.change');
         }
@@ -58,23 +51,41 @@ class TwoFactorController extends Controller
         return $this->redirectByRole($user);
     }
 
-    public function redirectByRole(User $user)
+    public function redirectByRole(User $user): \Illuminate\Http\RedirectResponse
     {
-        return match ($user->user_pos) {
-            'Super Administrator' => redirect()->route('admin.dashboard'),
-            'HR' => redirect()->route('hr.dashboard'),
-            default => $this->redirectByRoleType($user),
+        // ── Step 1: Exact user_pos matches ────────────────────────────────
+        // Covers all roles that have a unique user_pos value
+        $exactMatch = match ($user->user_pos) {
+            'Super Administrator'    => redirect()->route('admin.dashboard'),
+            'HR'                     => redirect()->route('hr.dashboard'),
+            'Administrative Officer' => redirect()->route('ao.dashboard'),
+            'ASDS'                   => redirect()->route('asds.dashboard'),
+            // ── Also cover the case where user_pos is literally stored
+            // as 'Department Head' instead of a specific position name
+            'Department Head'        => redirect()->route('head.dashboard'),
+            default                  => null,
         };
-    }
 
-    public function redirectByRoleType(User $user)
-    {
-        $role = Role::where('role_desc', $user->user_pos)->first();
+        if ($exactMatch) {
+            return $exactMatch;
+        }
 
-        if ($role && $role->role_type === 'Department Head') {
+        // ── Step 2: role_type lookup from tbl_role ────────────────────────
+        // Covers positions like:
+        // 'Head Teacher'        → role_type = 'Department Head' → head
+        // 'School Principal'    → role_type = 'Department Head' → head
+        // 'Assistant Principal' → role_type = 'Department Head' → head
+        // 'Master Teacher I'    → role_type = 'Department Head' → head
+        // 'Teacher I/II/III'    → role_type = 'Employee' → employee
+        // 'Administrative Aide' → role_type = 'Employee' → employee
+        $roleType = Role::where('role_desc', $user->user_pos)->value('role_type');
+
+        if ($roleType === 'Department Head') {
             return redirect()->route('head.dashboard');
         }
 
+        // ── Step 3: Default → employee dashboard ─────────────────────────
+        // Covers all Teaching and Non-Teaching employees
         return redirect()->route('employee.dashboard');
     }
 }

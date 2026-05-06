@@ -490,7 +490,7 @@
             <div class="stat-card h-100">
                 <div class="d-flex align-items-start justify-content-between mb-3">
                     <div>
-                        <div style="font-size:14px;font-weight:700;color:var(--text-primary);">Leave by Type</div>
+                        <div style="font-size:14px;font-weight:700;color:var(--text-primary);">Type of Leave</div>
                         <div style="font-size:12px;color:var(--text-secondary);margin-top:2px;">
                             This year · all statuses
                         </div>

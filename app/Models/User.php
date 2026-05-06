@@ -25,6 +25,7 @@ class User extends Authenticatable
         'pass_change',
         'otp',
         'otp_expires_at',
+        'e_signature',
     ];
 
     protected $hidden = [

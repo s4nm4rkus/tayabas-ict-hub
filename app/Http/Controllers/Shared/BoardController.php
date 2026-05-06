@@ -62,17 +62,36 @@ class BoardController extends Controller
 
     private function routePrefix(): string
     {
-        return match (Auth::user()->user_pos) {
-            'Super Administrator' => 'admin',
-            'HR' => 'hr',
-            default => $this->getDeptHeadOrEmployee(),
+        // Step 1: exact match
+        $exact = match (Auth::user()->user_pos) {
+            'Super Administrator'    => 'admin',
+            'HR'                     => 'hr',
+            'Administrative Officer' => 'ao',
+            'ASDS'                   => 'asds',
+            'Department Head'        => 'head',
+            default                  => null,
         };
+
+        if ($exact) {
+            return $exact;
+        }
+
+        // Step 2: role_type lookup (covers Head Teacher, School Principal, etc.)
+        $roleType = \App\Models\Role::where('role_desc', Auth::user()->user_pos)
+                        ->value('role_type');
+
+        if ($roleType === 'Department Head') {
+            return 'head';
+        }
+
+        // Step 3: default
+        return 'employee';
     }
 
-    private function getDeptHeadOrEmployee(): string
-    {
-        $role = Role::where('role_desc', Auth::user()->user_pos)->first();
+    // private function getDeptHeadOrEmployee(): string
+    // {
+    //     $role = Role::where('role_desc', Auth::user()->user_pos)->first();
 
-        return $role?->role_type === 'Department Head' ? 'head' : 'employee';
-    }
+    //     return $role?->role_type === 'Department Head' ? 'head' : 'employee';
+    // }
 }

@@ -18,6 +18,8 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\EmployeeImport;
 
 class EmployeeController extends Controller
 {
@@ -148,7 +150,10 @@ class EmployeeController extends Controller
         $salaryGrades = Salary::orderBy('salary_grade')->get();
 
         return view('hr.employees.edit', compact(
-            'employee', 'roles', 'subPositions', 'salaryGrades'
+            'employee',
+            'roles',
+            'subPositions',
+            'salaryGrades'
         ));
     }
 
@@ -319,6 +324,66 @@ class EmployeeController extends Controller
         };
 
         return response()->stream($callback, 200, $headers);
+    }
+
+
+    public function importForm()
+    {
+        return view('hr.employees.import');
+    }
+
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls,csv|max:10240',
+        ]);
+
+        $import = new EmployeeImport();
+        Excel::import($import, $request->file('file'));
+
+        $message = "{$import->imported} employee(s) imported successfully.";
+
+        if (! empty($import->errors)) {
+            return redirect()->route('hr.employees.index')
+                ->with('success', $message)
+                ->with('import_errors', $import->errors);
+
+        }
+
+        return redirect()->route('hr.employees.index')
+            ->with('success', $message)
+            ->with('import_passwords', $import->passwords ?? []);
+    }
+
+    public function importTemplate()
+    {
+        $headers = [
+            'last_name', 'first_name', 'middle_name', 'extension',
+            'gender', 'birthdate', 'place_of_birth', 'contact_num',
+            'gov_email', 'position', 'employee_no',
+            'philhealth', 'pagibig', 'tin', 'street', 'barangay',
+            'municipality', 'province', 'region',
+        ];
+
+        $example = [
+            'dela Cruz', 'Juan', 'Santos', 'Jr.',
+            'Male', '1990-01-15', 'Tayabas, Quezon', '09171234567',
+            'juan@deped.gov.ph', 'Teacher I', '2025-001',
+            '123456789', '123456789', '123-456-789', '123 Rizal St.',
+            'Poblacion', 'Tayabas', 'Quezon', 'Region IV-A',
+        ];
+
+        $callback = function () use ($headers, $example) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, $headers);
+            fputcsv($file, $example);
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, [
+            'Content-Type'        => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="employee_import_template.csv"',
+        ]);
     }
 
     public function exportPdf()

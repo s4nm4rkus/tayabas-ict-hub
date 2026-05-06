@@ -72,17 +72,31 @@ class MessageController extends Controller
 
     private function routePrefix(): string
     {
-        return match (Auth::user()->user_pos) {
-            'Super Administrator' => 'admin',
-            'HR' => 'hr',
-            default => $this->getDeptHeadOrEmployee(),
+        // Step 1: exact match
+        $exact = match (Auth::user()->user_pos) {
+            'Super Administrator'    => 'admin',
+            'HR'                     => 'hr',
+            'Administrative Officer' => 'ao',
+            'ASDS'                   => 'asds',
+            'Department Head'        => 'head',
+            default                  => null,
         };
+
+        if ($exact) {
+            return $exact;
+        }
+
+        // Step 2: role_type lookup
+        $roleType = \App\Models\Role::where('role_desc', Auth::user()->user_pos)
+                        ->value('role_type');
+
+        return $roleType === 'Department Head' ? 'head' : 'employee';
     }
 
-    private function getDeptHeadOrEmployee(): string
-    {
-        $role = Role::where('role_desc', Auth::user()->user_pos)->first();
+    // private function getDeptHeadOrEmployee(): string
+    // {
+    //     $role = Role::where('role_desc', Auth::user()->user_pos)->first();
 
-        return $role?->role_type === 'Department Head' ? 'head' : 'employee';
-    }
+    //     return $role?->role_type === 'Department Head' ? 'head' : 'employee';
+    // }
 }

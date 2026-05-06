@@ -57,7 +57,7 @@ class EmployeeImport implements SkipsEmptyRows, ToCollection, WithHeadingRow
                     'middle_name' => $row['middle_name'] ?? null,
                     'ex_name' => $row['extension'] ?? null,
                     'gender' => $row['gender'] ?? null,
-                    'birthdate' => $row['birthdate'] ?? null,
+                    'birthdate' => $this->parseDate($row['birthdate'] ?? null),
                     'place_of_birth' => $row['place_of_birth'] ?? null,
                     'contact_num' => $row['contact_num'] ?? null,
                     'gov_email' => $email,
@@ -93,22 +93,45 @@ class EmployeeImport implements SkipsEmptyRows, ToCollection, WithHeadingRow
         }
     }
 
+    private function parseDate(?string $date): ?string
+    {
+        if (empty($date)) {
+            return null;
+        }
+
+        try {
+            // Handle DD/MM/YYYY
+            if (preg_match('/^\d{2}\/\d{2}\/\d{4}$/', trim($date))) {
+                return Carbon::createFromFormat('d/m/Y', trim($date))->format('Y-m-d');
+            }
+            // Handle MM/DD/YYYY
+            if (preg_match('/^\d{2}\/\d{2}\/\d{4}$/', trim($date))) {
+                return Carbon::createFromFormat('m/d/Y', trim($date))->format('Y-m-d');
+            }
+            // Already YYYY-MM-DD or other Carbon-parseable format
+            return Carbon::parse(trim($date))->format('Y-m-d');
+        } catch (\Exception $e) {
+            return null;
+        }
+    }
+
     private function generateDefaultPassword(array $row): string
     {
         $firstName = ucfirst(strtolower(trim($row['first_name'] ?? 'employee')));
-        $birthdate = trim($row['birthdate'] ?? '');
+        $birthdate  = trim($row['birthdate'] ?? '');
 
-        if (! empty($birthdate)) {
+        if (!empty($birthdate)) {
             try {
-                $date = Carbon::parse($birthdate);
-
-                return $firstName.$date->format('mdY');
+                $parsed = $this->parseDate($birthdate);
+                if ($parsed) {
+                    return $firstName . Carbon::parse($parsed)->format('mdY');
+                }
             } catch (\Exception $e) {
                 // fallback
             }
         }
 
-        return $firstName.'ICThub@123';
+        return $firstName . 'ICThub@123';
     }
 
     private function generateDisplayCode(): string

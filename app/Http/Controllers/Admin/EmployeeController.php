@@ -160,7 +160,10 @@ class EmployeeController extends Controller
         $salaryGrades = Salary::orderBy('salary_grade')->get();
 
         return view('admin.employees.edit', compact(
-            'employee', 'roles', 'subPositions', 'salaryGrades'
+            'employee',
+            'roles',
+            'subPositions',
+            'salaryGrades'
         ));
     }
 
@@ -260,7 +263,7 @@ class EmployeeController extends Controller
             'file' => 'required|mimes:xlsx,xls,csv|max:10240',
         ]);
 
-        $import = new EmployeeImport;
+        $import = new EmployeeImport();
         Excel::import($import, $request->file('file'));
 
         //  dd([
@@ -273,11 +276,14 @@ class EmployeeController extends Controller
         if (! empty($import->errors)) {
             return redirect()->route('admin.employees.index')
                 ->with('success', $message)
-                ->with('import_errors', $import->errors);
+                ->with('import_errors', $import->errors)
+                 ->with('import_passwords', $import->passwords ?? []);
+
         }
 
         return redirect()->route('admin.employees.index')
             ->with('success', $message);
+
     }
 
     public function importTemplate()
