@@ -48,7 +48,7 @@ class TwoFactorController extends Controller
             return redirect()->route('password.change');
         }
 
-        return $this->redirectByRole($user);
+        return redirect()->intended($this->redirectByRole($user)->getTargetUrl());
     }
 
     public function redirectByRole(User $user): \Illuminate\Http\RedirectResponse
@@ -87,5 +87,11 @@ class TwoFactorController extends Controller
         // ── Step 3: Default → employee dashboard ─────────────────────────
         // Covers all Teaching and Non-Teaching employees
         return redirect()->route('employee.dashboard');
+    }
+
+    public function dashboard(): \Illuminate\Http\RedirectResponse
+    {
+        $user = User::findOrFail(Auth::id());
+        return $this->redirectByRole($user);
     }
 }

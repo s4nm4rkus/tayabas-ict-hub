@@ -59,4 +59,9 @@ class User extends Authenticatable
     {
         return $this->hasOne(FingerPrint::class, 'user_id', 'id');
     }
+
+    public function ictTickets()
+    {
+        return $this->hasMany(IctTicket::class, 'user_id', 'id');
+    }
 }

@@ -1400,7 +1400,7 @@
             <div class="units-grid">
 
                 {{-- ICT --}}
-                <a href="#" class="unit-card reveal reveal-delay-1">
+                <a href="{{ route('unit.ict') }}" class="unit-card  reveal reveal-delay-1">
                     <div class="unit-card-top">
                         <div class="unit-card-header">
                             <div class="unit-icon" style="background:rgba(11,31,58,0.08);color:#0B1F3A;">

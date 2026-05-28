@@ -14,13 +14,9 @@ class LoginController extends Controller
 {
     public function showLogin()
     {
-        // If already authenticated, log them out first before showing login.
-        // This fixes the issue where being logged in on one tab/role
-        // blocks the login page from loading in the same browser.
         if (Auth::check()) {
-            Auth::logout();
-            request()->session()->invalidate();
-            request()->session()->regenerateToken();
+            return app(\App\Http\Controllers\Auth\TwoFactorController::class)
+                ->redirectByRole(Auth::user());
         }
 
         return view('auth.login');

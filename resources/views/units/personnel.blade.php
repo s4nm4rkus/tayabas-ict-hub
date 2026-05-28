@@ -1065,9 +1065,15 @@
         </div>
 
         {{-- Right: portal button --}}
-        <a href="{{ route('login') }}" class="btn-nav">
-            <i class="bi bi-box-arrow-in-right"></i> Employee Portal
-        </a>
+        @auth
+            <a href="{{ route('dashboard') }}" class="btn-nav">
+                <i class="bi bi-grid-1x2"></i> My Dashboard
+            </a>
+        @else
+            <a href="{{ route('login') }}" class="btn-nav">
+                <i class="bi bi-box-arrow-in-right"></i> Employee Portal
+            </a>
+        @endauth
     </nav>
     {{-- Hero --}}
     <div class="unit-hero">
@@ -1157,9 +1163,16 @@
                     <li>Secure OTP two-factor authentication</li>
                     <li>Available 24/7 from any device</li>
                 </ul>
-                <a href="{{ route('login') }}" class="service-cta">
-                    Access Portal <i class="bi bi-arrow-right"></i>
-                </a>
+
+                @auth
+                    <a href="{{ route('dashboard') }}" class="service-cta">
+                        <i class="bi bi-grid-1x2"></i> My Dashboard <i class="bi bi-arrow-right"></i>
+                    </a>
+                @else
+                    <a href="{{ route('login') }}" class="service-cta">
+                        Access Portal <i class="bi bi-arrow-right"></i>
+                    </a>
+                @endauth
             </div>
 
             {{-- Appointments --}}
