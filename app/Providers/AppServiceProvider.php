@@ -8,6 +8,7 @@ use App\Models\Leave;
 use App\Observers\CertRequestObserver;
 use App\Observers\EmployeeObserver;
 use App\Observers\LeaveObserver;
+use App\Services\FlexiAttendanceService;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -17,5 +18,10 @@ class AppServiceProvider extends ServiceProvider
         Employee::observe(EmployeeObserver::class);
         Leave::observe(LeaveObserver::class);
         CertRequest::observe(CertRequestObserver::class);
+    }
+
+    public function register(): void
+    {
+        $this->app->singleton(FlexiAttendanceService::class);
     }
 }

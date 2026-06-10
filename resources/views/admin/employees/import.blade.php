@@ -64,11 +64,11 @@
                     <i class="bi bi-key me-1"></i>
                     <strong>Password Policy:</strong> Default = <code>FirstnameBirthdate</code> e.g.
                     <code>Juan01151990</code>.
-                    Fallback = <code>FirstnameICThub@123</code>. Passwords shown once after import.
+                    Fallback = <code>FirstnameSDOHUB@123</code>. Passwords shown once after import.
                 </div>
                 <div class="alert alert-info mb-3" style="font-size:13px;">
                     <i class="bi bi-person-badge me-1"></i>
-                    Employee ID (e.g. <code>ICTHUB-2026-0001</code>) is auto-assigned. Employees must change password on
+                    Employee ID (e.g. <code>SDOHUB-2026-0001</code>) is auto-assigned. Employees must change password on
                     first login.
                 </div>
 

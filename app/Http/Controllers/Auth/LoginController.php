@@ -14,6 +14,11 @@ class LoginController extends Controller
 {
     public function showLogin()
     {
+        if (Auth::check()) {
+            return app(\App\Http\Controllers\Auth\TwoFactorController::class)
+                ->redirectByRole(Auth::user());
+        }
+
         return view('auth.login');
     }
 
@@ -31,7 +36,7 @@ class LoginController extends Controller
         if (! $user || ! Hash::check($request->password, $user->password)) {
             return back()->withErrors([
                 'username' => 'Invalid username or password.',
-            ]);
+            ])->withInput(['username' => $request->username]);
         }
 
         // Store user temporarily before OTP verification
@@ -40,7 +45,7 @@ class LoginController extends Controller
         // Generate OTP
         $otp = rand(100000, 999999);
         $user->update([
-            'otp' => $otp,
+            'otp'            => $otp,
             'otp_expires_at' => now()->addMinutes(10),
         ]);
 

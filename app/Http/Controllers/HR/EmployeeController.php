@@ -14,10 +14,15 @@ use App\Models\ServiceRecord;
 use App\Models\SubPosition;
 use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
-use Carbon\Carbon;
+// use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\EmployeeImport;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 
 class EmployeeController extends Controller
 {
@@ -28,12 +33,12 @@ class EmployeeController extends Controller
         if ($request->filled('search')) {
             $query->where(function ($q) use ($request) {
                 $q->where('last_name', 'like', '%'.$request->search.'%')
-                    ->orWhere('first_name', 'like', '%'.$request->search.'%')
-                    ->orWhere('gov_email', 'like', '%'.$request->search.'%');
+                  ->orWhere('first_name', 'like', '%'.$request->search.'%')
+                  ->orWhere('gov_email', 'like', '%'.$request->search.'%');
             });
         }
 
-        $employees = $query->get();
+        $employees = $query->paginate(10)->withQueryString();
 
         return view('hr.employees.index', compact('employees'));
     }
@@ -58,83 +63,92 @@ class EmployeeController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'last_name' => 'required|string|max:100',
+            'last_name'  => 'required|string|max:100',
             'first_name' => 'required|string|max:100',
-            'gov_email' => 'required|email|unique:users,username',
-            'user_pos' => 'required|string',
-            'birthdate' => 'nullable|date',
-            'gender' => 'nullable|string',
+            'gov_email'  => 'required|email|unique:users,username',
+            'user_pos'   => 'required|string',
+            'birthdate'  => 'nullable|date',
+            'gender'     => 'nullable|string',
         ]);
 
-        // Generate Employee ID
-        $year = now()->year;
-        $prefix = "ICTHUB-{$year}-";
-        $last = User::where('user_id', 'like', "{$prefix}%")
-            ->orderBy('user_id', 'desc')->first();
-        $next = $last
-            ? str_pad((int) substr($last->user_id, -4) + 1, 4, '0', STR_PAD_LEFT)
-            : '0001';
-        $employeeCode = $prefix.$next;
+        // Generate employee code and a secure random password
+        $year         = now()->year;
+        $prefix       = "SDOHUB-{$year}-";
+        $last         = User::where('user_id', 'like', "{$prefix}%")
+                            ->orderBy('user_id', 'desc')->first();
+        $next         = $last
+                            ? str_pad((int) substr($last->user_id, -4) + 1, 4, '0', STR_PAD_LEFT)
+                            : '0001';
+        $employeeCode = $prefix . $next;
+        $password     = Str::random(10);
 
-        // Generate password
-        $password = $request->first_name
-            .($request->birthdate
-                ? Carbon::parse($request->birthdate)->format('mdY')
-                : 'ICThub@123');
+        // Wrap user + employee + employment creation in a transaction
+        // so a failure in any step rolls everything back
+        $user = DB::transaction(
+            function () use ($request, $employeeCode, $password) {
 
-        // Create user account
-        $user = User::create([
-            'user_id' => $employeeCode,
-            'username' => $request->gov_email,
-            'password' => Hash::make($password),
-            'user_pos' => $request->user_pos,
-            'user_stat' => 'Enabled',
-            'pass_change' => false,
-        ]);
+                $user = User::create([
+                    'user_id'     => $employeeCode,
+                    'username'    => $request->gov_email,
+                    'password'    => Hash::make($password),
+                    'user_pos'    => $request->user_pos,
+                    'user_stat'   => 'Enabled',
+                    'pass_change' => false,
+                ]);
 
-        // Handle photo
-        $photoPath = null;
-        if ($request->hasFile('photo')) {
-            $photoPath = $request->file('photo')->store('photos', 'public');
-        }
+                $photoPath = null;
+                if ($request->hasFile('photo')) {
+                    $photoPath = $request->file('photo')->store('photos', 'public');
+                }
 
-        // Create employee info
-        $employee = Employee::create([
-            'user_id' => $user->id,
-            'last_name' => $request->last_name,
-            'first_name' => $request->first_name,
-            'middle_name' => $request->middle_name,
-            'ex_name' => $request->ex_name,
-            'gender' => $request->gender,
-            'birthdate' => $request->birthdate,
-            'place_of_birth' => $request->place_of_birth,
-            'contact_num' => $request->contact_num,
-            'bp_no' => $request->bp_no,
-            'disability' => $request->disability,
-            'gov_email' => $request->gov_email,
-            'employee_no' => $request->employee_no,
-            'philhealth' => $request->philhealth,
-            'pagibig' => $request->pagibig,
-            'TIN' => $request->TIN,
-            'street' => $request->street,
-            'street_brgy' => $request->street_brgy,
-            'municipality' => $request->municipality,
-            'province' => $request->province,
-            'region' => $request->region,
-            'photo_path' => $photoPath,
-        ]);
+                $employee = Employee::create([
+                    'user_id'       => $user->id,
+                    'last_name'     => $request->last_name,
+                    'first_name'    => $request->first_name,
+                    'middle_name'   => $request->middle_name,
+                    'ex_name'       => $request->ex_name,
+                    'gender'        => $request->gender,
+                    'birthdate'     => $request->birthdate,
+                    'place_of_birth' => $request->place_of_birth,
+                    'contact_num'   => $request->contact_num,
+                    'bp_no'         => $request->bp_no,
+                    'disability'    => $request->disability,
+                    'gov_email'     => $request->gov_email,
+                    'employee_no'   => $request->employee_no,
+                    'philhealth'    => $request->philhealth,
+                    'pagibig'       => $request->pagibig,
+                    'TIN'           => $request->TIN,
+                    'street'        => $request->street,
+                    'street_brgy'   => $request->street_brgy,
+                    'municipality'  => $request->municipality,
+                    'province'      => $request->province,
+                    'region'        => $request->region,
+                    'photo_path'    => $photoPath,
+                    'date_encoded'  => now(),
+                ]);
 
-        // Send credentials email
+                // Create initial employment record
+                EmploymentInfo::create([
+                    'user_id'  => $employee->id,
+                    'position' => $request->user_pos,
+                ]);
+
+                return $user;
+            }
+        );
+
+        // Mail is intentionally outside the transaction —
+        // a mail failure should not roll back the created employee
         try {
             Mail::to($request->gov_email)->send(
-                new EmployeeCredentialsMail($employee, $user, $password)
+                new EmployeeCredentialsMail($user, $password)
             );
         } catch (\Exception $e) {
-            // fail silently — don't block on mail error
+            Log::error('EmployeeCredentialsMail failed for ' . $request->gov_email . ': ' . $e->getMessage());
         }
 
         return redirect()->route('hr.employees.index')
-            ->with('success', "Employee {$employee->full_name} added. Login credentials sent to {$request->gov_email}.");
+            ->with('success', "Employee added. Credentials sent to {$request->gov_email}. Advise them to check Spam if not received.");
     }
 
     public function edit(string $id)
@@ -148,7 +162,10 @@ class EmployeeController extends Controller
         $salaryGrades = Salary::orderBy('salary_grade')->get();
 
         return view('hr.employees.edit', compact(
-            'employee', 'roles', 'subPositions', 'salaryGrades'
+            'employee',
+            'roles',
+            'subPositions',
+            'salaryGrades'
         ));
     }
 
@@ -319,6 +336,66 @@ class EmployeeController extends Controller
         };
 
         return response()->stream($callback, 200, $headers);
+    }
+
+
+    public function importForm()
+    {
+        return view('hr.employees.import');
+    }
+
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls,csv|max:10240',
+        ]);
+
+        $import = new EmployeeImport();
+        Excel::import($import, $request->file('file'));
+
+        $message = "{$import->imported} employee(s) imported successfully.";
+
+        if (! empty($import->errors)) {
+            return redirect()->route('hr.employees.index')
+                ->with('success', $message)
+                ->with('import_errors', $import->errors);
+
+        }
+
+        return redirect()->route('hr.employees.index')
+            ->with('success', $message)
+            ->with('import_passwords', $import->passwords ?? []);
+    }
+
+    public function importTemplate()
+    {
+        $headers = [
+            'last_name', 'first_name', 'middle_name', 'extension',
+            'gender', 'birthdate', 'place_of_birth', 'contact_num',
+            'gov_email', 'position', 'employee_no',
+            'philhealth', 'pagibig', 'tin', 'street', 'barangay',
+            'municipality', 'province', 'region',
+        ];
+
+        $example = [
+            'dela Cruz', 'Juan', 'Santos', 'Jr.',
+            'Male', '01/15/1990', 'Tayabas, Quezon', '09171234567',
+            'juan@deped.gov.ph', 'Teacher I', '2025-001',
+            '123456789', '123456789', '123-456-789', '123 Rizal St.',
+            'Poblacion', 'Tayabas', 'Quezon', 'Region IV-A',
+        ];
+
+        $callback = function () use ($headers, $example) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, $headers);
+            fputcsv($file, $example);
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, [
+            'Content-Type'        => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="employee_import_template.csv"',
+        ]);
     }
 
     public function exportPdf()

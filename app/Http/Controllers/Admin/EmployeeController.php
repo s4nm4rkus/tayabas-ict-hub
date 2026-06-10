@@ -24,9 +24,25 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class EmployeeController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $employees = Employee::with(['user', 'employment'])->orderBy('last_name')->get();
+        $query = Employee::with(['user', 'employment'])->orderBy('last_name');
+
+        if ($request->filled('search')) {
+            $query->where(function ($q) use ($request) {
+                $q->where('last_name', 'like', '%'.$request->search.'%')
+                  ->orWhere('first_name', 'like', '%'.$request->search.'%')
+                  ->orWhere('gov_email', 'like', '%'.$request->search.'%');
+            });
+        }
+
+        if ($request->filled('status')) {
+            $query->whereHas('user', function ($q) use ($request) {
+                $q->where('user_stat', $request->status === 'active' ? 'Enabled' : 'Disabled');
+            });
+        }
+
+        $employees = $query->paginate(10)->withQueryString();
 
         return view('admin.employees.index', compact('employees'));
     }
@@ -114,28 +130,6 @@ class EmployeeController extends Controller
             ->with('success', "Employee {$employeeCode} added. Credentials sent to {$request->gov_email}.");
     }
 
-    // public function show(string $id)
-    // {
-    //     $employee = Employee::with([
-    //         'employment',
-    //         'education',
-    //         'eligibility',
-    //         'serviceRecords',
-    //         'attachments',
-    //         'leaves',
-    //     ])->findOrFail($id);
-
-    //     return view('admin.employees.show', compact('employee'));
-    // }
-
-    // public function edit(string $id)
-    // {
-    //     $employee = Employee::with('employment')->findOrFail($id);
-    //     $roles = Role::all();
-    //     $subPositions = SubPosition::all();
-    //     return view('admin.employees.edit', compact('employee', 'roles', 'subPositions'));
-    // }
-
     public function show(string $id)
     {
         $employee = Employee::with([
@@ -160,7 +154,10 @@ class EmployeeController extends Controller
         $salaryGrades = Salary::orderBy('salary_grade')->get();
 
         return view('admin.employees.edit', compact(
-            'employee', 'roles', 'subPositions', 'salaryGrades'
+            'employee',
+            'roles',
+            'subPositions',
+            'salaryGrades'
         ));
     }
 
@@ -260,7 +257,7 @@ class EmployeeController extends Controller
             'file' => 'required|mimes:xlsx,xls,csv|max:10240',
         ]);
 
-        $import = new EmployeeImport;
+        $import = new EmployeeImport();
         Excel::import($import, $request->file('file'));
 
         //  dd([
@@ -273,11 +270,14 @@ class EmployeeController extends Controller
         if (! empty($import->errors)) {
             return redirect()->route('admin.employees.index')
                 ->with('success', $message)
-                ->with('import_errors', $import->errors);
+                ->with('import_errors', $import->errors)
+                 ->with('import_passwords', $import->passwords ?? []);
+
         }
 
         return redirect()->route('admin.employees.index')
             ->with('success', $message);
+
     }
 
     public function importTemplate()
@@ -311,11 +311,11 @@ class EmployeeController extends Controller
         ]);
     }
 
-    // Generate display code ICTHUB-YYYY-0001
+    // Generate display code SDOHUB-YYYY-0001
     private function generateEmployeeCode(): string
     {
         $year = date('Y');
-        $prefix = "ICTHUB-{$year}-";
+        $prefix = "SDOHUB-{$year}-";
 
         $last = User::where('user_id', 'like', "{$prefix}%")
             ->orderBy('user_id', 'desc')

@@ -18,6 +18,9 @@ class Attendance extends Model
         'pm_time_in',
         'pm_time_out',
         'total_hours',
+        'late_minutes',        // ← was missing — caused silent 0 on every save
+        'undertime_minutes',   // ← was missing — caused silent 0 on every save
+        'import_source',       // ← was missing
     ];
 
     protected $casts = [

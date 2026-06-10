@@ -16,6 +16,11 @@ class RoleSeeder extends Seeder
             // HR
             ['role_desc' => 'HR',                  'role_cat' => 'Non-Teaching', 'role_type' => 'Employee',        'role_head' => null],
 
+            // ── NEW: AO and ASDS for Form 6 approval flow ─────────────────
+            // AO already exists as 'Administrative Officer' position
+            // ASDS is a new top-level approver
+            ['role_desc' => 'ASDS',                'role_cat' => 'Non-Teaching', 'role_type' => 'Employee',        'role_head' => null],
+
             // Department Heads
             ['role_desc' => 'School Principal',    'role_cat' => 'Teaching',     'role_type' => 'Department Head', 'role_head' => null],
             ['role_desc' => 'Assistant Principal', 'role_cat' => 'Teaching',     'role_type' => 'Department Head', 'role_head' => null],

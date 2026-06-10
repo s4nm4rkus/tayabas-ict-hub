@@ -8,8 +8,8 @@ return new class () extends Migration {
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
-            $table->id();                                        // standard auto-increment integer
-            $table->string('user_id', 100)->unique()->nullable(); // ICTHUB-2025-0001 format
+            $table->id();
+            $table->string('user_id', 100)->unique()->nullable();    // ICTHUB-2025-0001 format
             $table->string('username', 100)->unique();
             $table->string('password');
             $table->string('user_pos', 100)->nullable();
@@ -17,6 +17,12 @@ return new class () extends Migration {
             $table->boolean('pass_change')->default(false);
             $table->string('otp', 10)->nullable();
             $table->datetime('otp_expires_at')->nullable();
+
+            // ── E-Signature ────────────────────────────────────────────────
+            // Stores path to uploaded signature image e.g. "signatures/user_5.png"
+            // Used by approvers (Head, HR, AO, ASDS) on the Form 6 PDF
+            $table->string('e_signature', 255)->nullable();
+
             $table->rememberToken();
             $table->timestamps();
         });

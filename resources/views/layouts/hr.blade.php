@@ -740,20 +740,38 @@
             <a href="{{ route('hr.certificates.index') }}"
                 class="nav-link {{ request()->routeIs('hr.certificates.*') ? 'active' : '' }}"><i
                     class="bi bi-file-earmark-text"></i> Certificate Requests</a>
-            <div class="nav-section mt-2">Other</div>
-            <a href="{{ route('hr.attendance.index') }}"
-                class="nav-link {{ request()->routeIs('hr.attendance.*') ? 'active' : '' }}">
-                <i class="bi bi-clock-history"></i> Attendance
-            </a>
+
+            <div class="nav-section mt-2">Communication</div>
             <a href="{{ route('hr.board.index') }}"
                 class="nav-link {{ request()->routeIs('hr.board.*') ? 'active' : '' }}"><i class="bi bi-megaphone"></i>
                 Notice Board</a>
             <a href="{{ route('hr.messages.index') }}"
                 class="nav-link {{ request()->routeIs('hr.messages.*') ? 'active' : '' }}"><i
                     class="bi bi-chat-dots"></i> Messages</a>
+
+            <div class="nav-section mt-2">Other</div>
+            <a href="{{ route('hr.attendance.index') }}"
+                class="nav-link {{ request()->routeIs('hr.attendance.*') ? 'active' : '' }}">
+                <i class="bi bi-clock-history"></i> Attendance
+            </a>
             <a href="{{ route('hr.profile.show') }}"
                 class="nav-link {{ request()->routeIs('hr.profile.*') ? 'active' : '' }}"><i
                     class="bi bi-person-circle"></i> My Profile</a>
+
+            <div class="nav-section mt-2">System</div>
+            <a href="{{ route('hr.roles.index') }}"
+                class="nav-link {{ request()->routeIs('hr.roles.*') ? 'active' : '' }}">
+                <i class="bi bi-person-badge"></i> Roles
+            </a>
+            {{-- <a href="{{ route('hr.salary.index') }}"
+                class="nav-link {{ request()->routeIs('hr.salary.*') ? 'active' : '' }}">
+                <i class="bi bi-cash-stack"></i> Salary Grade
+            </a>
+            <a href="{{ route('hr.subposition.index') }}"
+                class="nav-link {{ request()->routeIs('hr.subposition.*') ? 'active' : '' }}">
+                <i class="bi bi-diagram-3"></i> Sub Positions
+            </a> --}}
+
         </div>
         <div class="sidebar-footer">
             <form method="POST" action="{{ route('logout') }}">

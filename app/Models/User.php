@@ -25,6 +25,7 @@ class User extends Authenticatable
         'pass_change',
         'otp',
         'otp_expires_at',
+        'e_signature',
     ];
 
     protected $hidden = [
@@ -57,5 +58,10 @@ class User extends Authenticatable
     public function fingerPrint()
     {
         return $this->hasOne(FingerPrint::class, 'user_id', 'id');
+    }
+
+    public function ictTickets()
+    {
+        return $this->hasMany(IctTicket::class, 'user_id', 'id');
     }
 }

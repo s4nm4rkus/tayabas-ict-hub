@@ -57,7 +57,7 @@ class EmployeeImport implements SkipsEmptyRows, ToCollection, WithHeadingRow
                     'middle_name' => $row['middle_name'] ?? null,
                     'ex_name' => $row['extension'] ?? null,
                     'gender' => $row['gender'] ?? null,
-                    'birthdate' => $row['birthdate'] ?? null,
+                    'birthdate' => $this->parseDate($row['birthdate'] ?? null),
                     'place_of_birth' => $row['place_of_birth'] ?? null,
                     'contact_num' => $row['contact_num'] ?? null,
                     'gov_email' => $email,
@@ -93,28 +93,53 @@ class EmployeeImport implements SkipsEmptyRows, ToCollection, WithHeadingRow
         }
     }
 
+    private function parseDate(?string $date): ?string
+    {
+        if (empty($date)) {
+            return null;
+        }
+
+        try {
+            // Handle Excel serial number (e.g. 32874)
+            if (is_numeric($date) && (int) $date > 1000) {
+                return Carbon::instance(
+                    \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject((float) $date)
+                )->format('Y-m-d');
+            }
+            // Handle MM/DD/YYYY (e.g. 01/15/1990) — preferred Excel-friendly format
+            if (preg_match('/^\d{1,2}\/\d{1,2}\/\d{4}$/', trim($date))) {
+                return Carbon::createFromFormat('m/d/Y', trim($date))->format('Y-m-d');
+            }
+            // Already YYYY-MM-DD or other Carbon-parseable format
+            return Carbon::parse(trim($date))->format('Y-m-d');
+        } catch (\Exception $e) {
+            return null;
+        }
+    }
+
     private function generateDefaultPassword(array $row): string
     {
-        $firstName = ucfirst(strtolower(trim($row['first_name'] ?? 'employee')));
-        $birthdate = trim($row['birthdate'] ?? '');
+        $firstName = strtolower(preg_replace('/\s+/', '', trim($row['first_name'] ?? 'employee')));
+        $birthdate  = trim($row['birthdate'] ?? '');
 
-        if (! empty($birthdate)) {
+        if (!empty($birthdate)) {
             try {
-                $date = Carbon::parse($birthdate);
-
-                return $firstName.$date->format('mdY');
+                $parsed = $this->parseDate($birthdate);
+                if ($parsed) {
+                    return $firstName . Carbon::parse($parsed)->format('mdY');
+                }
             } catch (\Exception $e) {
                 // fallback
             }
         }
 
-        return $firstName.'ICThub@123';
+        return $firstName . 'SDOHUB@123';
     }
 
     private function generateDisplayCode(): string
     {
         $year = date('Y');
-        $prefix = "ICTHUB-{$year}-";
+        $prefix = "SDOHUB-{$year}-";
 
         $last = User::where('user_id', 'like', "{$prefix}%")
             ->orderBy('user_id', 'desc')

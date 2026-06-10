@@ -13,15 +13,24 @@ class AuditTrailController extends Controller
         $query = AuditTrail::with('user')
             ->orderBy('action_at', 'desc');
 
+        // ── Search by action OR username ───────────────────────────────────
         if ($request->filled('search')) {
-            $query->where('action_done', 'like', '%'.$request->search.'%');
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('action_done', 'like', '%' . $search . '%')
+                  ->orWhereHas('user', function ($u) use ($search) {
+                      $u->where('username', 'like', '%' . $search . '%')
+                        ->orWhere('user_pos', 'like', '%' . $search . '%');
+                  });
+            });
         }
 
+        // ── Filter by date ─────────────────────────────────────────────────
         if ($request->filled('date')) {
             $query->whereDate('action_at', $request->date);
         }
 
-        $logs = $query->paginate(30);
+        $logs = $query->paginate(30)->withQueryString();
 
         return view('admin.audit.index', compact('logs'));
     }
