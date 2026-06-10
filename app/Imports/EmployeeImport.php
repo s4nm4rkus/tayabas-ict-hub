@@ -100,12 +100,14 @@ class EmployeeImport implements SkipsEmptyRows, ToCollection, WithHeadingRow
         }
 
         try {
-            // Handle DD/MM/YYYY
-            if (preg_match('/^\d{2}\/\d{2}\/\d{4}$/', trim($date))) {
-                return Carbon::createFromFormat('d/m/Y', trim($date))->format('Y-m-d');
+            // Handle Excel serial number (e.g. 32874)
+            if (is_numeric($date) && (int) $date > 1000) {
+                return Carbon::instance(
+                    \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject((float) $date)
+                )->format('Y-m-d');
             }
-            // Handle MM/DD/YYYY
-            if (preg_match('/^\d{2}\/\d{2}\/\d{4}$/', trim($date))) {
+            // Handle MM/DD/YYYY (e.g. 01/15/1990) — preferred Excel-friendly format
+            if (preg_match('/^\d{1,2}\/\d{1,2}\/\d{4}$/', trim($date))) {
                 return Carbon::createFromFormat('m/d/Y', trim($date))->format('Y-m-d');
             }
             // Already YYYY-MM-DD or other Carbon-parseable format
@@ -117,7 +119,7 @@ class EmployeeImport implements SkipsEmptyRows, ToCollection, WithHeadingRow
 
     private function generateDefaultPassword(array $row): string
     {
-        $firstName = ucfirst(strtolower(trim($row['first_name'] ?? 'employee')));
+        $firstName = strtolower(preg_replace('/\s+/', '', trim($row['first_name'] ?? 'employee')));
         $birthdate  = trim($row['birthdate'] ?? '');
 
         if (!empty($birthdate)) {
@@ -131,13 +133,13 @@ class EmployeeImport implements SkipsEmptyRows, ToCollection, WithHeadingRow
             }
         }
 
-        return $firstName . 'ICThub@123';
+        return $firstName . 'SDOHUB@123';
     }
 
     private function generateDisplayCode(): string
     {
         $year = date('Y');
-        $prefix = "ICTHUB-{$year}-";
+        $prefix = "SDOHUB-{$year}-";
 
         $last = User::where('user_id', 'like', "{$prefix}%")
             ->orderBy('user_id', 'desc')

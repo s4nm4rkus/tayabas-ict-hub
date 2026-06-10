@@ -16,6 +16,7 @@ use App\Http\Controllers\Auth\TwoFactorController;
 use App\Http\Controllers\Head\HeadLeaveController;
 use App\Http\Controllers\HR\CertRequestController;
 use App\Http\Controllers\HR\HRLeaveController;
+use App\Http\Controllers\HR\ZktecoImportController;
 use App\Http\Controllers\ICT\IctDashboardController;
 use App\Http\Controllers\ICT\IctTicketController;
 use App\Http\Controllers\ICT\IctEmailRequestController;
@@ -198,12 +199,27 @@ Route::middleware('auth')->group(function () {
         Route::post('/employees/{id}/service', [App\Http\Controllers\HR\EmployeeController::class, 'storeServiceRecord'])->name('hr.employees.service.store');
 
         Route::get('/attendance/export/csv', [App\Http\Controllers\HR\AttendanceController::class, 'exportCsv'])->name('hr.attendance.export.csv');
-        Route::get('/attendance/import', [App\Http\Controllers\HR\AttendanceController::class, 'importForm'])->name('hr.attendance.import.form');
-        Route::post('/attendance/import', [App\Http\Controllers\HR\AttendanceController::class, 'import'])->name('hr.attendance.import');
-        Route::get('/attendance/template', [App\Http\Controllers\HR\AttendanceController::class, 'downloadTemplate'])->name('hr.attendance.template');
+        // Route::get('/attendance/import', [App\Http\Controllers\HR\AttendanceController::class, 'importForm'])->name('hr.attendance.import.form');
+        // Route::post('/attendance/import', [App\Http\Controllers\HR\AttendanceController::class, 'import'])->name('hr.attendance.import');
+        // Route::get('/attendance/template', [App\Http\Controllers\HR\AttendanceController::class, 'downloadTemplate'])->name('hr.attendance.template');
         Route::get('/attendance', [App\Http\Controllers\HR\AttendanceController::class, 'index'])->name('hr.attendance.index');
         Route::post('/attendance', [App\Http\Controllers\HR\AttendanceController::class, 'store'])->name('hr.attendance.store');
         Route::delete('/attendance/{id}', [App\Http\Controllers\HR\AttendanceController::class, 'destroy'])->name('hr.attendance.destroy');
+        Route::delete('attendance/reset/month', [App\Http\Controllers\HR\AttendanceController::class, 'resetMonth'])   ->name('hr.attendance.reset.month');
+        Route::delete('attendance/reset/employee', [App\Http\Controllers\HR\AttendanceController::class, 'resetEmployee'])->name('hr.attendance.reset.employee');
+
+        Route::get('/roles', [App\Http\Controllers\HR\RoleController::class, 'index'])->name('hr.roles.index');
+        Route::post('/roles', [App\Http\Controllers\HR\RoleController::class, 'store'])->name('hr.roles.store');
+        Route::put('/roles/{id}', [App\Http\Controllers\HR\RoleController::class, 'update'])->name('hr.roles.update');
+        Route::delete('/roles/{id}', [App\Http\Controllers\HR\RoleController::class, 'destroy'])->name('hr.roles.destroy');
+
+        // ── ZKTeco Biometric Import ───────────────────────────────────────────────
+        Route::get('/zkteco/upload', [ZktecoImportController::class, 'showForm'])->name('hr.zkteco.upload');
+        Route::post('/zkteco/upload', [ZktecoImportController::class, 'upload'])->name('hr.zkteco.upload.post');
+        Route::get('/zkteco/preview', [ZktecoImportController::class, 'preview'])->name('hr.zkteco.preview');
+        Route::get('/zkteco/dtr', [ZktecoImportController::class, 'printDtr'])->name('hr.zkteco.dtr');
+        Route::get('/zkteco/history', [ZktecoImportController::class, 'history'])->name('hr.zkteco.history');
+        // ─────────────────────────────────────────────────────────────────────────
 
         Route::get('/messages', [MessageController::class, 'index'])->name('hr.messages.index');
         Route::post('/messages', [MessageController::class, 'store'])->name('hr.messages.store');
@@ -286,6 +302,8 @@ Route::middleware('auth')->group(function () {
         Route::post('/certificates', [App\Http\Controllers\Employee\CertRequestController::class, 'store'])->name('employee.certificates.store');
 
         Route::get('/attendance', [App\Http\Controllers\Employee\AttendanceController::class, 'index'])->name('employee.attendance.index');
+        Route::get('/attendance/dtr', [App\Http\Controllers\Employee\AttendanceController::class, 'printDtr'])->name('employee.attendance.dtr');
+
 
         Route::get('/messages', [MessageController::class, 'index'])->name('employee.messages.index');
         Route::post('/messages', [MessageController::class, 'store'])->name('employee.messages.store');

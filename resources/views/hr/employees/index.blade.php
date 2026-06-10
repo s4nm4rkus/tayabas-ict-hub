@@ -53,8 +53,6 @@
         </div>
     @endif
 
-
-
     {{-- Page Hero --}}
     <div class="page-hero anim-fade-up mb-4">
         <div style="position:relative;z-index:1;">
@@ -70,10 +68,12 @@
         <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-3">
             <div class="d-flex align-items-center gap-2">
                 <span style="font-size:15px;font-weight:700;color:var(--text-primary);">Employee List</span>
-                <span id="rowCount"
+                <span
                     style="font-size:12px;font-weight:500;color:var(--text-secondary);
-                           background:var(--bg);padding:2px 10px;border-radius:99px;
-                           border:1px solid var(--border);"></span>
+                             background:var(--bg);padding:2px 10px;border-radius:99px;
+                             border:1px solid var(--border);">
+                    {{ $employees->total() }} employees
+                </span>
             </div>
             <div class="d-flex align-items-center gap-2 flex-wrap">
                 <div class="dropdown">
@@ -107,20 +107,31 @@
         </div>
 
         {{-- Search & Filter --}}
-        <div class="d-flex gap-2 mb-4 flex-wrap">
-            <div style="position:relative;flex:1;min-width:200px;max-width:320px;">
-                <i class="bi bi-search"
-                    style="position:absolute;left:12px;top:50%;transform:translateY(-50%);
-                           color:var(--text-secondary);font-size:14px;pointer-events:none;"></i>
-                <input type="text" id="searchInput" class="form-control" style="padding-left:36px;"
-                    placeholder="Search name, email, position...">
+        <form method="GET" action="{{ route('hr.employees.index') }}" id="searchForm">
+            <div class="d-flex gap-2 mb-4 flex-wrap">
+                <div style="position:relative;flex:1;min-width:200px;max-width:320px;">
+                    <i class="bi bi-search"
+                        style="position:absolute;left:12px;top:50%;transform:translateY(-50%);
+                               color:var(--text-secondary);font-size:14px;pointer-events:none;"></i>
+                    <input type="text" name="search" id="searchInput" class="form-control" style="padding-left:36px;"
+                        placeholder="Search name, email, position..." value="{{ request('search') }}">
+                </div>
+                <select name="status" id="statusFilter" class="form-select" style="max-width:150px;"
+                    onchange="this.form.submit()">
+                    <option value="">All Status</option>
+                    <option value="active" {{ request('status') === 'active' ? 'selected' : '' }}>Active</option>
+                    <option value="disabled" {{ request('status') === 'disabled' ? 'selected' : '' }}>Disabled</option>
+                </select>
+                <button type="submit" class="btn btn-outline-primary btn-sm">
+                    <i class="bi bi-search me-1"></i> Search
+                </button>
+                @if (request('search') || request('status'))
+                    <a href="{{ route('hr.employees.index') }}" class="btn btn-outline-secondary btn-sm">
+                        <i class="bi bi-x me-1"></i> Clear
+                    </a>
+                @endif
             </div>
-            <select id="statusFilter" class="form-select" style="max-width:150px;">
-                <option value="">All Status</option>
-                <option value="active">Active</option>
-                <option value="disabled">Disabled</option>
-            </select>
-        </div>
+        </form>
 
         {{-- Table --}}
         <div class="table-responsive">
@@ -227,21 +238,94 @@
             </table>
         </div>
 
-        <div id="noResults" style="display:none;text-align:center;padding:3rem;color:var(--text-secondary);">
-            <i class="bi bi-search" style="font-size:28px;display:block;margin-bottom:8px;opacity:0.3;"></i>
-            No employees match your search.
-        </div>
+        {{-- Pagination --}}
+        @if ($employees->hasPages())
+            <div
+                style="display:flex;align-items:center;justify-content:space-between;
+                        flex-wrap:wrap;gap:10px;margin-top:16px;padding-top:14px;
+                        border-top:1px solid var(--border);">
+                <div style="font-size:12px;color:var(--text-secondary);">
+                    Showing <strong>{{ $employees->firstItem() }}</strong>–<strong>{{ $employees->lastItem() }}</strong>
+                    of <strong>{{ $employees->total() }}</strong> employees
+                </div>
+                <div style="display:flex;align-items:center;gap:4px;">
+                    {{-- Prev --}}
+                    @if ($employees->onFirstPage())
+                        <span
+                            style="min-width:32px;height:32px;padding:0 10px;border-radius:6px;font-size:13px;
+                                     border:1px solid var(--border);background:var(--bg);
+                                     color:var(--text-secondary);opacity:0.45;
+                                     display:inline-flex;align-items:center;justify-content:center;">‹</span>
+                    @else
+                        <a href="{{ $employees->previousPageUrl() }}"
+                            style="min-width:32px;height:32px;padding:0 10px;border-radius:6px;font-size:13px;
+                                  border:1px solid var(--border);background:var(--bg);
+                                  color:var(--text-primary);text-decoration:none;
+                                  display:inline-flex;align-items:center;justify-content:center;
+                                  transition:all 0.15s;"
+                            onmouseover="this.style.background='rgba(110,168,254,0.1)'"
+                            onmouseout="this.style.background='var(--bg)'">‹</a>
+                    @endif
+
+                    {{-- Page numbers --}}
+                    @foreach ($employees->onEachSide(1)->links()->elements as $element)
+                        @if (is_string($element))
+                            <span style="padding:0 4px;font-size:12px;color:var(--text-secondary);">…</span>
+                        @endif
+                        @if (is_array($element))
+                            @foreach ($element as $page => $url)
+                                @if ($page == $employees->currentPage())
+                                    <span
+                                        style="min-width:32px;height:32px;padding:0 10px;border-radius:6px;
+                                                 font-size:13px;font-weight:700;
+                                                 border:1px solid #4A90E2;background:#4A90E2;color:#fff;
+                                                 display:inline-flex;align-items:center;justify-content:center;">
+                                        {{ $page }}
+                                    </span>
+                                @else
+                                    <a href="{{ $url }}"
+                                        style="min-width:32px;height:32px;padding:0 10px;border-radius:6px;
+                                              font-size:13px;border:1px solid var(--border);background:var(--bg);
+                                              color:var(--text-primary);text-decoration:none;
+                                              display:inline-flex;align-items:center;justify-content:center;
+                                              transition:all 0.15s;"
+                                        onmouseover="this.style.background='rgba(110,168,254,0.1)'"
+                                        onmouseout="this.style.background='var(--bg)'">
+                                        {{ $page }}
+                                    </a>
+                                @endif
+                            @endforeach
+                        @endif
+                    @endforeach
+
+                    {{-- Next --}}
+                    @if ($employees->hasMorePages())
+                        <a href="{{ $employees->nextPageUrl() }}"
+                            style="min-width:32px;height:32px;padding:0 10px;border-radius:6px;font-size:13px;
+                                  border:1px solid var(--border);background:var(--bg);
+                                  color:var(--text-primary);text-decoration:none;
+                                  display:inline-flex;align-items:center;justify-content:center;
+                                  transition:all 0.15s;"
+                            onmouseover="this.style.background='rgba(110,168,254,0.1)'"
+                            onmouseout="this.style.background='var(--bg)'">›</a>
+                    @else
+                        <span
+                            style="min-width:32px;height:32px;padding:0 10px;border-radius:6px;font-size:13px;
+                                     border:1px solid var(--border);background:var(--bg);
+                                     color:var(--text-secondary);opacity:0.45;
+                                     display:inline-flex;align-items:center;justify-content:center;">›</span>
+                    @endif
+                </div>
+            </div>
+        @endif
 
     </div>
 
     @push('scripts')
         <script>
+            // ── Client-side sort (within current page only) ───────────────
             const table = document.getElementById('employeeTable');
             const tbody = table.querySelector('tbody');
-            const searchInput = document.getElementById('searchInput');
-            const statusFilter = document.getElementById('statusFilter');
-            const rowCount = document.getElementById('rowCount');
-            const noResults = document.getElementById('noResults');
             let sortCol = -1,
                 sortAsc = true;
 
@@ -264,34 +348,13 @@
                         return sortAsc ? aT.localeCompare(bT) : bT.localeCompare(aT);
                     });
                     rows.forEach(r => tbody.appendChild(r));
-                    updateCount();
                 });
             });
 
-            function filterRows() {
-                const s = searchInput.value.toLowerCase();
-                const st = statusFilter.value.toLowerCase();
-                let visible = 0;
-                Array.from(tbody.querySelectorAll('tr')).forEach(row => {
-                    const text = row.innerText.toLowerCase();
-                    const statusText = row.cells[4]?.innerText.trim().toLowerCase() ?? '';
-                    const ok = text.includes(s) && (st === '' || statusText.includes(st));
-                    row.style.display = ok ? '' : 'none';
-                    if (ok) visible++;
-                });
-                noResults.style.display = visible === 0 ? 'block' : 'none';
-                rowCount.textContent = visible + ' employees';
-            }
-
-            function updateCount() {
-                const v = Array.from(tbody.querySelectorAll('tr'))
-                    .filter(r => r.style.display !== 'none').length;
-                rowCount.textContent = v + ' employees';
-            }
-
-            searchInput.addEventListener('keyup', filterRows);
-            statusFilter.addEventListener('change', filterRows);
-            updateCount();
+            // ── Submit search on Enter ────────────────────────────────────
+            document.getElementById('searchInput').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') this.form.submit();
+            });
         </script>
     @endpush
 
