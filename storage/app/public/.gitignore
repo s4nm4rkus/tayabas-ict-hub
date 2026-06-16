@@ -1,2 +1,8 @@
 *
 !.gitignore
+!*.png
+!*.jpg
+!*.mp4
+!*.ttf
+!fonts/
+!fonts/*
