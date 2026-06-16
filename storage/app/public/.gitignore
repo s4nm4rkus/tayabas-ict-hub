@@ -1,2 +1,11 @@
 *
 !.gitignore
+!*.png
+!*.jpg
+!*.jpeg
+!*.mp4
+!*.ttf
+!fonts/
+!fonts/*
+signatures/
+photos/
