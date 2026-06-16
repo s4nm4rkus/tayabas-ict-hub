@@ -1070,7 +1070,7 @@
                 <i class="bi bi-grid-1x2"></i> My Dashboard
             </a>
         @else
-            <a href="{{ route('login') }}" class="btn-nav">
+            <a href="{{ route('login') }}" target="_blank" class="btn-nav">
                 <i class="bi bi-box-arrow-in-right"></i> Employee Portal
             </a>
         @endauth
@@ -1095,7 +1095,7 @@
                     The Employee Portal is accessible here for authorized personnel.
                 </p>
                 <div class="hero-cta anim-4">
-                    <a href="{{ route('login') }}" class="btn-hero-primary">
+                    <a href="{{ route('login') }}" target="_blank" class="btn-hero-primary">
                         <i class="bi bi-box-arrow-in-right"></i> Access Employee Portal
                     </a>
                     <a href="#services" class="btn-hero-outline">
@@ -1169,7 +1169,7 @@
                         <i class="bi bi-grid-1x2"></i> My Dashboard <i class="bi bi-arrow-right"></i>
                     </a>
                 @else
-                    <a href="{{ route('login') }}" class="service-cta">
+                    <a href="{{ route('login') }}" target="_blank" class="service-cta">
                         Access Portal <i class="bi bi-arrow-right"></i>
                     </a>
                 @endauth
@@ -1205,7 +1205,7 @@
                     <li>Supporting documents (if applicable)</li>
                     <li>Supervisor endorsement</li>
                 </ul>
-                <a href="{{ route('login') }}" class="service-cta">Apply via Portal <i
+                <a href="{{ route('login') }}" target="_blank" class="service-cta">Apply via Portal <i
                         class="bi bi-arrow-right"></i></a>
             </div>
 
@@ -1222,7 +1222,7 @@
                     <li>Valid employee ID</li>
                     <li>Purpose of the certificate</li>
                 </ul>
-                <a href="{{ route('login') }}" class="service-cta">Request via Portal <i
+                <a href="{{ route('login') }}" target="_blank" class="service-cta">Request via Portal <i
                         class="bi bi-arrow-right"></i></a>
             </div>
 
@@ -1336,7 +1336,7 @@
                         Access your HR records, apply for leave, request certificates, and more —
                         anytime, anywhere through our secure employee portal.
                     </div>
-                    <a href="{{ route('login') }}" class="btn-portal-big">
+                    <a href="{{ route('login') }}" target="_blank" class="btn-portal-big">
                         <i class="bi bi-box-arrow-in-right"></i> Login to Portal
                     </a>
                     <div style="margin-top:14px;font-size:11px;color:rgba(255,255,255,0.35);">

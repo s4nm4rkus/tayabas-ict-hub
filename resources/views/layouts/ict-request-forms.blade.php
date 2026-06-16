@@ -1385,7 +1385,7 @@
                 </a>
             @else
                 {{-- Not logged in — show login button --}}
-                <a href="{{ route('login') }}" class="btn-nav">
+                <a href="{{ route('login') }}" target="_blank" class="btn-nav">
                     <i class="bi bi-box-arrow-in-right"></i>
                     <span>Login</span>
                 </a>
