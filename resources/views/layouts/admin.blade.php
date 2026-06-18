@@ -806,7 +806,7 @@
                 <i class="bi bi-cash-stack"></i> Salary Grade
             </a>
             <a href="#" class="nav-link {{ request()->routeIs('admin.subposition.*') ? 'active' : '' }}">
-                <i class="bi bi-diagram-3"></i> Sub Positions
+                <i class="bi bi-diagram-3"></i> Designation (if any)s
             </a>
             <a href="{{ route('admin.audit.index') }}"
                 class="nav-link {{ request()->routeIs('admin.audit.*') ? 'active' : '' }}">

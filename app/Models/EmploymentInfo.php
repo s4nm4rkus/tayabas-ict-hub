@@ -26,6 +26,7 @@ class EmploymentInfo extends Model
         'vice_reason',
         'nature_appoint',
         'status_appoint',
+        'station_code',
         'plantilla_item_no',
         'plantilla_inclu',
         'school_office_assign',

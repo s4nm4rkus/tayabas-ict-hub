@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Imports\EmployeeImport;
+use App\Imports\EmployeeUpdateImport;
 use App\Mail\EmployeeCredentialsMail;
 use App\Models\EducationalBg;
 use App\Models\Eligibility;
@@ -71,7 +72,6 @@ class EmployeeController extends Controller
 
         $user = DB::transaction(function () use ($request, $initialPassword, $employeeCode) {
 
-            // Create user — standard integer id, custom code in user_id column
             $user = User::create([
                 'user_id' => $employeeCode,
                 'username' => $request->gov_email,
@@ -81,13 +81,11 @@ class EmployeeController extends Controller
                 'pass_change' => false,
             ]);
 
-            // Handle photo upload
             $photoPath = null;
             if ($request->hasFile('photo')) {
                 $photoPath = $request->file('photo')->store('photos', 'public');
             }
 
-            // Create employee — user_id is now the integer users.id
             $employee = Employee::create([
                 'user_id' => $user->id,
                 'first_name' => $request->first_name,
@@ -167,12 +165,10 @@ class EmployeeController extends Controller
             ->where('user_id', $id)
             ->firstOrFail();
 
-        // Photo
         if ($request->hasFile('photo')) {
             $employee->photo_path = $request->file('photo')->store('photos', 'public');
         }
 
-        // Personal info
         $employee->update($request->only([
             'last_name', 'first_name', 'middle_name', 'ex_name', 'gender',
             'birthdate', 'place_of_birth', 'contact_num', 'gov_email',
@@ -180,19 +176,17 @@ class EmployeeController extends Controller
             'street_brgy', 'municipality', 'province', 'region', 'disability', 'bp_no',
         ]));
 
-        // Account
         $employee->user?->update([
             'username' => $request->gov_email,
             'user_pos' => $request->user_pos,
             'user_stat' => $request->user_stat,
         ]);
 
-        // Employment — update or create
         if ($employee->employment) {
             $employee->employment->update(array_merge(
                 ['position' => $request->user_pos],
                 $request->only([
-                    'sub_position', 'date_orig_appoint', 'salary_grade',
+                    'sub_position', 'date_orig_appoint', 'station_code', 'salary_grade',
                     'salary_step', 'salary_effect_date', 'vice', 'vice_reason',
                     'nature_appoint', 'status_appoint', 'plantilla_item_no',
                     'plantilla_inclu', 'school_office_assign',
@@ -204,13 +198,12 @@ class EmployeeController extends Controller
             EmploymentInfo::create(array_merge(
                 ['user_id' => $employee->id, 'position' => $request->user_pos],
                 $request->only([
-                    'sub_position', 'date_orig_appoint', 'salary_grade',
+                    'sub_position', 'date_orig_appoint', 'station_code', 'salary_grade',
                     'salary_step', 'salary_effect_date',
                 ])
             ));
         }
 
-        // Education — update or create
         if ($employee->education) {
             $employee->education->update($request->only([
                 'elementary', 'elem_duration', 'secondary', 'second_duration',
@@ -230,7 +223,6 @@ class EmployeeController extends Controller
             ));
         }
 
-        // Eligibility — update or create
         if ($employee->eligibility) {
             $employee->eligibility->update($request->only([
                 'type_eligibility', 'date_issue', 'validity',
@@ -260,24 +252,88 @@ class EmployeeController extends Controller
         $import = new EmployeeImport();
         Excel::import($import, $request->file('file'));
 
-        //  dd([
-        //     'imported' => $import->imported,
-        //     'errors'   => $import->errors,
-        // ]);
-
         $message = "{$import->imported} employee(s) imported successfully.";
 
         if (! empty($import->errors)) {
             return redirect()->route('admin.employees.index')
                 ->with('success', $message)
                 ->with('import_errors', $import->errors)
-                 ->with('import_passwords', $import->passwords ?? []);
-
+                ->with('import_passwords', $import->passwords ?? []);
         }
 
         return redirect()->route('admin.employees.index')
             ->with('success', $message);
+    }
 
+    // ── Bulk Update Import ────────────────────────────────────────────────────
+    public function bulkUpdateForm()
+    {
+        return view('admin.employees.bulk-update');
+    }
+
+    public function bulkUpdate(Request $request)
+    {
+        $request->validate([
+            // 'file' => 'required|mimes:xlsx,xls,csv|max:10240',
+              'file' => 'required|file|max:10240',
+        ]);
+
+        $import = new EmployeeUpdateImport();
+        Excel::import($import, $request->file('file'));
+        //     dd([
+        //     'updated' => $import->updated,
+        //     'errors'  => $import->errors,
+        // ]);
+
+        $message = "{$import->updated} employee(s) updated successfully.";
+
+        if (! empty($import->errors)) {
+            return redirect()->route('admin.employees.index')
+                ->with('success', $message)
+                ->with('import_errors', $import->errors);
+        }
+
+        return redirect()->route('admin.employees.index')
+            ->with('success', $message);
+    }
+
+    public function bulkUpdateTemplate()
+    {
+        $headers = [
+            'gov_email', 'last_name', 'first_name', 'middle_name', 'extension',
+            'gender', 'birthdate', 'place_of_birth', 'contact_num', 'employee_no',
+            'philhealth', 'pagibig', 'tin', 'street', 'barangay',
+            'municipality', 'province', 'region', 'position', 'sub_position',
+            'date_orig_appoint', 'salary_grade', 'salary_step', 'salary_effect_date',
+            'nature_appoint', 'status_appoint', 'station_code', 'plantilla_item_no',
+            'school_office_assign', 'school_detailed_office_assign',
+            'vice', 'vice_reason', 'designated_from', 'designated_to',
+            'separation', 'separation_date',
+        ];
+
+        $example = [
+            'juan@deped.gov.ph', '', '', '', '',
+            '', '', '', '', '',
+            '', '', '', '', '',
+            '', '', '', 'Teacher II', '',
+            '', '12', '1', '',
+            '', '', 'SDO-001', '',
+            'Tayabas West Central School', '',
+            '', '', '', '',
+            '', '',
+        ];
+
+        $callback = function () use ($headers, $example) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, $headers);
+            fputcsv($file, $example);
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, [
+            'Content-Type'        => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="employee_bulk_update_template.csv"',
+        ]);
     }
 
     public function importTemplate()
@@ -311,7 +367,6 @@ class EmployeeController extends Controller
         ]);
     }
 
-    // Generate display code SDOHUB-YYYY-0001
     private function generateEmployeeCode(): string
     {
         $year = date('Y');

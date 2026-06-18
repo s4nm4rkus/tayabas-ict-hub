@@ -99,6 +99,9 @@
                 <a href="{{ route('admin.employees.import.form') }}" class="btn btn-outline-primary btn-sm">
                     <i class="bi bi-upload me-1"></i> Import
                 </a>
+                <a href="{{ route('admin.employees.bulk-update.form') }}" class="btn btn-outline-primary btn-sm">
+                    <i class="bi bi-upload me-1"></i> Import Update
+                </a>
                 <a href="{{ route('admin.employees.create') }}" class="btn btn-primary btn-sm">
                     <i class="bi bi-person-plus me-1"></i> Add Employee
                 </a>

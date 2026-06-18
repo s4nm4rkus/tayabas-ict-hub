@@ -121,7 +121,7 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="info-grid">
-                            @foreach ([['Position', $employee->employment->position], ['Sub Position', $employee->employment->sub_position], ['Nature of Appointment', $employee->employment->nature_appoint], ['Status of Appointment', $employee->employment->status_appoint], ['Original Appointment', $employee->employment->date_orig_appoint?->format('F d, Y')], ['Salary Grade', $employee->employment->salary_grade], ['Salary Step', $employee->employment->salary_step]] as [$label, $value])
+                            @foreach ([['Position', $employee->employment->position], ['Designation (if any)', $employee->employment->sub_position], ['Nature of Appointment', $employee->employment->nature_appoint], ['Status of Appointment', $employee->employment->status_appoint], ['Original Appointment', $employee->employment->date_orig_appoint?->format('F d, Y')], ['Station Code', $employee->employment->station_code], ['Salary Grade', $employee->employment->salary_grade], ['Salary Step', $employee->employment->salary_step]] as [$label, $value])
                                 <div class="info-item">
                                     <span class="info-label">{{ $label }}</span>
                                     <span class="info-value">{{ $value ?? '—' }}</span>

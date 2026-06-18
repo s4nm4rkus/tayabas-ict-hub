@@ -92,6 +92,11 @@ Route::middleware('auth')->group(function () {
         Route::get('employees/export/pdf', [EmployeeController::class, 'exportPdf'])->name('admin.employees.export.pdf');
         Route::post('employees/{id}/service', [EmployeeController::class, 'storeServiceRecord'])->name('admin.employees.service.store');
         Route::resource('employees', EmployeeController::class)->names('admin.employees');
+        Route::get('employees/bulk-update/form', [EmployeeController::class, 'bulkUpdateForm'])->name('admin.employees.bulk-update.form');
+        Route::post('employees/bulk-update', [EmployeeController::class, 'bulkUpdate'])->name('admin.employees.bulk-update');
+        Route::get('employees/bulk-update/template', [EmployeeController::class, 'bulkUpdateTemplate'])->name('admin.employees.bulk-update.template');
+
+
 
         // Roles
         Route::get('roles', [RoleController::class, 'index'])->name('admin.roles.index');
@@ -197,6 +202,10 @@ Route::middleware('auth')->group(function () {
         Route::get('/employees/{id}/edit', [App\Http\Controllers\HR\EmployeeController::class, 'edit'])->name('hr.employees.edit');
         Route::put('/employees/{id}', [App\Http\Controllers\HR\EmployeeController::class, 'update'])->name('hr.employees.update');
         Route::post('/employees/{id}/service', [App\Http\Controllers\HR\EmployeeController::class, 'storeServiceRecord'])->name('hr.employees.service.store');
+        Route::get('/employees/bulk-update/form', [App\Http\Controllers\HR\EmployeeController::class, 'bulkUpdateForm'])->name('hr.employees.bulk-update.form');
+        Route::post('/employees/bulk-update', [App\Http\Controllers\HR\EmployeeController::class, 'bulkUpdate'])->name('hr.employees.bulk-update');
+        Route::get('/employees/bulk-update/template', [App\Http\Controllers\HR\EmployeeController::class, 'bulkUpdateTemplate'])->name('hr.employees.bulk-update.template');
+
 
         Route::get('/attendance/export/csv', [App\Http\Controllers\HR\AttendanceController::class, 'exportCsv'])->name('hr.attendance.export.csv');
         // Route::get('/attendance/import', [App\Http\Controllers\HR\AttendanceController::class, 'importForm'])->name('hr.attendance.import.form');
