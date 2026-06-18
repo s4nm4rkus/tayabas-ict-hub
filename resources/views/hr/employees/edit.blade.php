@@ -85,7 +85,8 @@
                         <select name="gender" class="form-select" required>
                             <option value="Male" {{ old('gender', $employee->gender) == 'Male' ? 'selected' : '' }}>Male
                             </option>
-                            <option value="Female" {{ old('gender', $employee->gender) == 'Female' ? 'selected' : '' }}>Female
+                            <option value="Female" {{ old('gender', $employee->gender) == 'Female' ? 'selected' : '' }}>
+                                Female
                             </option>
                         </select>
                     </div>
@@ -192,9 +193,9 @@
             <div class="edit-section mb-3">
                 <div class="edit-section-title"><i class="bi bi-briefcase"></i> Employment Details</div>
                 <div class="row g-3">
-                    <div class="col-md-4"><label class="form-label">Sub Position</label>
+                    <div class="col-md-4"><label class="form-label">Designation (if any)</label>
                         <select name="sub_position" class="form-select">
-                            <option value="">Select Sub Position</option>
+                            <option value="">Select Designation (if any)</option>
                             @foreach ($subPositions as $sub)
                                 <option value="{{ $sub->sub_position }}"
                                     {{ old('sub_position', $employee->employment?->sub_position) == $sub->sub_position ? 'selected' : '' }}>
@@ -214,6 +215,10 @@
                     <div class="col-md-4"><label class="form-label">Original Appointment Date</label>
                         <input type="date" name="date_orig_appoint" class="form-control"
                             value="{{ old('date_orig_appoint', $employee->employment?->date_orig_appoint) }}">
+                    </div>
+                    <div class="col-md-4"><label class="form-label">Station Code</label>
+                        <input type="text" name="station_code" class="form-control"
+                            value="{{ old('station_code', $employee->employment?->station_code) }}">
                     </div>
                     <div class="col-md-4"><label class="form-label">Salary Grade</label>
                         <select name="salary_grade" class="form-select">

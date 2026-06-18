@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class () extends Migration {
     public function up(): void
     {
         Schema::create('tbl_employment_info', function (Blueprint $table) {
@@ -20,6 +19,7 @@ return new class extends Migration
             $table->string('vice_reason', 100)->nullable();
             $table->string('nature_appoint', 100)->nullable();
             $table->string('status_appoint', 100)->nullable();
+            $table->string('station_code', 100)->nullable();
             $table->string('plantilla_item_no', 100)->nullable();
             $table->string('plantilla_inclu', 100)->nullable();
             $table->string('school_office_assign', 100)->nullable();

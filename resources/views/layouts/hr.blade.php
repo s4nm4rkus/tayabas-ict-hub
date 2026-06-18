@@ -769,7 +769,7 @@
             </a>
             <a href="{{ route('hr.subposition.index') }}"
                 class="nav-link {{ request()->routeIs('hr.subposition.*') ? 'active' : '' }}">
-                <i class="bi bi-diagram-3"></i> Sub Positions
+                <i class="bi bi-diagram-3"></i> Designation (if any)s
             </a> --}}
 
         </div>

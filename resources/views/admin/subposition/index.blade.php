@@ -1,6 +1,6 @@
 @extends('layouts.admin')
-@section('title', 'Sub Positions')
-@section('page-title', 'Sub Positions')
+@section('title', 'Designation (if any)s')
+@section('page-title', 'Designation (if any)s')
 
 @section('content')
 
@@ -14,7 +14,7 @@
     <div class="page-hero anim-fade-up mb-4">
         <div style="position:relative;z-index:1;">
             <div style="font-size:13px;opacity:0.85;font-weight:500;margin-bottom:4px;">System</div>
-            <h4 style="font-size:20px;font-weight:700;margin-bottom:4px;">Sub Positions</h4>
+            <h4 style="font-size:20px;font-weight:700;margin-bottom:4px;">Designation (if any)s</h4>
             <p style="font-size:13px;opacity:0.8;margin:0;">Manage additional designations assigned to employees.</p>
         </div>
     </div>
@@ -25,7 +25,7 @@
         <div class="col-md-4 anim-fade-up delay-1">
             <div class="stat-card">
                 <div class="info-card-title">
-                    <i class="bi bi-plus-circle"></i> Add Sub Position
+                    <i class="bi bi-plus-circle"></i> Add Designation (if any)
                 </div>
                 <form method="POST" action="{{ route('admin.subposition.store') }}">
                     @csrf
@@ -36,12 +36,13 @@
                         <div class="form-text">The main role this designation is for.</div>
                     </div>
                     <div class="mb-4">
-                        <label class="form-label">Sub Position / Designation <span class="text-danger">*</span></label>
+                        <label class="form-label">Designation (if any) / Designation <span
+                                class="text-danger">*</span></label>
                         <input type="text" name="sub_position" class="form-control" value="{{ old('sub_position') }}"
                             placeholder="e.g. Class Adviser" required>
                     </div>
                     <button type="submit" class="btn btn-primary w-100">
-                        <i class="bi bi-plus me-1"></i> Add Sub Position
+                        <i class="bi bi-plus me-1"></i> Add Designation (if any)
                     </button>
                 </form>
             </div>
@@ -51,7 +52,7 @@
         <div class="col-md-8 anim-fade-up delay-2">
             <div class="stat-card">
                 <div class="info-card-title">
-                    <i class="bi bi-diagram-3"></i> All Sub Positions
+                    <i class="bi bi-diagram-3"></i> All Designation (if any)s
                     <span
                         style="margin-left:8px;font-size:12px;font-weight:400;
                              color:var(--text-secondary);background:var(--bg);
@@ -64,7 +65,7 @@
                         <thead>
                             <tr>
                                 <th>Main Position</th>
-                                <th>Sub Position / Designation</th>
+                                <th>Designation (if any) / Designation</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -79,7 +80,7 @@
                                     </td>
                                     <td>
                                         <form method="POST" action="{{ route('admin.subposition.destroy', $sub->id) }}"
-                                            onsubmit="return confirm('Delete this sub position?')">
+                                            onsubmit="return confirm('Delete this Designation (if any)?')">
                                             @csrf @method('DELETE')
                                             <button type="submit" class="btn btn-sm"
                                                 style="background:rgba(239,68,68,0.08);color:#B91C1C;
@@ -92,7 +93,7 @@
                             @empty
                                 <tr>
                                     <td colspan="3" style="text-align:center;padding:2rem;color:var(--text-secondary);">
-                                        No sub positions yet.
+                                        No Designation (if any)s yet.
                                     </td>
                                 </tr>
                             @endforelse
