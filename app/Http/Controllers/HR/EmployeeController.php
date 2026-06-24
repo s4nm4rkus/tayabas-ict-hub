@@ -15,6 +15,7 @@ use App\Models\Salary;
 use App\Models\ServiceRecord;
 use App\Models\SubPosition;
 use App\Models\User;
+use App\Models\AppointmentOption;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -149,15 +150,19 @@ class EmployeeController extends Controller
             'user', 'employment', 'education', 'eligibility', 'serviceRecords',
         ])->where('user_id', $id)->firstOrFail();
 
-        $roles = Role::orderBy('role_desc')->get();
-        $subPositions = SubPosition::orderBy('main_pos')->get();
-        $salaryGrades = Salary::orderBy('salary_grade')->get();
+        $roles          = Role::orderBy('role_desc')->get();
+        $subPositions   = SubPosition::orderBy('main_pos')->get();
+        $salaryGrades   = Salary::orderBy('salary_grade')->get();
+        $natureOptions  = AppointmentOption::nature()->get();
+        $statusOptions  = AppointmentOption::status()->get();
 
         return view('hr.employees.edit', compact(
             'employee',
             'roles',
             'subPositions',
-            'salaryGrades'
+            'salaryGrades',
+            'natureOptions',
+            'statusOptions',
         ));
     }
 
@@ -463,4 +468,6 @@ class EmployeeController extends Controller
         return redirect()->route('hr.employees.edit', $id)
             ->with('success', 'Service record added.');
     }
+
+
 }

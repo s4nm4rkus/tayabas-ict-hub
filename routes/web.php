@@ -16,6 +16,7 @@ use App\Http\Controllers\Auth\TwoFactorController;
 use App\Http\Controllers\Head\HeadLeaveController;
 use App\Http\Controllers\HR\CertRequestController;
 use App\Http\Controllers\HR\HRLeaveController;
+use App\Http\Controllers\HR\AppointmentOptionController;
 use App\Http\Controllers\HR\ZktecoImportController;
 use App\Http\Controllers\ICT\IctDashboardController;
 use App\Http\Controllers\ICT\IctDtsRequestController;
@@ -246,6 +247,13 @@ Route::middleware('auth')->group(function () {
         Route::post('/roles', [App\Http\Controllers\HR\RoleController::class, 'store'])->name('hr.roles.store');
         Route::put('/roles/{id}', [App\Http\Controllers\HR\RoleController::class, 'update'])->name('hr.roles.update');
         Route::delete('/roles/{id}', [App\Http\Controllers\HR\RoleController::class, 'destroy'])->name('hr.roles.destroy');
+
+        // Appointment Options
+        Route::get('/appointment-options', [AppointmentOptionController::class, 'index'])->name('hr.appointment-options.index');
+        Route::post('/appointment-options', [AppointmentOptionController::class, 'store'])->name('hr.appointment-options.store');
+        Route::put('/appointment-options/{id}', [AppointmentOptionController::class, 'update'])->name('hr.appointment-options.update');
+        Route::patch('/appointment-options/{id}/toggle', [AppointmentOptionController::class, 'toggleActive'])->name('hr.appointment-options.toggle');
+        Route::delete('/appointment-options/{id}', [AppointmentOptionController::class, 'destroy'])->name('hr.appointment-options.destroy');
 
         // ZKTeco Biometric Import
         Route::get('/zkteco/upload', [ZktecoImportController::class, 'showForm'])->name('hr.zkteco.upload');

@@ -759,6 +759,10 @@
                     class="bi bi-person-circle"></i> My Profile</a>
 
             <div class="nav-section mt-2">System</div>
+            <a href="{{ route('hr.appointment-options.index') }}"
+                class="nav-link {{ request()->routeIs('hr.appointment-options.*') ? 'active' : '' }}">
+                <i class="bi bi-calendar2-check"></i> Appointment Options
+            </a>
             <a href="{{ route('hr.roles.index') }}"
                 class="nav-link {{ request()->routeIs('hr.roles.*') ? 'active' : '' }}">
                 <i class="bi bi-person-badge"></i> Roles

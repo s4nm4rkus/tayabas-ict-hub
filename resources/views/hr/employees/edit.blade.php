@@ -205,12 +205,26 @@
                         </select>
                     </div>
                     <div class="col-md-4"><label class="form-label">Nature of Appointment</label>
-                        <input type="text" name="nature_appoint" class="form-control"
-                            value="{{ old('nature_appoint', $employee->employment?->nature_appoint) }}">
+                        <select name="nature_appoint" class="form-select">
+                            <option value="">— Select Nature —</option>
+                            @foreach ($natureOptions as $opt)
+                                <option value="{{ $opt->option_value }}"
+                                    {{ old('nature_appoint', $employee->employment?->nature_appoint) === $opt->option_value ? 'selected' : '' }}>
+                                    {{ $opt->option_label }}
+                                </option>
+                            @endforeach
+                        </select>
                     </div>
                     <div class="col-md-4"><label class="form-label">Status of Appointment</label>
-                        <input type="text" name="status_appoint" class="form-control"
-                            value="{{ old('status_appoint', $employee->employment?->status_appoint) }}">
+                        <select name="status_appoint" class="form-select">
+                            <option value="">— Select Status —</option>
+                            @foreach ($statusOptions as $opt)
+                                <option value="{{ $opt->option_value }}"
+                                    {{ old('status_appoint', $employee->employment?->status_appoint) === $opt->option_value ? 'selected' : '' }}>
+                                    {{ $opt->option_label }}
+                                </option>
+                            @endforeach
+                        </select>
                     </div>
                     <div class="col-md-4"><label class="form-label">Original Appointment Date</label>
                         <input type="date" name="date_orig_appoint" class="form-control"
