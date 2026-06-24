@@ -154,7 +154,7 @@
                                 </span>
                             </td>
                             <td>
-                                @if ($req->req_status === 'Accepted')
+                                {{-- @if ($req->req_status === 'Accepted')
                                     <a href="{{ route('hr.certificates.pdf', $req->id) }}" target="_blank"
                                         style="display:inline-flex;align-items:center;gap:5px;
                                       font-size:12px;font-weight:600;padding:4px 10px;
@@ -162,6 +162,19 @@
                                       border:1px solid rgba(239,68,68,0.15);border-radius:8px;
                                       text-decoration:none;transition:all var(--transition);">
                                         <i class="bi bi-file-pdf"></i> PDF
+                                    </a>
+                                @else
+                                    <span style="font-size:12px;color:var(--text-secondary);">—</span>
+                                @endif --}}
+
+                                @if ($req->req_status === 'Accepted')
+                                    <a href="{{ route('hr.certificates.preview', $req->id) }}"
+                                        style="display:inline-flex;align-items:center;gap:5px;
+                                        font-size:12px;font-weight:600;padding:4px 10px;
+                                        background:rgba(239,68,68,0.08);color:#B91C1C;
+                                        border:1px solid rgba(239,68,68,0.15);border-radius:8px;
+                                        text-decoration:none;transition:all var(--transition);">
+                                        <i class="bi bi-file-pdf"></i> View
                                     </a>
                                 @else
                                     <span style="font-size:12px;color:var(--text-secondary);">—</span>

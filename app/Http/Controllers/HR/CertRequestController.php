@@ -4,8 +4,6 @@ namespace App\Http\Controllers\HR;
 
 use App\Http\Controllers\Controller;
 use App\Models\CertRequest;
-// use App\Models\Employee;
-// use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Auth;
 
@@ -14,15 +12,16 @@ class CertRequestController extends Controller
     public function index()
     {
         $pending = CertRequest::with('employee')
-  ->where('req_status', 'Pending HR')
+            ->where('req_status', 'Pending HR')
             ->orderBy('date_req', 'asc')
- ->get();
+            ->get();
 
         $processed = CertRequest::with('employee')
-                    ->whereIn('req_status', ['Accepted', 'Declined'])
-                    ->orderBy('updated_at', 'desc')
-                    ->take(20)
-                    ->get();
+            ->whereIn('req_status', ['Accepted', 'Declined'])
+            ->orderBy('updated_at', 'desc')
+            ->take(20)
+            ->get();
+
         return view('hr.certificates.index', compact('pending', 'processed'));
     }
 
@@ -31,7 +30,8 @@ class CertRequestController extends Controller
         $certRequest = CertRequest::findOrFail($id);
         $certRequest->update([
             'req_status' => 'Accepted',
-            'approve_by' => Auth::id(), 'approve_date' => now()->toDateString(),
+            'approve_by' => Auth::id(),
+            'approve_date' => now()->toDateString(),
             'approve_time' => now()->toTimeString(),
         ]);
 
@@ -51,16 +51,11 @@ class CertRequestController extends Controller
             ->with('success', 'Certificate request declined.');
     }
 
-    public function generatePdf(int $id)
+    /**
+     * Generate PDF with proper relationships and certificate type
+     */
+    private function generateCertificatePdf(CertRequest $certRequest)
     {
-        $certRequest = CertRequest::with([
-            'employee.employment',
-            'employee.serviceRecords',
-            'employee.leaves',
-            'employee.points',
-            'employee.user',
-        ])->findOrFail($id);
-
         $employee = $certRequest->employee;
 
         $view = match ($certRequest->req_type) {
@@ -72,17 +67,51 @@ class CertRequestController extends Controller
             default => abort(404),
         };
 
-        $pdf = Pdf::loadView(
-            $view,
-            compact('employee', 'certRequest')
-        );
-        $pdf->setPaper('a4', 'portrait');
+        return Pdf::loadView($view, compact('employee', 'certRequest'))
+            ->setPaper('a4', 'portrait');
+    }
 
-        $filename = $certRequest->req_type.'_'.
-                    str_replace(' ', '_', $employee->full_name).'_'.
-                    now()->format('Ymd').'.pdf';
+    /**
+     * Preview the certificate before downloading
+     */
+    public function preview(int $id)
+    {
+        $certRequest = CertRequest::with([
+            'employee.employment',
+            'employee.serviceRecords',
+            'employee.leaves',
+            'employee.points',
+            'employee.user',
+        ])->findOrFail($id);
 
-        // dd(storage_path('fonts'));
+        $employee = $certRequest->employee;
+
+        // Generate PDF as base64 for iframe display
+        $pdf = $this->generateCertificatePdf($certRequest);
+        $pdfBase64 = base64_encode($pdf->output());
+
+        return view('hr.certificates.preview', compact('certRequest', 'employee', 'pdfBase64'));
+    }
+
+    /**
+     * Download the certificate PDF
+     */
+    public function generatePdf(int $id)
+    {
+        $certRequest = CertRequest::with([
+            'employee.employment',
+            'employee.serviceRecords',
+            'employee.leaves',
+            'employee.points',
+            'employee.user',
+        ])->findOrFail($id);
+
+        $pdf = $this->generateCertificatePdf($certRequest);
+
+        $filename = $certRequest->req_type . '_' .
+                    str_replace(' ', '_', $certRequest->employee->full_name) . '_' .
+                    now()->format('Ymd') . '.pdf';
+
         return $pdf->download($filename);
     }
 }

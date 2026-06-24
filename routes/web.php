@@ -204,10 +204,17 @@ Route::middleware('auth')->group(function () {
         Route::get('/leave/{id}/print', [HRLeaveController::class, 'print'])->name('hr.leave.print');
         Route::get('/leave/{id}/pdf', [HRLeaveController::class, 'pdf'])->name('hr.leave.pdf');
 
-        // Certificates
+        // to follow
+        // Route::get('/leave/{id}/preview', [HRLeaveController::class, 'preview'])->name('hr.leave.preview');
+        // Route::get('/leave/{id}/pdf', [HRLeaveController::class, 'pdf'])->name('hr.leave.pdf');
+        // Route::get('/leave/{id}/print', [HRLeaveController::class, 'print'])->name('hr.leave.print');
+
+
+        // Certificates (remove the duplicate preview route)
         Route::get('/certificates', [CertRequestController::class, 'index'])->name('hr.certificates.index');
         Route::put('/certificates/{id}/accept', [CertRequestController::class, 'accept'])->name('hr.certificates.accept');
         Route::put('/certificates/{id}/decline', [CertRequestController::class, 'decline'])->name('hr.certificates.decline');
+        Route::get('/certificates/{id}/preview', [CertRequestController::class, 'preview'])->name('hr.certificates.preview');
         Route::get('/certificates/{id}/pdf', [CertRequestController::class, 'generatePdf'])->name('hr.certificates.pdf');
 
         // Employees
