@@ -7,7 +7,7 @@
 
 <body style="font-family: sans-serif; color: #333;">
     <p>Hello,</p>
-    <p>Your <strong>Tayabas ICT Hub</strong> account has been created. Here are your login credentials:</p>
+    <p>Your <strong>SDO Tayabas Portal</strong> account has been created. Here are your login credentials:</p>
     <table style="border-collapse:collapse; margin: 16px 0;">
         <tr>
             <td style="padding: 6px 12px; font-weight:600;">Username:</td>
@@ -24,7 +24,7 @@
         <a href="{{ config('app.url') }}">{{ config('app.url') }}</a>
     </p>
     <br>
-    <p>Thank you,<br><strong>Tayabas ICT Hub</strong></p>
+    <p>Thank you,<br><strong>SDO Tayabas Portal</strong></p>
 </body>
 
 </html>

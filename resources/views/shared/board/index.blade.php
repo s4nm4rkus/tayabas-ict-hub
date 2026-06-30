@@ -123,7 +123,7 @@
                             </div>
                         </div>
 
-                        @if ($post->user_id === Auth::id() || Auth::user()->user_pos === 'Super Administrator')
+                        @if (($post->user_id === Auth::id() || Auth::user()->user_pos === 'Super Administrator') && $prefix !== 'employee')
                             <form method="POST" action="{{ route($prefix . '.board.destroy', $post->id) }}"
                                 onsubmit="return confirm('Delete this post?')">
                                 @csrf @method('DELETE')

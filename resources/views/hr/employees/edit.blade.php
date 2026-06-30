@@ -7,18 +7,18 @@
     {{-- Header --}}
     <div class="anim-fade-up mb-4"
         style="background:var(--surface);border-radius:var(--radius);
-            border:1px solid var(--border);padding:1.5rem;box-shadow:var(--shadow-sm);">
+               border:1px solid var(--border);padding:1.5rem;box-shadow:var(--shadow-sm);">
         <div class="d-flex align-items-center gap-3 flex-wrap">
             @if ($employee->photo_path)
                 <img src="{{ asset('storage/' . $employee->photo_path) }}"
                     style="width:60px;height:60px;border-radius:50%;object-fit:cover;
-                        border:3px solid rgba(52,211,153,0.3);">
+                           border:3px solid rgba(52,211,153,0.3);">
             @else
                 <div
                     style="width:60px;height:60px;border-radius:50%;flex-shrink:0;
-                        background:linear-gradient(135deg,#34D399,#059669);
-                        color:#fff;display:flex;align-items:center;justify-content:center;
-                        font-size:22px;font-weight:700;">
+                            background:linear-gradient(135deg,#34D399,#059669);
+                            color:#fff;display:flex;align-items:center;justify-content:center;
+                            font-size:22px;font-weight:700;">
                     {{ strtoupper(substr($employee->first_name, 0, 1)) }}
                 </div>
             @endif
@@ -47,6 +47,20 @@
         </div>
     @endif
 
+    @if (session('success'))
+        <div class="alert alert-success alert-dismissible fade show anim-fade-up mb-4">
+            <i class="bi bi-check-circle me-2"></i>{{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    @endif
+
+    @if (session('error'))
+        <div class="alert alert-danger alert-dismissible fade show anim-fade-up mb-4">
+            <i class="bi bi-exclamation-circle me-2"></i>{{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    @endif
+
     {{-- Tabs --}}
     <ul class="emp-tabs anim-fade-up delay-1 mb-4" id="editTabs">
         <li><a href="#tab-personal" class="tab-link active">Personal</a></li>
@@ -56,6 +70,10 @@
         <li><a href="#tab-service" class="tab-link">Service Records</a></li>
     </ul>
 
+    {{-- ══════════════════════════════════════════════════════
+         MAIN FORM — Personal, Employment, Education, Eligibility
+         Service Records tab is display-only inside here (no sub-forms)
+         ══════════════════════════════════════════════════════ --}}
     <form method="POST" action="{{ route('hr.employees.update', $employee->user_id) }}" enctype="multipart/form-data">
         @csrf
         @method('PUT')
@@ -83,11 +101,10 @@
                     </div>
                     <div class="col-md-3"><label class="form-label">Gender <span class="text-danger">*</span></label>
                         <select name="gender" class="form-select" required>
-                            <option value="Male" {{ old('gender', $employee->gender) == 'Male' ? 'selected' : '' }}>Male
-                            </option>
+                            <option value="Male" {{ old('gender', $employee->gender) == 'Male' ? 'selected' : '' }}>
+                                Male</option>
                             <option value="Female" {{ old('gender', $employee->gender) == 'Female' ? 'selected' : '' }}>
-                                Female
-                            </option>
+                                Female</option>
                         </select>
                     </div>
                     <div class="col-md-3"><label class="form-label">Birthdate <span class="text-danger">*</span></label>
@@ -179,7 +196,6 @@
                         </select>
                     </div>
                 </div>
-                {{-- HR cannot change account status --}}
                 <div class="alert alert-info mt-3 mb-0" style="font-size:13px;">
                     <i class="bi bi-info-circle me-1"></i>
                     Account status can only be changed by the System Administrator.
@@ -382,38 +398,67 @@
             </div>
         </div>
 
-        {{-- Service Records Tab --}}
+        {{-- Service Records Tab — display only, no sub-forms here --}}
         <div class="tab-panel" id="tab-service">
+
+            {{-- Service Records Table --}}
             <div class="edit-section mb-3">
                 <div class="edit-section-title">
                     <i class="bi bi-journal-text"></i> Service Records
-                    <button type="button" class="btn btn-primary btn-sm ms-auto" data-bs-toggle="modal"
-                        data-bs-target="#addServiceModal">
-                        <i class="bi bi-plus me-1"></i> Add Record
-                    </button>
+                    <div style="margin-left:auto;display:flex;gap:8px;">
+                        <button type="button" onclick="openRecordChangeModal()" class="btn btn-primary btn-sm">
+                            <i class="bi bi-arrow-up-circle me-1"></i> Record Change
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal"
+                            data-bs-target="#addServiceModal">
+                            <i class="bi bi-plus me-1"></i> Add Manual Record
+                        </button>
+                    </div>
                 </div>
+
                 @if ($employee->serviceRecords->count())
                     <div class="table-responsive">
-                        <table class="table mb-0">
+                        <table class="table mb-0" style="font-size:13px;">
                             <thead>
                                 <tr>
                                     <th>From</th>
                                     <th>To</th>
                                     <th>Position</th>
                                     <th>Station</th>
-                                    <th>SG</th>
+                                    <th>SG / Step</th>
                                     <th>Status</th>
+                                    <th style="width:60px;text-align:center;">Auto</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($employee->serviceRecords as $rec)
+                                @foreach ($employee->serviceRecords->sortBy('inclu_from') as $rec)
                                     <tr>
-                                        <td>{{ $rec->inclu_from?->format('M d, Y') ?? '—' }}</td>
-                                        <td>{{ $rec->inclu_to?->format('M d, Y') ?? '—' }}</td>
+                                        <td style="white-space:nowrap;">{{ $rec->inclu_from?->format('M d, Y') ?? '—' }}
+                                        </td>
+                                        <td style="white-space:nowrap;">
+                                            {{ $rec->inclu_to?->format('M d, Y') ?? 'To Date' }}</td>
                                         <td style="font-weight:500;">{{ $rec->position ?? '—' }}</td>
                                         <td>{{ $rec->station ?? '—' }}</td>
-                                        <td>{{ $rec->salary_grade ?? '—' }}</td>
-                                        <td><span class="status-badge badge-info">{{ $rec->service_status ?? '—' }}</span>
+                                        <td>
+                                            @if ($rec->salary_grade)
+                                                <span style="font-size:12px;">SG {{ $rec->salary_grade }}, Step
+                                                    {{ $rec->salary_step }}</span>
+                                            @else
+                                                —
+                                            @endif
+                                        </td>
+                                        <td>
+                                            <span class="status-badge badge-info">{{ $rec->service_status ?? '—' }}</span>
+                                        </td>
+                                        <td style="text-align:center;">
+                                            @if ($rec->is_auto_generated)
+                                                <i class="bi bi-cpu" style="color:#059669;font-size:13px;"
+                                                    title="Auto-generated"></i>
+                                            @else
+                                                <i class="bi bi-pencil"
+                                                    style="color:var(--text-secondary);font-size:13px;"
+                                                    title="Manual"></i>
+                                            @endif
                                         </td>
                                     </tr>
                                 @endforeach
@@ -421,13 +466,23 @@
                         </table>
                     </div>
                 @else
-                    <p class="text-muted mb-0" style="font-size:14px;">No service records yet.</p>
+                    <div style="text-align:center;padding:2rem;color:var(--text-secondary);">
+                        <i class="bi bi-journal-x"
+                            style="font-size:28px;display:block;margin-bottom:8px;opacity:0.4;"></i>
+                        <div style="font-size:13px;">No service records yet.</div>
+                        <div style="font-size:12px;margin-top:4px;opacity:0.7;">Save employment info to auto-generate
+                            records.</div>
+                    </div>
                 @endif
             </div>
+
+            {{-- Employment History Timeline — inside tab-service, outside main form --}}
+            {{-- NOTE: rendered after </form> tag below, toggled into view via JS --}}
+
         </div>
 
         {{-- Save Button --}}
-        <div class="d-flex gap-2 mt-3 anim-fade-up">
+        <div class="d-flex gap-2 mt-3 mb-3 anim-fade-up">
             <button type="submit" class="btn btn-primary px-4">
                 <i class="bi bi-check-lg me-2"></i> Save Changes
             </button>
@@ -435,8 +490,139 @@
         </div>
 
     </form>
+    {{-- ══ END MAIN FORM ══ --}}
 
-    {{-- Add Service Record Modal --}}
+    {{-- ══════════════════════════════════════════════════════
+         EMPLOYMENT HISTORY TIMELINE
+         Outside main form to allow nested DELETE forms.
+         Visually shown inside the Service Records tab via JS.
+         ══════════════════════════════════════════════════════ --}}
+    <div id="employment-history-section" style="display:none;">
+        @if ($employee->employmentHistories->count() > 0)
+            <div class="edit-section mb-3 mt-0">
+                <div class="edit-section-title">
+                    <i class="bi bi-clock-history"></i> Employment History
+                    <span
+                        style="font-size:11px;font-weight:500;color:var(--text-secondary);
+                          background:var(--bg);padding:2px 8px;border-radius:99px;
+                          border:1px solid var(--border);margin-left:6px;">
+                        {{ $employee->employmentHistories->count() }} entries
+                    </span>
+                    <a href="{{ route('hr.employees.history.index', $employee->user_id) }}"
+                        class="btn btn-outline-secondary btn-sm ms-auto" style="font-size:11px;">
+                        <i class="bi bi-arrows-fullscreen me-1"></i> Full View
+                    </a>
+                </div>
+
+                <div style="position:relative;padding-left:24px;">
+                    <div
+                        style="position:absolute;left:7px;top:8px;bottom:8px;width:2px;
+                         background:var(--border);border-radius:2px;">
+                    </div>
+
+                    @foreach ($employee->employmentHistories->sortByDesc('effective_date') as $hist)
+                        @php
+                            $badgeColor = match ($hist->change_reason) {
+                                'PROMOTION' => [
+                                    'bg' => 'rgba(52,211,153,0.12)',
+                                    'color' => '#059669',
+                                    'border' => 'rgba(52,211,153,0.3)',
+                                ],
+                                'DEMOTION' => [
+                                    'bg' => 'rgba(239,68,68,0.08)',
+                                    'color' => '#B91C1C',
+                                    'border' => 'rgba(239,68,68,0.2)',
+                                ],
+                                'TRANSFER' => [
+                                    'bg' => 'rgba(74,144,226,0.1)',
+                                    'color' => '#2563EB',
+                                    'border' => 'rgba(74,144,226,0.25)',
+                                ],
+                                'RECLASSIFICATION' => [
+                                    'bg' => 'rgba(245,158,11,0.1)',
+                                    'color' => '#B45309',
+                                    'border' => 'rgba(245,158,11,0.25)',
+                                ],
+                                default => [
+                                    'bg' => 'rgba(139,92,246,0.1)',
+                                    'color' => '#7C3AED',
+                                    'border' => 'rgba(139,92,246,0.25)',
+                                ],
+                            };
+                        @endphp
+                        <div style="position:relative;margin-bottom:12px;">
+                            <div
+                                style="position:absolute;left:-21px;top:14px;width:10px;height:10px;border-radius:50%;
+                                 background:{{ is_null($hist->end_date) ? '#34D399' : 'var(--border)' }};
+                                 border:2px solid {{ is_null($hist->end_date) ? '#059669' : 'var(--text-secondary)' }};z-index:1;">
+                            </div>
+
+                            <div
+                                style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;">
+                                <div
+                                    style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;flex-wrap:wrap;">
+                                    <div>
+                                        <span
+                                            style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:99px;
+                                              background:{{ $badgeColor['bg'] }};color:{{ $badgeColor['color'] }};
+                                              border:1px solid {{ $badgeColor['border'] }};letter-spacing:0.05em;">
+                                            {{ $hist->change_reason }}
+                                        </span>
+                                        <div
+                                            style="font-size:13px;font-weight:700;color:var(--text-primary);margin-top:6px;">
+                                            {{ $hist->position }}
+                                            @if ($hist->sub_position)
+                                                <span style="font-weight:400;color:var(--text-secondary);font-size:12px;">—
+                                                    {{ $hist->sub_position }}</span>
+                                            @endif
+                                        </div>
+                                        <div style="font-size:12px;color:var(--text-secondary);margin-top:2px;">
+                                            SG {{ $hist->salary_grade }}, Step {{ $hist->salary_step }}
+                                            &nbsp;·&nbsp; {{ $hist->status_appoint ?? '—' }}
+                                        </div>
+                                    </div>
+                                    <div style="text-align:right;flex-shrink:0;">
+                                        <div style="font-size:12px;font-weight:600;color:var(--text-primary);">
+                                            {{ \Carbon\Carbon::parse($hist->effective_date)->format('M d, Y') }}
+                                        </div>
+                                        <div style="font-size:11px;color:var(--text-secondary);">
+                                            @if (is_null($hist->end_date))
+                                                <span style="color:#059669;font-weight:600;">● Current</span>
+                                            @else
+                                                to {{ \Carbon\Carbon::parse($hist->end_date)->format('M d, Y') }}
+                                            @endif
+                                        </div>
+                                        @if ($hist->change_reason !== 'ORIGINAL')
+                                            <form method="POST"
+                                                action="{{ route('hr.employees.history.destroy', ['userId' => $employee->user_id, 'historyId' => $hist->id]) }}"
+                                                onsubmit="return confirm('Remove this entry? Service records will be recalculated.')"
+                                                style="margin-top:6px;">
+                                                @csrf @method('DELETE')
+                                                <button type="submit"
+                                                    style="font-size:11px;padding:2px 8px;border-radius:5px;
+                                                    background:rgba(239,68,68,0.08);color:#B91C1C;
+                                                    border:1px solid rgba(239,68,68,0.15);cursor:pointer;">
+                                                    <i class="bi bi-trash" style="font-size:10px;"></i> Remove
+                                                </button>
+                                            </form>
+                                        @endif
+                                    </div>
+                                </div>
+                                <div
+                                    style="font-size:11px;color:var(--text-secondary);margin-top:6px;padding-top:6px;border-top:1px solid var(--border);">
+                                    <i class="bi bi-calendar3" style="font-size:10px;"></i>
+                                    Step anchor: {{ \Carbon\Carbon::parse($hist->step_anchor)->format('M d, Y') }}
+                                    &nbsp;·&nbsp; Station: {{ $hist->station ?? '—' }}
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        @endif
+    </div>
+
+    {{-- Add Service Record Modal — outside main form --}}
     <div class="modal fade" id="addServiceModal" tabindex="-1">
         <div class="modal-dialog modal-lg">
             <div class="modal-content" style="border-radius:var(--radius);border:1px solid var(--border);">
@@ -448,26 +634,36 @@
                     @csrf
                     <div class="modal-body">
                         <div class="row g-3">
-                            <div class="col-md-6"><label class="form-label">From</label><input type="date"
-                                    name="inclu_from" class="form-control"></div>
-                            <div class="col-md-6"><label class="form-label">To</label><input type="date"
-                                    name="inclu_to" class="form-control"></div>
-                            <div class="col-md-6"><label class="form-label">Position</label><input type="text"
-                                    name="position" class="form-control"></div>
-                            <div class="col-md-6"><label class="form-label">Designation</label><input type="text"
-                                    name="designation" class="form-control"></div>
-                            <div class="col-md-6"><label class="form-label">Station</label><input type="text"
-                                    name="station" class="form-control"></div>
-                            <div class="col-md-6"><label class="form-label">Branch</label><input type="text"
-                                    name="branch" class="form-control"></div>
-                            <div class="col-md-4"><label class="form-label">Salary Grade</label><input type="text"
-                                    name="salary_grade" class="form-control"></div>
-                            <div class="col-md-4"><label class="form-label">Salary Step</label><input type="text"
-                                    name="salary_step" class="form-control"></div>
-                            <div class="col-md-4"><label class="form-label">Service Status</label><input type="text"
-                                    name="service_status" class="form-control"></div>
-                            <div class="col-md-6"><label class="form-label">Separation</label><input type="text"
-                                    name="separation" class="form-control"></div>
+                            <div class="col-md-6"><label class="form-label">From</label>
+                                <input type="date" name="inclu_from" class="form-control">
+                            </div>
+                            <div class="col-md-6"><label class="form-label">To</label>
+                                <input type="date" name="inclu_to" class="form-control">
+                            </div>
+                            <div class="col-md-6"><label class="form-label">Position</label>
+                                <input type="text" name="position" class="form-control">
+                            </div>
+                            <div class="col-md-6"><label class="form-label">Designation</label>
+                                <input type="text" name="designation" class="form-control">
+                            </div>
+                            <div class="col-md-6"><label class="form-label">Station</label>
+                                <input type="text" name="station" class="form-control">
+                            </div>
+                            <div class="col-md-6"><label class="form-label">Branch</label>
+                                <input type="text" name="branch" class="form-control">
+                            </div>
+                            <div class="col-md-4"><label class="form-label">Salary Grade</label>
+                                <input type="text" name="salary_grade" class="form-control">
+                            </div>
+                            <div class="col-md-4"><label class="form-label">Salary Step</label>
+                                <input type="text" name="salary_step" class="form-control">
+                            </div>
+                            <div class="col-md-4"><label class="form-label">Service Status</label>
+                                <input type="text" name="service_status" class="form-control">
+                            </div>
+                            <div class="col-md-6"><label class="form-label">Separation</label>
+                                <input type="text" name="separation" class="form-control">
+                            </div>
                         </div>
                     </div>
                     <div class="modal-footer" style="border-top:1px solid var(--border);">
@@ -551,16 +747,32 @@
 
     @push('scripts')
         <script>
+            // Tab switching — show/hide history section when Service tab is active
             document.querySelectorAll('.tab-link').forEach(link => {
                 link.addEventListener('click', function(e) {
                     e.preventDefault();
                     document.querySelectorAll('.tab-link').forEach(l => l.classList.remove('active'));
                     document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
                     this.classList.add('active');
-                    document.querySelector(this.getAttribute('href')).classList.add('active');
+                    const target = this.getAttribute('href');
+                    document.querySelector(target).classList.add('active');
+
+                    // Show employment history section only when on service tab
+                    const historySection = document.getElementById('employment-history-section');
+                    if (historySection) {
+                        historySection.style.display = target === '#tab-service' ? 'block' : 'none';
+                    }
                 });
             });
         </script>
     @endpush
+
+    @include('hr.employees.partials.record-change-modal', [
+        'employee' => $employee,
+        'natureOptions' => $natureOptions,
+        'statusOptions' => $statusOptions,
+        'salaryGrades' => $salaryGrades,
+        'subPositions' => $subPositions,
+    ])
 
 @endsection

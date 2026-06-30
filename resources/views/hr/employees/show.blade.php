@@ -118,7 +118,7 @@
         <div class="info-section anim-fade-up delay-2">
             <div class="info-section-title"><i class="bi bi-briefcase"></i> Employment Details</div>
             @if ($employee->employment)
-                <div class="row">
+                <div class="row g-3">
                     <div class="col-md-6">
                         <div class="info-grid">
                             @foreach ([['Position', $employee->employment->position], ['Designation (if any)', $employee->employment->sub_position], ['Nature of Appointment', $employee->employment->nature_appoint], ['Status of Appointment', $employee->employment->status_appoint], ['Original Appointment', $employee->employment->date_orig_appoint?->format('F d, Y')], ['Station Code', $employee->employment->station_code], ['Salary Grade', $employee->employment->salary_grade], ['Salary Step', $employee->employment->salary_step]] as [$label, $value])
@@ -155,14 +155,14 @@
                     <table class="table mb-0">
                         <thead>
                             <tr>
-                                <th>Level</th>
-                                <th>School / Course</th>
-                                <th>Duration</th>
+                                <th style="font-size:12px;font-weight:700;">Level</th>
+                                <th style="font-size:12px;font-weight:700;">School / Course</th>
+                                <th style="font-size:12px;font-weight:700;">Duration</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ([['Elementary', $employee->education->elementary, $employee->education->elem_duration], ['Secondary', $employee->education->secondary, $employee->education->second_duration], ['College', $employee->education->college_school, $employee->education->college_duration], ['Vocational', $employee->education->voc_school, $employee->education->voca_duration], ['Masters', $employee->education->masters_degree, $employee->education->master_duration], ['Doctorate', $employee->education->doc_degree, $employee->education->doc_duration]] as [$level, $school, $duration])
-                                <tr>
+                                <tr style="font-size:13px;">
                                     <td style="font-weight:600;">{{ $level }}</td>
                                     <td>{{ $school ?? '—' }}</td>
                                     <td style="color:var(--text-secondary);">{{ $duration ?? '—' }}</td>
@@ -205,25 +205,30 @@
     {{-- Service Record --}}
     <div class="tab-panel" id="service">
         <div class="info-section anim-fade-up delay-2">
-            <div class="info-section-title"><i class="bi bi-journal-text"></i> Service Records</div>
+            <div class="info-section-title" style="display:flex;justify-content:space-between;align-items:center;">
+                <span><i class="bi bi-journal-text me-1"></i> Service Records</span>
+                <a href="{{ route('hr.employees.history.index', $employee->user_id) }}" class="btn btn-primary btn-sm">
+                    View History
+                </a>
+            </div>
             @if ($employee->serviceRecords->count())
                 <div class="table-responsive">
-                    <table class="table mb-0">
+                    <table class="table mb-0" style="font-size:13px;">
                         <thead>
                             <tr>
-                                <th>From</th>
-                                <th>To</th>
-                                <th>Position</th>
-                                <th>Station</th>
-                                <th>SG</th>
-                                <th>Status</th>
+                                <th style="font-size:12px;font-weight:700;">From</th>
+                                <th style="font-size:12px;font-weight:700;">To</th>
+                                <th style="font-size:12px;font-weight:700;">Position</th>
+                                <th style="font-size:12px;font-weight:700;">Station</th>
+                                <th style="font-size:12px;font-weight:700;">SG</th>
+                                <th style="font-size:12px;font-weight:700;">Status</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($employee->serviceRecords as $rec)
+                            @foreach ($employee->serviceRecords->sortBy('inclu_from') as $rec)
                                 <tr>
-                                    <td>{{ $rec->inclu_from?->format('M d, Y') ?? '—' }}</td>
-                                    <td>{{ $rec->inclu_to?->format('M d, Y') ?? '—' }}</td>
+                                    <td style="white-space:nowrap;">{{ $rec->inclu_from?->format('M d, Y') ?? '—' }}</td>
+                                    <td style="white-space:nowrap;">{{ $rec->inclu_to?->format('M d, Y') ?? '—' }}</td>
                                     <td style="font-weight:500;">{{ $rec->position ?? '—' }}</td>
                                     <td>{{ $rec->station ?? '—' }}</td>
                                     <td>{{ $rec->salary_grade ?? '—' }}</td>
@@ -235,7 +240,10 @@
                     </table>
                 </div>
             @else
-                <p class="text-muted mb-0" style="font-size:14px;">No service records yet.</p>
+                <div style="text-align:center;padding:2rem;color:var(--text-secondary);">
+                    <i class="bi bi-journal-x" style="font-size:28px;display:block;margin-bottom:8px;opacity:0.4;"></i>
+                    <div style="font-size:13px;">No service records yet.</div>
+                </div>
             @endif
         </div>
     </div>
@@ -246,15 +254,15 @@
             <div class="info-section-title"><i class="bi bi-calendar-check"></i> Leave History</div>
             @if ($employee->leaves->count())
                 <div class="table-responsive">
-                    <table class="table mb-0">
+                    <table class="table mb-0" style="font-size:13px;">
                         <thead>
                             <tr>
-                                <th>Type</th>
-                                <th>Applied</th>
-                                <th>Start</th>
-                                <th>End</th>
-                                <th>Days</th>
-                                <th>Status</th>
+                                <th style="font-size:12px;font-weight:700;">Type</th>
+                                <th style="font-size:12px;font-weight:700;">Applied</th>
+                                <th style="font-size:12px;font-weight:700;">Start</th>
+                                <th style="font-size:12px;font-weight:700;">End</th>
+                                <th style="font-size:12px;font-weight:700;">Days</th>
+                                <th style="font-size:12px;font-weight:700;">Status</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -282,7 +290,10 @@
                     </table>
                 </div>
             @else
-                <p class="text-muted mb-0" style="font-size:14px;">No leave records yet.</p>
+                <div style="text-align:center;padding:2rem;color:var(--text-secondary);">
+                    <i class="bi bi-calendar-x" style="font-size:28px;display:block;margin-bottom:8px;opacity:0.4;"></i>
+                    <div style="font-size:13px;">No leave records yet.</div>
+                </div>
             @endif
         </div>
     </div>
@@ -377,6 +388,28 @@
             font-size: 14px;
             color: var(--text-primary);
             font-weight: 500;
+        }
+
+        .table {
+            margin-bottom: 0;
+        }
+
+        .table thead th {
+            border-top: none;
+            border-bottom: 1px solid var(--border);
+            background: transparent;
+            padding: 10px 12px;
+            color: var(--text-secondary);
+        }
+
+        .table tbody td {
+            border-bottom: 1px solid var(--border);
+            padding: 11px 12px;
+            vertical-align: middle;
+        }
+
+        .table tbody tr:last-child td {
+            border-bottom: none;
         }
     </style>
 

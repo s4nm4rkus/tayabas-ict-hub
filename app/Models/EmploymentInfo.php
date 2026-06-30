@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\EmploymentHistory;
 
 class EmploymentInfo extends Model
 {
@@ -49,5 +50,12 @@ class EmploymentInfo extends Model
     public function employee()
     {
         return $this->belongsTo(Employee::class, 'user_id', 'id');
+    }
+
+
+
+    public function histories()
+    {
+        return $this->hasMany(EmploymentHistory::class, 'user_id', 'user_id');
     }
 }

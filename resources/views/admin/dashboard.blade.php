@@ -756,14 +756,14 @@
                             @endphp
                             <div
                                 style="display:flex;align-items:center;gap:12px;padding:10px 14px;
-                        border-radius:10px;background:{{ $uc['bg'] }};border:1px solid {{ $uc['border'] }};">
+                                border-radius:10px;background:{{ $uc['bg'] }};border:1px solid {{ $uc['border'] }};">
 
                                 {{-- Avatar initials --}}
                                 <div
                                     style="width:36px;height:36px;border-radius:10px;flex-shrink:0;
-                            background:{{ $uc['badgeBg'] }};border:1px solid {{ $uc['border'] }};
-                            display:flex;align-items:center;justify-content:center;
-                            font-size:12px;font-weight:700;color:{{ $uc['badge'] }};">
+                                    background:{{ $uc['badgeBg'] }};border:1px solid {{ $uc['border'] }};
+                                    display:flex;align-items:center;justify-content:center;
+                                    font-size:12px;font-weight:700;color:{{ $uc['badge'] }};">
                                     {{ strtoupper(substr($emp->first_name, 0, 1) . substr($emp->last_name, 0, 1)) }}
                                 </div>
 
@@ -785,9 +785,9 @@
                                 <div style="text-align:right;flex-shrink:0;">
                                     <div
                                         style="font-size:11px;font-weight:700;color:{{ $uc['badge'] }};
-                                padding:3px 8px;border-radius:99px;
-                                background:{{ $uc['badgeBg'] }};border:1px solid {{ $uc['border'] }};
-                                white-space:nowrap;">
+                                        padding:3px 8px;border-radius:99px;
+                                        background:{{ $uc['badgeBg'] }};border:1px solid {{ $uc['border'] }};
+                                        white-space:nowrap;">
                                         @if ($yearsLeft <= 0)
                                             Retirement due
                                         @elseif($yearsLeft < 1)

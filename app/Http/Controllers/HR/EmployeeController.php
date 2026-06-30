@@ -147,7 +147,7 @@ class EmployeeController extends Controller
     public function edit(string $id)
     {
         $employee = Employee::with([
-            'user', 'employment', 'education', 'eligibility', 'serviceRecords',
+            'user', 'employment', 'education', 'eligibility', 'serviceRecords', 'employmentHistories',
         ])->where('user_id', $id)->firstOrFail();
 
         $roles          = Role::orderBy('role_desc')->get();

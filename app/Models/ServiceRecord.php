@@ -20,11 +20,16 @@ class ServiceRecord extends Model
         'branch',
         'separation',
         'position',
+        'is_auto_generated',
+        'annual_salary',
+        'change_reason',
     ];
 
     protected $casts = [
         'inclu_from' => 'date',
         'inclu_to' => 'date',
+        'is_auto_generated' => 'boolean',
+        'annual_salary'     => 'float',
     ];
 
     public function employee()

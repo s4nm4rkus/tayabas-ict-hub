@@ -193,7 +193,6 @@
     }
 
     .sig-date-box {
-        border-top: 1px solid #000;
         margin-top: 30px;
         padding-top: 3px;
         width: 190px;
@@ -209,13 +208,6 @@
     .sig-right .certified {
         margin-bottom: 28px;
         font-size: 9pt;
-    }
-
-    .sig-name-block {
-        border-top: 1px solid #000;
-        width: 210px;
-        margin: 0 auto;
-        padding-top: 3px;
     }
 
     .sig-name {

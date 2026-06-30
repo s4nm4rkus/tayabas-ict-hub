@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title') — Tayabas ICT Hub</title>
+    <title>@yield('title') — SDO Tayabas Portal</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
@@ -661,7 +661,7 @@
             <div class="brand-logo">
                 <div class="brand-icon"><i class="bi bi-briefcase-fill"></i></div>
                 <div class="brand-text">
-                    <h6>Tayabas ICT Hub</h6>
+                    <h6>SDO Tayabas Portal</h6>
                     <small>Administrative Officer</small>
                 </div>
             </div>

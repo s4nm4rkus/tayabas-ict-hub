@@ -235,6 +235,11 @@ Route::middleware('auth')->group(function () {
         Route::post('/employees/bulk-update', [App\Http\Controllers\HR\EmployeeController::class, 'bulkUpdate'])->name('hr.employees.bulk-update');
         Route::get('/employees/bulk-update/template', [App\Http\Controllers\HR\EmployeeController::class, 'bulkUpdateTemplate'])->name('hr.employees.bulk-update.template');
 
+        // Employee Service Record
+        Route::post('/employees/{userId}/history', [App\Http\Controllers\HR\EmploymentHistoryController::class, 'store'])->name('hr.employees.history.store');
+        Route::get('/employees/{userId}/history', [App\Http\Controllers\HR\EmploymentHistoryController::class, 'index'])->name('hr.employees.history.index');
+        Route::delete('/employees/{userId}/history/{historyId}', [App\Http\Controllers\HR\EmploymentHistoryController::class, 'destroy'])->name('hr.employees.history.destroy');
+
         // Attendance
         Route::get('/attendance/export/csv', [App\Http\Controllers\HR\AttendanceController::class, 'exportCsv'])->name('hr.attendance.export.csv');
         Route::get('/attendance', [App\Http\Controllers\HR\AttendanceController::class, 'index'])->name('hr.attendance.index');
@@ -276,6 +281,8 @@ Route::middleware('auth')->group(function () {
         Route::post('/profile/photo', [ProfileController::class, 'updatePhoto'])->name('hr.profile.photo');
         Route::post('/profile/password', [ProfileController::class, 'changePassword'])->name('hr.profile.password');
         Route::post('/profile/signature', [ProfileController::class, 'updateSignature'])->name('hr.profile.signature');
+
+
     });
 
     /*

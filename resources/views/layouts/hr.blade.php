@@ -4,28 +4,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title') — Tayabas ICT Hub</title>
+    <title>@yield('title') — SDO Tayabas Portal</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
         rel="stylesheet">
     <style>
         :root {
-            --primary-start: #6EA8FE;
-            --primary-end: #4A90E2;
-            --accent: #8B5CF6;
+            --primary-start: #34D399;
+            --primary-end: #059669;
+            --accent: #10B981;
             --accent-light: #A78BFA;
-            --bg: #F0F4FF;
+            --sidebar-bg: #151f2c;
+            --sidebar-text: #E5E7EB;
+            --sidebar-text-secondary: #9CA3AF;
+            --sidebar-accent: #34D399;
+            --bg: #F8FAFC;
             --surface: #FFFFFF;
             --text-primary: #1F2937;
             --text-secondary: #6B7280;
-            --border: rgba(110, 168, 254, 0.15);
+            --border: rgba(52, 211, 153, 0.1);
             --success: #22C55E;
             --warning: #F59E0B;
             --danger: #EF4444;
             --sidebar-width: 260px;
-            --shadow-sm: 0 1px 3px rgba(74, 144, 226, 0.08), 0 1px 2px rgba(74, 144, 226, 0.06);
-            --shadow-md: 0 4px 16px rgba(74, 144, 226, 0.12), 0 2px 6px rgba(74, 144, 226, 0.08);
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12), 0 2px 6px rgba(0, 0, 0, 0.08);
             --radius: 14px;
             --radius-sm: 10px;
             --transition: 0.22s cubic-bezier(0.4, 0, 0.2, 1);
@@ -46,7 +50,7 @@
 
         .sidebar {
             width: var(--sidebar-width);
-            background: var(--surface);
+            background: var(--sidebar-bg);
             position: fixed;
             top: 0;
             left: 0;
@@ -54,16 +58,15 @@
             z-index: 1045;
             display: flex;
             flex-direction: column;
-            border-right: 1px solid var(--border);
-            box-shadow: 4px 0 24px rgba(74, 144, 226, 0.06);
+            border-right: 1px solid rgba(52, 211, 153, 0.15);
+            box-shadow: 4px 0 24px rgba(0, 0, 0, 0.15);
             transition: transform var(--transition);
-            overflow-y: auto;
-            overflow-x: hidden;
+            overflow: hidden;
         }
 
         .sidebar-brand {
-            padding: 1.5rem 1.25rem 1.25rem;
-            border-bottom: 1px solid var(--border);
+            padding: 1.5rem 1.25rem 1.5rem;
+            border-bottom: 1px solid rgba(52, 211, 153, 0.15);
             flex-shrink: 0;
         }
 
@@ -83,85 +86,97 @@
             justify-content: center;
             color: #fff;
             font-size: 16px;
-            box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);
+            box-shadow: 0 4px 12px rgba(52, 211, 153, 0.4);
             flex-shrink: 0;
         }
 
         .brand-text h6 {
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 700;
-            color: var(--text-primary);
+            color: #fff;
             margin: 0;
-            line-height: 1.2;
+            line-height: 1.3;
+            letter-spacing: 0.02em;
         }
 
         .brand-text small {
-            font-size: 11px;
-            color: var(--text-secondary);
+            font-size: 10.5px;
+            color: var(--sidebar-text-secondary);
             font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
 
         .sidebar-nav {
-            padding: 1rem 0.75rem;
+            padding: 0.5rem 0.75rem;
             flex: 1;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .nav-group {
+            flex-shrink: 0;
         }
 
         .nav-section {
-            padding: 0.75rem 0.5rem 0.4rem;
-            font-size: 10px;
+            padding: 0.75rem 0.875rem 0.5rem;
+            font-size: 9.5px;
             font-weight: 700;
-            color: var(--text-secondary);
+            color: var(--sidebar-text-secondary);
             text-transform: uppercase;
-            letter-spacing: 0.1em;
-            opacity: 0.7;
+            letter-spacing: 0.12em;
+            opacity: 0.6;
         }
 
         .sidebar .nav-link {
-            color: var(--text-secondary);
-            padding: 0.6rem 0.875rem;
-            font-size: 13.5px;
+            color: var(--sidebar-text-secondary);
+            padding: 0.65rem 0.875rem;
+            font-size: 13px;
             font-weight: 500;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 11px;
             border-radius: var(--radius-sm);
-            margin-bottom: 2px;
+            margin-bottom: 3px;
             transition: all var(--transition);
             position: relative;
             overflow: hidden;
+            text-decoration: none;
+            white-space: nowrap;
         }
 
         .sidebar .nav-link::before {
             content: '';
             position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, rgba(52, 211, 153, 0.12), rgba(5, 150, 105, 0.08));
-            opacity: 0;
-            border-radius: var(--radius-sm);
-            transition: opacity var(--transition);
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: var(--sidebar-accent);
+            transform: scaleY(0);
+            transform-origin: top;
+            transition: transform var(--transition);
+            border-radius: 0 4px 4px 0;
         }
 
         .sidebar .nav-link:hover {
-            color: var(--text-primary);
-        }
-
-        .sidebar .nav-link:hover::before {
-            opacity: 1;
+            color: var(--sidebar-text);
+            background: rgba(52, 211, 153, 0.12);
         }
 
         .sidebar .nav-link.active {
-            color: #fff;
-            background: linear-gradient(135deg, #34D399, #059669);
-            box-shadow: 0 4px 14px rgba(5, 150, 105, 0.35);
+            color: var(--sidebar-accent);
+            background: rgba(52, 211, 153, 0.15);
         }
 
         .sidebar .nav-link.active::before {
-            opacity: 0;
+            transform: scaleY(1);
         }
 
         .sidebar .nav-link i {
-            font-size: 15px;
-            width: 18px;
+            font-size: 14px;
+            width: 16px;
             flex-shrink: 0;
             transition: transform var(--transition);
         }
@@ -170,13 +185,9 @@
             transform: translateX(2px);
         }
 
-        .sidebar .nav-link.active i {
-            transform: none;
-        }
-
         .sidebar-footer {
             padding: 1rem 0.75rem;
-            border-top: 1px solid var(--border);
+            border-top: 1px solid rgba(52, 211, 153, 0.15);
             flex-shrink: 0;
         }
 
@@ -185,28 +196,28 @@
             align-items: center;
             gap: 10px;
             width: 100%;
-            padding: 0.6rem 0.875rem;
-            background: rgba(239, 68, 68, 0.06);
-            border: 1px solid rgba(239, 68, 68, 0.12);
+            padding: 0.65rem 0.875rem;
+            background: rgba(239, 68, 68, 0.12);
+            border: 1px solid rgba(239, 68, 68, 0.25);
             border-radius: var(--radius-sm);
-            color: var(--danger);
-            font-size: 13.5px;
-            font-weight: 500;
+            color: #FCA5A5;
+            font-size: 13px;
+            font-weight: 600;
             cursor: pointer;
             transition: all var(--transition);
             font-family: inherit;
         }
 
         .logout-btn:hover {
-            background: rgba(239, 68, 68, 0.12);
-            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.15);
+            background: rgba(239, 68, 68, 0.18);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
         }
 
         .sidebar-overlay {
             display: none;
             position: fixed;
             inset: 0;
-            background: rgba(31, 41, 55, 0.4);
+            background: rgba(11, 31, 58, 0.5);
             backdrop-filter: blur(4px);
             z-index: 1040;
             opacity: 0;
@@ -225,9 +236,9 @@
         }
 
         .topbar {
-            background: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.9);
             backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--border);
+            border-bottom: 1px solid rgba(52, 211, 153, 0.1);
             padding: 0.875rem 1.75rem;
             display: flex;
             align-items: center;
@@ -267,7 +278,7 @@
             align-items: center;
             justify-content: center;
             background: var(--bg);
-            border: 1px solid var(--border);
+            border: 1px solid rgba(52, 211, 153, 0.1);
             color: var(--text-secondary);
             font-size: 15px;
             cursor: pointer;
@@ -298,7 +309,7 @@
             gap: 8px;
             padding: 4px 12px 4px 4px;
             background: var(--bg);
-            border: 1px solid var(--border);
+            border: 1px solid rgba(52, 211, 153, 0.1);
             border-radius: 99px;
             cursor: pointer;
             transition: all var(--transition);
@@ -338,7 +349,7 @@
             height: 36px;
             border-radius: 10px;
             background: var(--bg);
-            border: 1px solid var(--border);
+            border: 1px solid rgba(52, 211, 153, 0.1);
             color: var(--text-secondary);
             font-size: 18px;
             display: none !important;
@@ -513,8 +524,8 @@
         }
 
         .badge-info {
-            background: rgba(110, 168, 254, 0.15);
-            color: #1D4ED8;
+            background: rgba(52, 211, 153, 0.15);
+            color: #059669;
         }
 
         .badge-gray {
@@ -530,13 +541,13 @@
             letter-spacing: 0.06em;
             padding: 10px 14px;
             border-bottom: 1px solid var(--border);
-            background: rgba(240, 244, 255, 0.6);
+            background: rgba(52, 211, 153, 0.04);
         }
 
         .table tbody tr td {
             font-size: 13.5px;
             padding: 12px 14px;
-            border-bottom: 1px solid rgba(240, 244, 255, 0.8);
+            border-bottom: 1px solid rgba(52, 211, 153, 0.08);
             vertical-align: middle;
         }
 
@@ -644,8 +655,8 @@
         }
 
         .alert-info {
-            background: rgba(110, 168, 254, 0.12);
-            color: #1D4ED8;
+            background: rgba(52, 211, 153, 0.12);
+            color: #059669;
         }
 
         ::-webkit-scrollbar {
@@ -713,75 +724,87 @@
             <div class="brand-logo">
                 <div class="brand-icon"><i class="bi bi-people-fill"></i></div>
                 <div class="brand-text">
-                    <h6>Tayabas ICT Hub</h6>
+                    <h6>SDO Tayabas Portal</h6>
                     <small>Human Resources</small>
                 </div>
             </div>
         </div>
         <div class="sidebar-nav">
-            <div class="nav-section">Main</div>
-            <a href="{{ route('hr.dashboard') }}"
-                class="nav-link {{ request()->routeIs('hr.dashboard') ? 'active' : '' }}"><i class="bi bi-grid-1x2"></i>
-                Dashboard</a>
-            <div class="nav-section mt-2">Employee</div>
-            <a href="{{ route('hr.employees.index') }}"
-                class="nav-link {{ request()->routeIs('hr.employees.*') ? 'active' : '' }}">
-                <i class="bi bi-people"></i> Employees
-            </a>
-            <a href="{{ route('hr.employees.create') }}"
-                class="nav-link {{ request()->routeIs('hr.employees.create') ? 'active' : '' }}">
-                <i class="bi bi-person-plus"></i> Add Employee
-            </a>
-            <div class="nav-section mt-2">Leave</div>
-            <a href="{{ route('hr.leave.index') }}"
-                class="nav-link {{ request()->routeIs('hr.leave.*') ? 'active' : '' }}"><i
-                    class="bi bi-calendar-check"></i> Leave Requests</a>
-            <div class="nav-section mt-2">Certificates</div>
-            <a href="{{ route('hr.certificates.index') }}"
-                class="nav-link {{ request()->routeIs('hr.certificates.*') ? 'active' : '' }}"><i
-                    class="bi bi-file-earmark-text"></i> Certificate Requests</a>
+            {{-- Main Section --}}
+            <div class="nav-group">
+                <div class="nav-section">Main</div>
+                <a href="{{ route('hr.dashboard') }}"
+                    class="nav-link {{ request()->routeIs('hr.dashboard') ? 'active' : '' }}">
+                    <i class="bi bi-grid-1x2"></i> Dashboard
+                </a>
+            </div>
 
-            <div class="nav-section mt-2">Communication</div>
-            <a href="{{ route('hr.board.index') }}"
-                class="nav-link {{ request()->routeIs('hr.board.*') ? 'active' : '' }}"><i class="bi bi-megaphone"></i>
-                Notice Board</a>
-            <a href="{{ route('hr.messages.index') }}"
-                class="nav-link {{ request()->routeIs('hr.messages.*') ? 'active' : '' }}"><i
-                    class="bi bi-chat-dots"></i> Messages</a>
+            {{-- Employee Section --}}
+            <div class="nav-group" style="margin-top:0.5rem;">
+                <div class="nav-section">Employee</div>
+                <a href="{{ route('hr.employees.index') }}"
+                    class="nav-link {{ request()->routeIs('hr.employees.*') ? 'active' : '' }}">
+                    <i class="bi bi-people"></i> Employees
+                </a>
+                <a href="{{ route('hr.employees.create') }}"
+                    class="nav-link {{ request()->routeIs('hr.employees.create') ? 'active' : '' }}">
+                    <i class="bi bi-person-plus"></i> Add Employee
+                </a>
+            </div>
 
-            <div class="nav-section mt-2">Other</div>
-            <a href="{{ route('hr.attendance.index') }}"
-                class="nav-link {{ request()->routeIs('hr.attendance.*') ? 'active' : '' }}">
-                <i class="bi bi-clock-history"></i> Attendance
-            </a>
-            <a href="{{ route('hr.profile.show') }}"
-                class="nav-link {{ request()->routeIs('hr.profile.*') ? 'active' : '' }}"><i
-                    class="bi bi-person-circle"></i> My Profile</a>
+            {{-- Leave Section --}}
+            <div class="nav-group" style="margin-top:0.5rem;">
+                <div class="nav-section">Management</div>
+                <a href="{{ route('hr.leave.index') }}"
+                    class="nav-link {{ request()->routeIs('hr.leave.*') ? 'active' : '' }}">
+                    <i class="bi bi-calendar-check"></i> Leave Requests
+                </a>
+                <a href="{{ route('hr.attendance.index') }}"
+                    class="nav-link {{ request()->routeIs('hr.attendance.*') ? 'active' : '' }}">
+                    <i class="bi bi-clock-history"></i> Attendance
+                </a>
+                <a href="{{ route('hr.certificates.index') }}"
+                    class="nav-link {{ request()->routeIs('hr.certificates.*') ? 'active' : '' }}">
+                    <i class="bi bi-file-earmark-text"></i> Certificates
+                </a>
+            </div>
 
-            <div class="nav-section mt-2">System</div>
-            <a href="{{ route('hr.appointment-options.index') }}"
-                class="nav-link {{ request()->routeIs('hr.appointment-options.*') ? 'active' : '' }}">
-                <i class="bi bi-calendar2-check"></i> Appointment Options
-            </a>
-            <a href="{{ route('hr.roles.index') }}"
-                class="nav-link {{ request()->routeIs('hr.roles.*') ? 'active' : '' }}">
-                <i class="bi bi-person-badge"></i> Roles
-            </a>
-            {{-- <a href="{{ route('hr.salary.index') }}"
-                class="nav-link {{ request()->routeIs('hr.salary.*') ? 'active' : '' }}">
-                <i class="bi bi-cash-stack"></i> Salary Grade
-            </a>
-            <a href="{{ route('hr.subposition.index') }}"
-                class="nav-link {{ request()->routeIs('hr.subposition.*') ? 'active' : '' }}">
-                <i class="bi bi-diagram-3"></i> Designation (if any)s
-            </a> --}}
+            {{-- Communication Section --}}
+            <div class="nav-group" style="margin-top:0.5rem;">
+                <div class="nav-section">Communication</div>
+                <a href="{{ route('hr.board.index') }}"
+                    class="nav-link {{ request()->routeIs('hr.board.*') ? 'active' : '' }}">
+                    <i class="bi bi-megaphone"></i> Notice Board
+                </a>
+                <a href="{{ route('hr.messages.index') }}"
+                    class="nav-link {{ request()->routeIs('hr.messages.*') ? 'active' : '' }}">
+                    <i class="bi bi-chat-dots"></i> Messages
+                </a>
+            </div>
 
+            {{-- Settings Section --}}
+            <div class="nav-group" style="margin-top:0.5rem;">
+                <div class="nav-section">Settings</div>
+                <a href="{{ route('hr.profile.show') }}"
+                    class="nav-link {{ request()->routeIs('hr.profile.*') ? 'active' : '' }}">
+                    <i class="bi bi-person-circle"></i> My Profile
+                </a>
+                <a href="{{ route('hr.roles.index') }}"
+                    class="nav-link {{ request()->routeIs('hr.roles.*') ? 'active' : '' }}">
+                    <i class="bi bi-person-badge"></i> Roles
+                </a>
+                <a href="{{ route('hr.appointment-options.index') }}"
+                    class="nav-link {{ request()->routeIs('hr.appointment-options.*') ? 'active' : '' }}">
+                    <i class="bi bi-calendar2-check"></i> Appointment Options
+                </a>
+            </div>
         </div>
         <div class="sidebar-footer">
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
-                <button type="submit" class="logout-btn"><i
-                        class="bi bi-box-arrow-left"></i><span>Logout</span></button>
+                <button type="submit" class="logout-btn">
+                    <i class="bi bi-box-arrow-left"></i> Logout
+                </button>
             </form>
         </div>
     </div>

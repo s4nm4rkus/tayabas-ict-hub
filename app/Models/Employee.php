@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\EmploymentHistory;
 use Illuminate\Database\Eloquent\Model;
 
 class Employee extends Model
@@ -99,5 +100,11 @@ class Employee extends Model
     public function fingerPrint()
     {
         return $this->hasOne(FingerPrint::class, 'user_id', 'id');
+    }
+
+    public function employmentHistories()
+    {
+        return $this->hasMany(EmploymentHistory::class, 'user_id', 'user_id')
+                    ->orderByDesc('effective_date');
     }
 }

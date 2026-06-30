@@ -96,7 +96,7 @@
 <body>
 
     <div class="header">
-        <h2>Tayabas ICT Hub &mdash; Employee Information</h2>
+        <h2>SDO Tayabas Portal &mdash; Employee Information</h2>
         <p>
             Generated on {{ now()->format('F d, Y h:i A') }}
             &nbsp;&bull;&nbsp;
@@ -168,7 +168,7 @@
     </table>
 
     <div class="footer">
-        Tayabas ICT Hub &mdash; Confidential &mdash; {{ now()->format('F d, Y') }}
+        SDO Tayabas Portal &mdash; Confidential &mdash; {{ now()->format('F d, Y') }}
     </div>
 
 </body>

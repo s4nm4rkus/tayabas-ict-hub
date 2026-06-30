@@ -890,7 +890,7 @@
                     </h1>
                     <p class="page-hero-desc">
                         All official ICT forms in one place. Choose the form that matches your concern
-                        and submit through the Tayabas ICT Hub — fast, trackable, and paperless.
+                        and submit through the SDO Tayabas Portal — fast, trackable, and paperless.
                     </p>
                     <div class="ict-meta-pills">
                         <span class="ict-meta-pill"><i class="bi bi-shield-check-fill"></i> Official DepEd Forms</span>
@@ -940,7 +940,7 @@
         <div class="featured-banner ict-reveal">
             <div style="position:relative;z-index:1;">
                 <div class="featured-eyebrow"><i class="bi bi-star-fill"></i> Official Portal</div>
-                <div class="featured-title">Submit Tickets at Tayabas ICT Hub</div>
+                <div class="featured-title">Submit Tickets at SDO Tayabas Portal</div>
                 <div class="featured-desc">
                     All forms below route to <strong style="color:#fff;">tayabasicthub.com</strong> — available 24/7 for
                     all DepEd Tayabas City personnel.

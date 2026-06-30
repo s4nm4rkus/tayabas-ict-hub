@@ -1727,7 +1727,7 @@
                         class="bi bi-ticket-perforated-fill"></i></div>
                 <div class="svc-name">ICT Ticketing System</div>
                 <div class="svc-desc">Submit, track, and manage your ICT support requests online through the official
-                    Tayabas ICT Hub. Faster response times and real-time status updates.</div>
+                    SDO Tayabas Portal. Faster response times and real-time status updates.</div>
                 <div class="svc-tags"><span class="svc-tag">Technical Assistance</span><span class="svc-tag">DTS
                         Request</span><span class="svc-tag">Email Request</span><span class="svc-tag">Help Desk</span>
                 </div>
@@ -1898,7 +1898,7 @@
                 <div class="about-img-badge">
                     <div class="about-badge-icon"><i class="bi bi-cpu-fill"></i></div>
                     <div class="about-badge-text">
-                        <strong>Tayabas ICT Hub</strong>
+                        <strong>SDO Tayabas Portal</strong>
                         <span>tayabasicthub.com</span>
                     </div>
                 </div>
@@ -2038,7 +2038,7 @@
                 <div class="cta-box reveal d2">
                     <div class="cta-icon"><i class="bi bi-ticket-perforated-fill"></i></div>
                     <div class="cta-title">ICT Ticketing System</div>
-                    <div class="cta-desc">Submit your technical concern online at the official Tayabas ICT Hub for a
+                    <div class="cta-desc">Submit your technical concern online at the official SDO Tayabas Portal for a
                         faster, trackable response from the ICT Unit.</div>
                     <a href="{{ route('ict.forms') }}" class="btn-cta">
                         <i class="bi bi-plus-circle-fill"></i> Submit a Ticket

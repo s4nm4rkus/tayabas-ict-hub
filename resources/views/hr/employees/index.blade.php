@@ -65,48 +65,63 @@
     <div class="stat-card anim-fade-up delay-1">
 
         {{-- Toolbar --}}
-        <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-3">
-            <div class="d-flex align-items-center gap-2">
-                <span style="font-size:15px;font-weight:700;color:var(--text-primary);">Employee List</span>
+        <div
+            style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;">
+
+            {{-- Left: Title + Count --}}
+            <div style="display:flex;align-items:center;gap:8px;">
+                <h3 style="margin:0;font-size:18px;font-weight:700;color:var(--text-primary);">Employees</h3>
                 <span
                     style="font-size:12px;font-weight:500;color:var(--text-secondary);
-                             background:var(--bg);padding:2px 10px;border-radius:99px;
-                             border:1px solid var(--border);">
-                    {{ $employees->total() }} employees
+                     background:var(--bg);padding:4px 12px;border-radius:99px;
+                     border:1px solid var(--border);">
+                    {{ $employees->total() }}
                 </span>
             </div>
-            <div class="d-flex align-items-center gap-2 flex-wrap">
-                <div class="dropdown">
-                    <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button"
-                        data-bs-toggle="dropdown">
-                        <i class="bi bi-download me-1"></i> Export
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end"
-                        style="border:1px solid var(--border);border-radius:var(--radius-sm);box-shadow:var(--shadow-md);">
-                        <li>
-                            <a class="dropdown-item" href="{{ route('hr.employees.export.csv') }}"
-                                style="font-size:13.5px;padding:8px 16px;">
-                                <i class="bi bi-filetype-csv me-2" style="color:#22C55E;"></i> CSV
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="{{ route('hr.employees.export.pdf') }}"
-                                style="font-size:13.5px;padding:8px 16px;">
-                                <i class="bi bi-filetype-pdf me-2" style="color:#EF4444;"></i> PDF
-                            </a>
-                        </li>
-                    </ul>
+
+            {{-- Right: Action Buttons --}}
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+
+                {{-- Data Import/Export Group --}}
+                <div
+                    style="display:flex;align-items:center;gap:8px;padding-right:8px;border-right:1px solid var(--border);">
+                    {{-- Export Dropdown --}}
+                    <div class="dropdown">
+                        <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button"
+                            data-bs-toggle="dropdown" style="font-size:13px;">
+                            <i class="bi bi-download me-1"></i> Export
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end"
+                            style="border:1px solid var(--border);border-radius:var(--radius-sm);">
+                            <li><a class="dropdown-item" href="{{ route('hr.employees.export.csv') }}"
+                                    style="font-size:13px;padding:8px 16px;">
+                                    <i class="bi bi-filetype-csv me-2" style="color:#22C55E;"></i> CSV
+                                </a></li>
+                            <li><a class="dropdown-item" href="{{ route('hr.employees.export.pdf') }}"
+                                    style="font-size:13px;padding:8px 16px;">
+                                    <i class="bi bi-filetype-pdf me-2" style="color:#EF4444;"></i> PDF
+                                </a></li>
+                        </ul>
+                    </div>
+
+                    {{-- Import Actions --}}
+                    <a href="{{ route('hr.employees.import.form') }}" class="btn btn-outline-secondary btn-sm"
+                        title="Import new employee data" style="font-size:13px;">
+                        <i class="bi bi-upload me-1"></i> Import
+                    </a>
+                    <a href="{{ route('hr.employees.bulk-update.form') }}" class="btn btn-outline-secondary btn-sm"
+                        title="Update existing employee records" style="font-size:13px;">
+                        <i class="bi bi-arrow-repeat me-1"></i> Bulk Update
+                    </a>
                 </div>
-                <a href="{{ route('hr.employees.import.form') }}" class="btn btn-outline-primary btn-sm">
-                    <i class="bi bi-upload me-1"></i> Import
-                </a>
-                <a href="{{ route('hr.employees.bulk-update.form') }}" class="btn btn-outline-primary btn-sm">
-                    <i class="bi bi-upload me-1"></i> Import Update
-                </a>
-                <a href="{{ route('hr.employees.create') }}" class="btn btn-primary btn-sm">
+
+                {{-- Primary Action --}}
+                <a href="{{ route('hr.employees.create') }}" class="btn btn-primary btn-sm"
+                    style="font-size:13px;white-space:nowrap;">
                     <i class="bi bi-person-plus me-1"></i> Add Employee
                 </a>
             </div>
+
         </div>
 
         {{-- Search & Filter --}}

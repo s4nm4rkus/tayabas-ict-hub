@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title') — Tayabas ICT Hub</title>
+    <title>@yield('title') — SDO Tayabas Portal</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
@@ -14,19 +14,21 @@
             --primary-start: #6EA8FE;
             --primary-end: #4A90E2;
             --accent: #8B5CF6;
-            --accent-light: #A78BFA;
-            --bg: #F0F4FF;
+            --sidebar-bg: #151f2c;
+            --sidebar-text: #E5E7EB;
+            --sidebar-text-secondary: #9CA3AF;
+            --sidebar-accent: #6EA8FE;
+            --bg: #F8FAFC;
             --surface: #FFFFFF;
             --text-primary: #1F2937;
             --text-secondary: #6B7280;
-            --border: rgba(110, 168, 254, 0.15);
+            --border: rgba(106, 168, 254, 0.1);
             --success: #22C55E;
             --warning: #F59E0B;
             --danger: #EF4444;
             --sidebar-width: 260px;
-            --shadow-sm: 0 1px 3px rgba(74, 144, 226, 0.08), 0 1px 2px rgba(74, 144, 226, 0.06);
-            --shadow-md: 0 4px 16px rgba(74, 144, 226, 0.12), 0 2px 6px rgba(74, 144, 226, 0.08);
-            --shadow-lg: 0 8px 32px rgba(74, 144, 226, 0.15), 0 4px 12px rgba(74, 144, 226, 0.10);
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12), 0 2px 6px rgba(0, 0, 0, 0.08);
             --radius: 14px;
             --radius-sm: 10px;
             --transition: 0.22s cubic-bezier(0.4, 0, 0.2, 1);
@@ -48,7 +50,7 @@
         /* ── Sidebar ── */
         .sidebar {
             width: var(--sidebar-width);
-            background: var(--surface);
+            background: var(--sidebar-bg);
             position: fixed;
             top: 0;
             left: 0;
@@ -56,16 +58,15 @@
             z-index: 1045;
             display: flex;
             flex-direction: column;
-            border-right: 1px solid var(--border);
-            box-shadow: 4px 0 24px rgba(74, 144, 226, 0.06);
+            border-right: 1px solid rgba(106, 168, 254, 0.15);
+            box-shadow: 4px 0 24px rgba(0, 0, 0, 0.15);
             transition: transform var(--transition);
-            overflow-y: auto;
-            overflow-x: hidden;
+            overflow: hidden;
         }
 
         .sidebar-brand {
-            padding: 1.5rem 1.25rem 1.25rem;
-            border-bottom: 1px solid var(--border);
+            padding: 1.5rem 1.25rem 1.5rem;
+            border-bottom: 1px solid rgba(106, 168, 254, 0.15);
             flex-shrink: 0;
         }
 
@@ -79,91 +80,103 @@
             width: 36px;
             height: 36px;
             border-radius: 10px;
-            background: linear-gradient(135deg, var(--primary-start), var(--primary-end));
+            background: linear-gradient(135deg, #6EA8FE, #4A90E2);
             display: flex;
             align-items: center;
             justify-content: center;
             color: #fff;
             font-size: 16px;
-            box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
+            box-shadow: 0 4px 12px rgba(106, 168, 254, 0.4);
             flex-shrink: 0;
         }
 
         .brand-text h6 {
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 700;
-            color: var(--text-primary);
+            color: #fff;
             margin: 0;
-            line-height: 1.2;
+            line-height: 1.3;
+            letter-spacing: 0.02em;
         }
 
         .brand-text small {
-            font-size: 11px;
-            color: var(--text-secondary);
+            font-size: 10.5px;
+            color: var(--sidebar-text-secondary);
             font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
 
         .sidebar-nav {
-            padding: 1rem 0.75rem;
+            padding: 0.5rem 0.75rem;
             flex: 1;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .nav-group {
+            flex-shrink: 0;
         }
 
         .nav-section {
-            padding: 0.75rem 0.5rem 0.4rem;
-            font-size: 10px;
+            padding: 0.75rem 0.875rem 0.5rem;
+            font-size: 9.5px;
             font-weight: 700;
-            color: var(--text-secondary);
+            color: var(--sidebar-text-secondary);
             text-transform: uppercase;
-            letter-spacing: 0.1em;
-            opacity: 0.7;
+            letter-spacing: 0.12em;
+            opacity: 0.6;
         }
 
         .sidebar .nav-link {
-            color: var(--text-secondary);
-            padding: 0.6rem 0.875rem;
-            font-size: 13.5px;
+            color: var(--sidebar-text-secondary);
+            padding: 0.65rem 0.875rem;
+            font-size: 13px;
             font-weight: 500;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 11px;
             border-radius: var(--radius-sm);
-            margin-bottom: 2px;
+            margin-bottom: 3px;
             transition: all var(--transition);
             position: relative;
             overflow: hidden;
+            text-decoration: none;
+            white-space: nowrap;
         }
 
         .sidebar .nav-link::before {
             content: '';
             position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, rgba(110, 168, 254, 0.12), rgba(139, 92, 246, 0.08));
-            opacity: 0;
-            border-radius: var(--radius-sm);
-            transition: opacity var(--transition);
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: var(--sidebar-accent);
+            transform: scaleY(0);
+            transform-origin: top;
+            transition: transform var(--transition);
+            border-radius: 0 4px 4px 0;
         }
 
         .sidebar .nav-link:hover {
-            color: var(--text-primary);
-        }
-
-        .sidebar .nav-link:hover::before {
-            opacity: 1;
+            color: var(--sidebar-text);
+            background: rgba(106, 168, 254, 0.12);
         }
 
         .sidebar .nav-link.active {
-            color: #fff;
-            background: linear-gradient(135deg, var(--primary-start), var(--primary-end));
-            box-shadow: 0 4px 14px rgba(74, 144, 226, 0.35);
+            color: var(--sidebar-accent);
+            background: rgba(106, 168, 254, 0.15);
         }
 
         .sidebar .nav-link.active::before {
-            opacity: 0;
+            transform: scaleY(1);
         }
 
         .sidebar .nav-link i {
-            font-size: 15px;
-            width: 18px;
+            font-size: 14px;
+            width: 16px;
             flex-shrink: 0;
             transition: transform var(--transition);
         }
@@ -172,13 +185,9 @@
             transform: translateX(2px);
         }
 
-        .sidebar .nav-link.active i {
-            transform: none;
-        }
-
         .sidebar-footer {
             padding: 1rem 0.75rem;
-            border-top: 1px solid var(--border);
+            border-top: 1px solid rgba(106, 168, 254, 0.15);
             flex-shrink: 0;
         }
 
@@ -187,21 +196,21 @@
             align-items: center;
             gap: 10px;
             width: 100%;
-            padding: 0.6rem 0.875rem;
-            background: rgba(239, 68, 68, 0.06);
-            border: 1px solid rgba(239, 68, 68, 0.12);
+            padding: 0.65rem 0.875rem;
+            background: rgba(239, 68, 68, 0.12);
+            border: 1px solid rgba(239, 68, 68, 0.25);
             border-radius: var(--radius-sm);
-            color: var(--danger);
-            font-size: 13.5px;
-            font-weight: 500;
+            color: #FCA5A5;
+            font-size: 13px;
+            font-weight: 600;
             cursor: pointer;
             transition: all var(--transition);
             font-family: inherit;
         }
 
         .logout-btn:hover {
-            background: rgba(239, 68, 68, 0.12);
-            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.15);
+            background: rgba(239, 68, 68, 0.18);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
         }
 
         /* ── Overlay ── */
@@ -209,7 +218,7 @@
             display: none;
             position: fixed;
             inset: 0;
-            background: rgba(31, 41, 55, 0.4);
+            background: rgba(11, 31, 58, 0.5);
             backdrop-filter: blur(4px);
             z-index: 1040;
             opacity: 0;
@@ -230,9 +239,9 @@
 
         /* ── Topbar ── */
         .topbar {
-            background: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.9);
             backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--border);
+            border-bottom: 1px solid rgba(106, 168, 254, 0.1);
             padding: 0.875rem 1.75rem;
             display: flex;
             align-items: center;
@@ -272,7 +281,7 @@
             align-items: center;
             justify-content: center;
             background: var(--bg);
-            border: 1px solid var(--border);
+            border: 1px solid rgba(106, 168, 254, 0.1);
             color: var(--text-secondary);
             font-size: 15px;
             cursor: pointer;
@@ -303,7 +312,7 @@
             gap: 8px;
             padding: 4px 12px 4px 4px;
             background: var(--bg);
-            border: 1px solid var(--border);
+            border: 1px solid rgba(106, 168, 254, 0.1);
             border-radius: 99px;
             cursor: pointer;
             transition: all var(--transition);
@@ -318,7 +327,7 @@
             width: 28px;
             height: 28px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary-start), var(--accent));
+            background: linear-gradient(135deg, #6EA8FE, #8B5CF6);
             color: #fff;
             display: flex;
             align-items: center;
@@ -343,7 +352,7 @@
             height: 36px;
             border-radius: 10px;
             background: var(--bg);
-            border: 1px solid var(--border);
+            border: 1px solid rgba(106, 168, 254, 0.1);
             color: var(--text-secondary);
             font-size: 18px;
             display: none !important;
@@ -392,7 +401,7 @@
 
         /* ── Gradient Hero ── */
         .page-hero {
-            background: linear-gradient(135deg, var(--primary-start) 0%, var(--primary-end) 50%, var(--accent) 100%);
+            background: linear-gradient(135deg, #6EA8FE 0%, #4A90E2 50%, #8B5CF6 100%);
             border-radius: var(--radius);
             padding: 1.5rem 1.75rem;
             margin-bottom: 1.5rem;
@@ -436,16 +445,6 @@
             }
         }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-
-            to {
-                opacity: 1;
-            }
-        }
-
         @keyframes slideInLeft {
             from {
                 opacity: 0;
@@ -472,10 +471,6 @@
 
         .anim-fade-up {
             animation: fadeInUp 0.4s ease both;
-        }
-
-        .anim-fade {
-            animation: fadeIn 0.3s ease both;
         }
 
         .anim-slide-left {
@@ -537,8 +532,8 @@
         }
 
         .badge-info {
-            background: rgba(110, 168, 254, 0.15);
-            color: #1D4ED8;
+            background: rgba(106, 168, 254, 0.15);
+            color: #4A90E2;
         }
 
         .badge-gray {
@@ -555,13 +550,13 @@
             letter-spacing: 0.06em;
             padding: 10px 14px;
             border-bottom: 1px solid var(--border);
-            background: rgba(240, 244, 255, 0.6);
+            background: rgba(106, 168, 254, 0.04);
         }
 
         .table tbody tr td {
             font-size: 13.5px;
             padding: 12px 14px;
-            border-bottom: 1px solid rgba(240, 244, 255, 0.8);
+            border-bottom: 1px solid rgba(106, 168, 254, 0.08);
             vertical-align: middle;
         }
 
@@ -570,23 +565,23 @@
         }
 
         .table-hover tbody tr:hover td {
-            background: rgba(110, 168, 254, 0.04);
+            background: rgba(106, 168, 254, 0.04);
         }
 
         /* ── Buttons ── */
         .btn-primary {
-            background: linear-gradient(135deg, var(--primary-start), var(--primary-end));
+            background: linear-gradient(135deg, #6EA8FE, #4A90E2);
             border: none;
             color: white;
             font-weight: 600;
             border-radius: var(--radius-sm);
-            box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
+            box-shadow: 0 4px 12px rgba(106, 168, 254, 0.3);
             transition: all var(--transition);
             font-family: inherit;
         }
 
         .btn-primary:hover {
-            box-shadow: 0 6px 20px rgba(74, 144, 226, 0.45);
+            box-shadow: 0 6px 20px rgba(106, 168, 254, 0.45);
             transform: translateY(-1px);
             color: white;
         }
@@ -596,7 +591,7 @@
         }
 
         .btn-outline-primary {
-            border-color: rgba(110, 168, 254, 0.4);
+            border-color: rgba(106, 168, 254, 0.4);
             color: #4A90E2;
             border-radius: var(--radius-sm);
             font-weight: 600;
@@ -605,10 +600,10 @@
         }
 
         .btn-outline-primary:hover {
-            background: linear-gradient(135deg, var(--primary-start), var(--primary-end));
+            background: linear-gradient(135deg, #6EA8FE, #4A90E2);
             border-color: transparent;
             color: white;
-            box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
+            box-shadow: 0 4px 12px rgba(106, 168, 254, 0.3);
         }
 
         .btn-outline-secondary {
@@ -640,8 +635,8 @@
 
         .form-control:focus,
         .form-select:focus {
-            border-color: var(--primary-start);
-            box-shadow: 0 0 0 3px rgba(110, 168, 254, 0.2);
+            border-color: #6EA8FE;
+            box-shadow: 0 0 0 3px rgba(106, 168, 254, 0.2);
             outline: none;
         }
 
@@ -676,8 +671,8 @@
         }
 
         .alert-info {
-            background: rgba(110, 168, 254, 0.12);
-            color: #1D4ED8;
+            background: rgba(106, 168, 254, 0.12);
+            color: #4A90E2;
         }
 
         /* ── Scrollbar ── */
@@ -690,12 +685,12 @@
         }
 
         ::-webkit-scrollbar-thumb {
-            background: rgba(110, 168, 254, 0.3);
+            background: rgba(106, 168, 254, 0.3);
             border-radius: 99px;
         }
 
         ::-webkit-scrollbar-thumb:hover {
-            background: rgba(110, 168, 254, 0.5);
+            background: rgba(106, 168, 254, 0.5);
         }
 
         /* ── Responsive ── */
@@ -745,90 +740,97 @@
     <div class="sidebar" id="sidebar">
         <div class="sidebar-brand">
             <div class="brand-logo">
-                <div class="brand-icon">
-                    <i class="bi bi-shield-check"></i>
-                </div>
+                <div class="brand-icon"><i class="bi bi-shield-check"></i></div>
                 <div class="brand-text">
-                    <h6>Tayabas ICT Hub</h6>
+                    <h6>SDO Tayabas Portal</h6>
                     <small>Super Administrator</small>
                 </div>
             </div>
         </div>
 
         <div class="sidebar-nav">
+            {{-- Main Section --}}
+            <div class="nav-group">
+                <div class="nav-section">Main</div>
+                <a href="{{ route('admin.dashboard') }}"
+                    class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
+                    <i class="bi bi-grid-1x2"></i> Dashboard
+                </a>
+            </div>
 
-            <div class="nav-section">Main</div>
-            <a href="{{ route('admin.dashboard') }}"
-                class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
-                <i class="bi bi-grid-1x2"></i> Dashboard
-            </a>
+            {{-- Employee Section --}}
+            <div class="nav-group" style="margin-top:0.5rem;">
+                <div class="nav-section">Employee</div>
+                <a href="{{ route('admin.employees.index') }}"
+                    class="nav-link {{ request()->routeIs('admin.employees.*') ? 'active' : '' }}">
+                    <i class="bi bi-people"></i> Employees
+                </a>
+                <a href="{{ route('admin.employees.create') }}"
+                    class="nav-link {{ request()->routeIs('admin.employees.create') ? 'active' : '' }}">
+                    <i class="bi bi-person-plus"></i> Add Employee
+                </a>
+            </div>
 
-            <div class="nav-section mt-2">Employee</div>
-            <a href="{{ route('admin.employees.index') }}"
-                class="nav-link {{ request()->routeIs('admin.employees.*') ? 'active' : '' }}">
-                <i class="bi bi-people"></i> Employees
-            </a>
-            <a href="{{ route('admin.employees.create') }}"
-                class="nav-link {{ request()->routeIs('admin.employees.create') ? 'active' : '' }}">
-                <i class="bi bi-person-plus"></i> Add Employee
-            </a>
+            {{-- Management Section --}}
+            <div class="nav-group" style="margin-top:0.5rem;">
+                <div class="nav-section">Management</div>
+                <a href="{{ route('admin.leaves.index') }}"
+                    class="nav-link {{ request()->routeIs('admin.leaves.*') ? 'active' : '' }}">
+                    <i class="bi bi-calendar-check"></i> Leave Requests
+                </a>
+                <a href="{{ route('admin.attendance.index') }}"
+                    class="nav-link {{ request()->routeIs('admin.attendance.*') ? 'active' : '' }}">
+                    <i class="bi bi-clock-history"></i> Attendance
+                </a>
+                <a href="#" class="nav-link {{ request()->routeIs('admin.certificates.*') ? 'active' : '' }}">
+                    <i class="bi bi-file-earmark-text"></i> Certificates
+                </a>
+            </div>
 
-            <div class="nav-section mt-2">Management</div>
-            <a href="{{ route('admin.leaves.index') }}"
-                class="nav-link {{ request()->routeIs('admin.leaves.*') ? 'active' : '' }}">
-                <i class="bi bi-calendar-check"></i> Leave Requests
-            </a>
-            <a href="{{ route('admin.attendance.index') }}"
-                class="nav-link {{ request()->routeIs('admin.attendance.*') ? 'active' : '' }}">
-                <i class="bi bi-clock-history"></i> Attendance
-            </a>
-            <a href="#" class="nav-link {{ request()->routeIs('admin.certificates.*') ? 'active' : '' }}">
-                <i class="bi bi-file-earmark-text"></i> Certificates
-            </a>
+            {{-- Communication Section --}}
+            <div class="nav-group" style="margin-top:0.5rem;">
+                <div class="nav-section">Communication</div>
+                <a href="{{ route('admin.board.index') }}"
+                    class="nav-link {{ request()->routeIs('admin.board.*') ? 'active' : '' }}">
+                    <i class="bi bi-megaphone"></i> Notice Board
+                </a>
+                <a href="{{ route('admin.messages.index') }}"
+                    class="nav-link {{ request()->routeIs('admin.messages.*') ? 'active' : '' }}">
+                    <i class="bi bi-chat-dots"></i> Messages
+                </a>
+            </div>
 
-            <div class="nav-section mt-2">Communication</div>
-            <a href="{{ route('admin.board.index') }}"
-                class="nav-link {{ request()->routeIs('admin.board.*') ? 'active' : '' }}">
-                <i class="bi bi-megaphone"></i> Notice Board
-            </a>
-            <a href="{{ route('admin.messages.index') }}"
-                class="nav-link {{ request()->routeIs('admin.messages.*') ? 'active' : '' }}">
-                <i class="bi bi-chat-dots"></i> Messages
-            </a>
-
-            <div class="nav-section mt-2">System</div>
-            <a href="{{ route('admin.roles.index') }}"
-                class="nav-link {{ request()->routeIs('admin.roles.*') ? 'active' : '' }}">
-                <i class="bi bi-person-badge"></i> Roles
-            </a>
-            <a href="{{ route('admin.salary.index') }}"
-                class="nav-link {{ request()->routeIs('admin.salary.*') ? 'active' : '' }}">
-                <i class="bi bi-cash-stack"></i> Salary Grade
-            </a>
-            <a href="#" class="nav-link {{ request()->routeIs('admin.subposition.*') ? 'active' : '' }}">
-                <i class="bi bi-diagram-3"></i> Designation (if any)s
-            </a>
-            <a href="{{ route('admin.audit.index') }}"
-                class="nav-link {{ request()->routeIs('admin.audit.*') ? 'active' : '' }}">
-                <i class="bi bi-journal-text"></i> Audit Trail
-            </a>
-            <a href="{{ route('admin.backup.index') }}"
-                class="nav-link {{ request()->routeIs('admin.backup.*') ? 'active' : '' }}">
-                <i class="bi bi-database"></i> Backup
-            </a>
-            <a href="{{ route('admin.profile.show') }}"
-                class="nav-link {{ request()->routeIs('admin.profile.*') ? 'active' : '' }}">
-                <i class="bi bi-person-circle"></i> My Profile
-            </a>
-
+            {{-- System Section --}}
+            <div class="nav-group" style="margin-top:0.5rem;">
+                <div class="nav-section">System</div>
+                <a href="{{ route('admin.roles.index') }}"
+                    class="nav-link {{ request()->routeIs('admin.roles.*') ? 'active' : '' }}">
+                    <i class="bi bi-person-badge"></i> Roles
+                </a>
+                <a href="{{ route('admin.salary.index') }}"
+                    class="nav-link {{ request()->routeIs('admin.salary.*') ? 'active' : '' }}">
+                    <i class="bi bi-cash-stack"></i> Salary Grade
+                </a>
+                <a href="{{ route('admin.audit.index') }}"
+                    class="nav-link {{ request()->routeIs('admin.audit.*') ? 'active' : '' }}">
+                    <i class="bi bi-journal-text"></i> Audit Trail
+                </a>
+                <a href="{{ route('admin.backup.index') }}"
+                    class="nav-link {{ request()->routeIs('admin.backup.*') ? 'active' : '' }}">
+                    <i class="bi bi-database"></i> Backup
+                </a>
+                <a href="{{ route('admin.profile.show') }}"
+                    class="nav-link {{ request()->routeIs('admin.profile.*') ? 'active' : '' }}">
+                    <i class="bi bi-person-circle"></i> My Profile
+                </a>
+            </div>
         </div>
 
         <div class="sidebar-footer">
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
                 <button type="submit" class="logout-btn">
-                    <i class="bi bi-box-arrow-left"></i>
-                    <span>Logout</span>
+                    <i class="bi bi-box-arrow-left"></i> Logout
                 </button>
             </form>
         </div>
@@ -837,28 +839,19 @@
     <div class="main-content" id="mainContent">
         <div class="topbar">
             <div class="topbar-left">
-                <button class="btn-toggle-sidebar" id="sidebarToggle">
-                    <i class="bi bi-list"></i>
-                </button>
+                <button class="btn-toggle-sidebar" id="sidebarToggle"><i class="bi bi-list"></i></button>
                 <h6 class="topbar-title">@yield('page-title', 'Dashboard')</h6>
             </div>
             <div class="topbar-right">
-                <div class="topbar-icon-btn">
-                    <i class="bi bi-bell"></i>
-                    <span class="notif-dot"></span>
-                </div>
+                <div class="topbar-icon-btn"><i class="bi bi-bell"></i><span class="notif-dot"></span></div>
                 <div class="user-pill">
-                    <div class="avatar">
-                        {{ strtoupper(substr(Auth::user()->username, 0, 2)) }}
-                    </div>
+                    <div class="avatar">{{ strtoupper(substr(Auth::user()->username, 0, 2)) }}</div>
                     <span class="user-name">{{ Auth::user()->username }}</span>
                 </div>
             </div>
         </div>
 
-        <div class="page-content">
-            @yield('content')
-        </div>
+        <div class="page-content">@yield('content')</div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -884,26 +877,14 @@
         );
         overlay.addEventListener('click', closeSidebar);
 
-        // Close sidebar when nav link clicked on mobile
         sidebar.querySelectorAll('.nav-link').forEach(link => {
             link.addEventListener('click', () => {
                 if (window.innerWidth < 992) closeSidebar();
             });
         });
 
-        // Close sidebar on resize to desktop
         window.addEventListener('resize', () => {
             if (window.innerWidth >= 992) closeSidebar();
-        });
-
-        // Hover ripple on inactive nav links
-        document.querySelectorAll('.sidebar .nav-link:not(.active)').forEach(link => {
-            link.addEventListener('mouseenter', function() {
-                this.style.paddingLeft = '1rem';
-            });
-            link.addEventListener('mouseleave', function() {
-                this.style.paddingLeft = '';
-            });
         });
     </script>
     @stack('scripts')

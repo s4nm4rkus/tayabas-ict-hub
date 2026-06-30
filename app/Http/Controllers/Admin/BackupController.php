@@ -20,7 +20,7 @@ class BackupController extends Controller
         $dbName = config('database.connections.mysql.database');
         $tableKey = "Tables_in_{$dbName}";
 
-        $sql = "-- Tayabas ICT Hub Database Backup\n";
+        $sql = "-- SDO Tayabas Portal Database Backup\n";
         $sql .= '-- Generated: '.now()->format('Y-m-d H:i:s')."\n";
         $sql .= "-- Database: {$dbName}\n\n";
         $sql .= "SET FOREIGN_KEY_CHECKS=0;\n\n";

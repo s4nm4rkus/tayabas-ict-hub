@@ -8,7 +8,8 @@ use Illuminate\Queue\SerializesModels;
 
 class OtpMail extends Mailable
 {
-    use Queueable, SerializesModels;
+    use Queueable;
+    use SerializesModels;
 
     public int $otp;
 
@@ -19,7 +20,7 @@ class OtpMail extends Mailable
 
     public function build()
     {
-        return $this->subject('Your OTP for Tayabas ICT Hub')
+        return $this->subject('Your OTP for SDO Tayabas Portal')
             ->view('emails.otp');
     }
 }

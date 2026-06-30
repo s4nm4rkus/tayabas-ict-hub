@@ -1536,7 +1536,7 @@
         <hr class="footer-divider">
         <div class="footer-bottom">
             <span>© {{ date('Y') }} Schools Division Office — Tayabas City. All rights reserved.</span>
-            <span>Powered by Tayabas ICT Hub · DepEd Philippines</span>
+            <span>Powered by SDO Tayabas Portal · DepEd Philippines</span>
         </div>
     </footer>
 

@@ -26,7 +26,7 @@
                             <p
                                 style="margin:0 0 6px 0;font-size:13px;color:rgba(255,255,255,0.85);
                                       font-weight:500;letter-spacing:0.05em;text-transform:uppercase;">
-                                Tayabas ICT Hub
+                                SDO Tayabas Portal
                             </p>
                             <h1 style="margin:0;font-size:26px;font-weight:700;color:#ffffff;">
                                 @if ($leave->leave_status === 'Approved')
@@ -289,7 +289,7 @@
                                    border-top:1px solid #E5E7EB;text-align:center;">
                             <p style="margin:0;font-size:12px;color:#9CA3AF;">
                                 This is an automated message from
-                                <strong style="color:#6B7280;">Tayabas ICT Hub</strong>.
+                                <strong style="color:#6B7280;">SDO Tayabas Portal</strong>.
                                 Please do not reply to this email.
                             </p>
                             <p style="margin:6px 0 0;font-size:12px;color:#9CA3AF;">

@@ -5,10 +5,12 @@ namespace App\Providers;
 use App\Models\CertRequest;
 use App\Models\Employee;
 use App\Models\Leave;
+use App\Models\EmploymentInfo;
 use App\Observers\CertRequestObserver;
 use App\Observers\EmployeeObserver;
 use App\Observers\LeaveObserver;
 use App\Services\FlexiAttendanceService;
+use App\Observers\EmploymentInfoObserver;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -18,6 +20,7 @@ class AppServiceProvider extends ServiceProvider
         Employee::observe(EmployeeObserver::class);
         Leave::observe(LeaveObserver::class);
         CertRequest::observe(CertRequestObserver::class);
+        EmploymentInfo::observe(EmploymentInfoObserver::class);
     }
 
     public function register(): void
