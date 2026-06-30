@@ -49,7 +49,9 @@ class ServiceRecordGenerator
     }
 
     /**
-     * Expand a single history entry into annual service record rows.
+     * Expand a single history entry into CALENDAR YEAR rows (Jan 1 - Dec 31).
+     * First row starts on the actual effective_date; last row (if still active)
+     * ends as null ("To Date"). No mid-year splitting.
      */
     private function expandHistory(EmploymentHistory $history): array
     {
@@ -63,13 +65,16 @@ class ServiceRecordGenerator
         $cursor = $start->copy();
 
         while ($cursor->lessThanOrEqualTo($end)) {
-            $nextAnniversary = $this->nextAnniversary($cursor, $start);
 
-            $periodEnd = $nextAnniversary->lessThanOrEqualTo($end)
-                ? $nextAnniversary->copy()->subDay()
+            // End of this calendar year (Dec 31 of cursor's year)
+            $yearEnd = Carbon::create($cursor->year, 12, 31);
+
+            $periodEnd = $yearEnd->lessThanOrEqualTo($end)
+                ? $yearEnd->copy()
                 : $end->copy();
 
-            $step         = min($this->computeStep($history->salary_step, $anchor, $cursor), 8);
+            // Step evaluated at the END of this period (Dec 31, or today if open)
+            $step         = min($this->computeStep($history->salary_step, $anchor, $periodEnd), 8);
             $annualSalary = $this->computeAnnualSalary($history->salary_grade, $step);
 
             $isOpenPeriod = is_null($history->end_date) && $periodEnd->isSameDay($end);
@@ -95,7 +100,8 @@ class ServiceRecordGenerator
                 break;
             }
 
-            $cursor = $nextAnniversary->copy();
+            // Move cursor to Jan 1 of next year — calendar-year rows only
+            $cursor = Carbon::create($cursor->year + 1, 1, 1);
 
             if ($cursor->greaterThan($end)) {
                 break;
@@ -105,25 +111,21 @@ class ServiceRecordGenerator
         return $rows;
     }
 
-    private function nextAnniversary(Carbon $cursor, Carbon $start): Carbon
-    {
-        $next = $cursor->copy()->setMonth($start->month)->setDay($start->day);
-
-        if ($next->lessThanOrEqualTo($cursor)) {
-            $next->addYear();
-        }
-
-        return $next;
-    }
-
+    /**
+     * Compute salary step at $atDate, counting whole MONTHS from $anchor
+     * (day-of-month disregarded). Every 36 months elapsed = +1 step.
+     */
     private function computeStep(int $baseStep, Carbon $anchor, Carbon $atDate): int
     {
         if ($atDate->lessThan($anchor)) {
             return $baseStep;
         }
 
-        $yearsElapsed = $anchor->copy()->startOfDay()->diffInYears($atDate->copy()->startOfDay());
-        $increments   = (int) floor($yearsElapsed / 3);
+        $anchorMonth = Carbon::create($anchor->year, $anchor->month, 1);
+        $atMonth     = Carbon::create($atDate->year, $atDate->month, 1);
+
+        $monthsElapsed = $anchorMonth->diffInMonths($atMonth);
+        $increments    = (int) floor($monthsElapsed / 36);
 
         return min($baseStep + $increments, 8);
     }

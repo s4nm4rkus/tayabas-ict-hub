@@ -201,16 +201,16 @@
             @endif
         </div>
     </div>
-
     {{-- Service Record --}}
     <div class="tab-panel" id="service">
         <div class="info-section anim-fade-up delay-2">
             <div class="info-section-title" style="display:flex;justify-content:space-between;align-items:center;">
                 <span><i class="bi bi-journal-text me-1"></i> Service Records</span>
                 <a href="{{ route('hr.employees.history.index', $employee->user_id) }}" class="btn btn-primary btn-sm">
-                    View History
+                    <i class="bi bi-clock-history me-1"></i> View History
                 </a>
             </div>
+
             @if ($employee->serviceRecords->count())
                 <div class="table-responsive">
                     <table class="table mb-0" style="font-size:13px;">
@@ -220,19 +220,38 @@
                                 <th style="font-size:12px;font-weight:700;">To</th>
                                 <th style="font-size:12px;font-weight:700;">Position</th>
                                 <th style="font-size:12px;font-weight:700;">Station</th>
-                                <th style="font-size:12px;font-weight:700;">SG</th>
+                                <th style="font-size:12px;font-weight:700;">SG / Step</th>
                                 <th style="font-size:12px;font-weight:700;">Status</th>
+                                <th style="font-size:12px;font-weight:700;width:50px;text-align:center;">Auto</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($employee->serviceRecords->sortBy('inclu_from') as $rec)
                                 <tr>
                                     <td style="white-space:nowrap;">{{ $rec->inclu_from?->format('M d, Y') ?? '—' }}</td>
-                                    <td style="white-space:nowrap;">{{ $rec->inclu_to?->format('M d, Y') ?? '—' }}</td>
+                                    <td style="white-space:nowrap;">{{ $rec->inclu_to?->format('M d, Y') ?? 'To Date' }}
+                                    </td>
                                     <td style="font-weight:500;">{{ $rec->position ?? '—' }}</td>
                                     <td>{{ $rec->station ?? '—' }}</td>
-                                    <td>{{ $rec->salary_grade ?? '—' }}</td>
-                                    <td><span class="status-badge badge-info">{{ $rec->service_status ?? '—' }}</span>
+                                    <td>
+                                        @if ($rec->salary_grade)
+                                            <span style="font-size:12px;">SG {{ $rec->salary_grade }}, Step
+                                                {{ $rec->salary_step }}</span>
+                                        @else
+                                            —
+                                        @endif
+                                    </td>
+                                    <td>
+                                        <span class="status-badge badge-info">{{ $rec->service_status ?? '—' }}</span>
+                                    </td>
+                                    <td style="text-align:center;">
+                                        @if ($rec->is_auto_generated)
+                                            <i class="bi bi-cpu" style="color:#059669;font-size:13px;"
+                                                title="Auto-generated"></i>
+                                        @else
+                                            <i class="bi bi-pencil" style="color:var(--text-secondary);font-size:13px;"
+                                                title="Manual"></i>
+                                        @endif
                                     </td>
                                 </tr>
                             @endforeach
