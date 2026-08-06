@@ -22,8 +22,8 @@ class LeaveApprovedMail extends Mailable
     public function build()
     {
         $subject = $this->leave->leave_status === 'Approved'
-            ? 'Your Leave Application Has Been Approved — Tayabas ICT Hub'
-            : 'Your Leave Application Has Been Declined — Tayabas ICT Hub';
+            ? 'Your Leave Application Has Been Approved — SDO Tayabas Portal'
+            : 'Your Leave Application Has Been Declined — SDO Tayabas Portal';
 
 
         return $this->subject($subject)

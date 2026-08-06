@@ -12,11 +12,38 @@ use Illuminate\Support\Facades\Mail;
 
 class LoginController extends Controller
 {
-    public function showLogin()
+    public function showLogin(Request $request)
     {
         if (Auth::check()) {
             return app(\App\Http\Controllers\Auth\TwoFactorController::class)
                 ->redirectByRole(Auth::user());
+        }
+
+        /*
+         * Store where the user intended to go BEFORE they were sent to login.
+         * Laravel puts this in session automatically via the 'auth' middleware,
+         * but when the user clicks a login button manually (e.g. from the ICT
+         * navbar), there is no middleware redirect — so we capture the HTTP
+         * Referer as a fallback intended URL.
+         *
+         * Priority:
+         *  1. session()->previousUrl()  — set by Laravel's auth middleware
+         *  2. HTTP Referer header        — set when user clicks a login link
+         *  3. Nothing (session already has it from a prior middleware redirect)
+         */
+        $referer = $request->headers->get('referer');
+
+        if ($referer && ! session()->has('url.intended')) {
+            // Only store it if it's from our own domain and not the login page itself
+            $loginUrl = route('login');
+            $appUrl   = config('app.url');
+
+            if (
+                str_starts_with($referer, $appUrl) &&
+                ! str_starts_with($referer, $loginUrl)
+            ) {
+                session()->put('url.intended', $referer);
+            }
         }
 
         return view('auth.login');

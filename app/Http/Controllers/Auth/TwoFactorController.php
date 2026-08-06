@@ -48,20 +48,85 @@ class TwoFactorController extends Controller
             return redirect()->route('password.change');
         }
 
-        return redirect()->intended($this->redirectByRole($user)->getTargetUrl());
+        /*
+         * Determine final redirect destination.
+         *
+         * Logic:
+         *  1. If session has 'url.intended', check whether it belongs to
+         *     a known section (ICT admin, HR, etc.) that this user can access.
+         *  2. If the intended URL is accessible for this user → go there.
+         *  3. Otherwise fall back to the role-based default dashboard.
+         */
+        $intended     = session()->pull('url.intended');
+        $defaultRoute = $this->redirectByRole($user)->getTargetUrl();
+
+        if ($intended && $this->userCanVisit($user, $intended)) {
+            return redirect($intended);
+        }
+
+        return redirect($defaultRoute);
+    }
+
+    /**
+     * Decide whether the logged-in user is allowed to visit the
+     * intended URL. This prevents a Personnel user who somehow ends
+     * up on the ICT login button from being sent to the ICT dashboard.
+     *
+     * Rules:
+     *  - ICT admin routes  → only Super Administrator
+     *  - HR routes         → only HR
+     *  - Admin routes      → only Super Administrator
+     *  - AO routes         → only Administrative Officer
+     *  - ASDS routes       → only ASDS
+     *  - Head routes       → only Department Head (role_type)
+     *  - Anything else     → allow (public ICT pages, etc.)
+     */
+    private function userCanVisit(User $user, string $url): bool
+    {
+        $appUrl = rtrim(config('app.url'), '/');
+        $path   = str_replace($appUrl, '', $url); // strip domain → /ict/admin/...
+
+        $pos = $user->user_pos;
+
+        // Map URL path prefixes to the role that owns them
+        $rules = [
+            '/ict/admin'   => 'Super Administrator',
+            '/admin'       => 'Super Administrator',
+            '/hr'          => 'HR',
+            '/ao'          => 'Administrative Officer',
+            '/asds'        => 'ASDS',
+            '/head'        => 'Department Head',  // role_type, checked below
+            '/employee'    => null,               // null = any authenticated user
+        ];
+
+        foreach ($rules as $prefix => $requiredPos) {
+            if (str_starts_with($path, $prefix)) {
+                if ($requiredPos === null) {
+                    return true; // any authenticated user
+                }
+
+                // Special case: Department Head is stored in role_type, not user_pos
+                if ($requiredPos === 'Department Head') {
+                    $roleType = \App\Models\Role::where('role_desc', $pos)->value('role_type');
+                    return $pos === 'Department Head' || $roleType === 'Department Head';
+                }
+
+                return $pos === $requiredPos;
+            }
+        }
+
+        // No restricted prefix matched → allow (e.g. public ICT pages)
+        return true;
     }
 
     public function redirectByRole(User $user): \Illuminate\Http\RedirectResponse
     {
         // ── Step 1: Exact user_pos matches ────────────────────────────────
-        // Covers all roles that have a unique user_pos value
         $exactMatch = match ($user->user_pos) {
             'Super Administrator'    => redirect()->route('admin.dashboard'),
             'HR'                     => redirect()->route('hr.dashboard'),
             'Administrative Officer' => redirect()->route('ao.dashboard'),
             'ASDS'                   => redirect()->route('asds.dashboard'),
-            // ── Also cover the case where user_pos is literally stored
-            // as 'Department Head' instead of a specific position name
             'Department Head'        => redirect()->route('head.dashboard'),
             default                  => null,
         };
@@ -71,13 +136,6 @@ class TwoFactorController extends Controller
         }
 
         // ── Step 2: role_type lookup from tbl_role ────────────────────────
-        // Covers positions like:
-        // 'Head Teacher'        → role_type = 'Department Head' → head
-        // 'School Principal'    → role_type = 'Department Head' → head
-        // 'Assistant Principal' → role_type = 'Department Head' → head
-        // 'Master Teacher I'    → role_type = 'Department Head' → head
-        // 'Teacher I/II/III'    → role_type = 'Employee' → employee
-        // 'Administrative Aide' → role_type = 'Employee' → employee
         $roleType = Role::where('role_desc', $user->user_pos)->value('role_type');
 
         if ($roleType === 'Department Head') {
@@ -85,7 +143,6 @@ class TwoFactorController extends Controller
         }
 
         // ── Step 3: Default → employee dashboard ─────────────────────────
-        // Covers all Teaching and Non-Teaching employees
         return redirect()->route('employee.dashboard');
     }
 
