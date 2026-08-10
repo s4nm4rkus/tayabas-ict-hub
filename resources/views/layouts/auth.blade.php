@@ -556,6 +556,7 @@
     </div>
 
     @stack('scripts')
+    <x-quick-nav :current="'auth'" />
 </body>
 
 </html>

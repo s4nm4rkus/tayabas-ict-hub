@@ -888,6 +888,7 @@
         });
     </script>
     @stack('scripts')
+    <x-quick-nav :current="'admin'" />
 </body>
 
 </html>

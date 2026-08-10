@@ -1502,6 +1502,7 @@
     </script>
     @yield('scripts')
 
+    <x-quick-nav :current="'ict'" />
 </body>
 
 </html>

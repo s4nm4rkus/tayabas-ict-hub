@@ -853,6 +853,8 @@
         });
     </script>
     @stack('scripts')
+
+    <x-quick-nav :current="'personnel'" />
 </body>
 
 </html>
