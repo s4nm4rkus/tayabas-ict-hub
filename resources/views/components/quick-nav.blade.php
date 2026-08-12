@@ -176,6 +176,30 @@ $items = array_filter($items, fn($item) => $item['key'] !== $current);
         flex-direction: column;
         align-items: flex-end;
         gap: 0;
+        /* Nothing intercepts clicks when closed except the trigger */
+        pointer-events: none;
+    }
+
+    /* Trigger is always clickable */
+    #qn-trigger {
+        pointer-events: all;
+    }
+
+    /* Backdrop and menu items only active when open */
+    #qn-root.open #qn-backdrop {
+        pointer-events: all;
+    }
+
+    #qn-root.open #qn-menu {
+        pointer-events: all;
+    }
+
+    #qn-root.open .qn-item {
+        pointer-events: all;
+    }
+
+    #qn-root.open .qn-btn {
+        pointer-events: all;
     }
 
     @media(max-width:600px) {
@@ -299,7 +323,6 @@ $items = array_filter($items, fn($item) => $item['key'] !== $current);
         flex-direction: column;
         align-items: flex-end;
         gap: 10px;
-        pointer-events: none;
         padding-bottom: 2px;
     }
 
@@ -313,16 +336,12 @@ $items = array_filter($items, fn($item) => $item['key'] !== $current);
         transition:
             opacity .22s ease,
             transform .28s cubic-bezier(0.34, 1.56, 0.64, 1);
-        /* stagger: each item delays by its index */
         transition-delay: calc(var(--i) * 0.045s);
-        pointer-events: none;
     }
 
     #qn-root.open .qn-item {
         opacity: 1;
         transform: translateY(0) scale(1);
-        pointer-events: all;
-        /* reverse stagger when opening: first item appears first */
         transition-delay: calc((5 - var(--i)) * 0.04s);
     }
 
