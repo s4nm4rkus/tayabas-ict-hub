@@ -278,7 +278,7 @@ class EmployeeController extends Controller
               'file' => 'required|file|max:10240',
         ]);
 
-        $import = new EmployeeUpdateImport();
+        $import = app(EmployeeUpdateImport::class);
         Excel::import($import, $request->file('file'));
         //     dd([
         //     'updated' => $import->updated,
@@ -304,10 +304,9 @@ class EmployeeController extends Controller
             'gender', 'birthdate', 'place_of_birth', 'contact_num', 'employee_no',
             'philhealth', 'pagibig', 'tin', 'street', 'barangay',
             'municipality', 'province', 'region', 'position', 'sub_position',
-            'date_orig_appoint', 'salary_grade', 'salary_step', 'salary_effect_date',
-            'nature_appoint', 'status_appoint', 'station_code', 'plantilla_item_no',
-            'school_office_assign', 'school_detailed_office_assign',
-            'vice', 'vice_reason', 'designated_from', 'designated_to',
+            'date_orig_appoint', 'date_last_promotion', 'salary_grade', 'salary_step',
+            'salary_effect_date', 'status_appoint', 'station_code', 'plantilla_item_no',
+            'school_office_assign', 'bp_number',
             'separation', 'separation_date',
         ];
 
@@ -316,10 +315,9 @@ class EmployeeController extends Controller
             '', '', '', '', '',
             '', '', '', '', '',
             '', '', '', 'Teacher II', '',
-            '', '12', '1', '',
+            '', '', '12', '1',
             '', '', 'SDO-001', '',
             'Tayabas West Central School', '',
-            '', '', '', '',
             '', '',
         ];
 

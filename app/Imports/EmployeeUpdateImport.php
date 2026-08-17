@@ -3,10 +3,14 @@
 namespace App\Imports;
 
 use App\Models\Employee;
+use App\Models\EmploymentHistory;
 use App\Models\EmploymentInfo;
 use App\Models\User;
+use App\Services\ServiceRecordGenerator;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\SkipsEmptyRows;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
@@ -16,6 +20,11 @@ class EmployeeUpdateImport implements SkipsEmptyRows, ToCollection, WithHeadingR
     public array $errors = [];
 
     public int $updated = 0;
+
+    public function __construct(
+        private ServiceRecordGenerator $generator
+    ) {
+    }
 
     public function collection(Collection $rows)
     {
@@ -72,13 +81,19 @@ class EmployeeUpdateImport implements SkipsEmptyRows, ToCollection, WithHeadingR
                     'municipality'   => $row['municipality']   ?? null,
                     'province'       => $row['province']       ?? null,
                     'region'         => $row['region']         ?? null,
+                    'bp_no'          => $row['bp_number']      ?? null,
                 ], fn ($v) => ! is_null($v) && $v !== '');
 
                 if (! empty($employeeUpdate)) {
                     $employee->update($employeeUpdate);
                 }
 
-                // ── Update Employment Info ─────────────────────────────────
+                // ── Update Employment Info (current snapshot) ──────────────
+                // Note: nature_appoint, vice, vice_reason, designated_from,
+                // designated_to, school_detailed_office_assign are no longer
+                // in the CSV/template. $row[...] will be missing, so these
+                // resolve to null and are dropped by array_filter — existing
+                // DB values for those columns are left untouched.
                 $employmentUpdate = array_filter([
                     'position'                      => $row['position']                       ?? null,
                     'sub_position'                  => $row['sub_position']                   ?? null,
@@ -102,11 +117,86 @@ class EmployeeUpdateImport implements SkipsEmptyRows, ToCollection, WithHeadingR
                     'head'                          => $row['head']                           ?? null,
                 ], fn ($v) => ! is_null($v) && $v !== '');
 
+                $employmentInfo = null;
+
                 if (! empty($employmentUpdate)) {
-                    EmploymentInfo::updateOrCreate(
+                    $employmentInfo = EmploymentInfo::updateOrCreate(
                         ['user_id' => $employee->id],
                         $employmentUpdate
                     );
+                }
+
+                // ── date_last_promotion: real appointment event ──────────
+                // Mirrors EmploymentHistoryController::store(): close the
+                // current open history row, open a new one, refresh the
+                // snapshot's salary_effect_date, regenerate service records.
+                $lastPromotionDate = $this->parseDate($row['date_last_promotion'] ?? null);
+
+                if ($lastPromotionDate) {
+                    // Make sure we have the snapshot (already merged with
+                    // this row's other changes, if any were provided above).
+                    $employmentInfo = $employmentInfo
+                        ?? EmploymentInfo::where('user_id', $employee->id)->first();
+
+                    $employeeId = $employee->id; // tbl_employment_info / tbl_service_rec FK
+                    $userId     = $user->id;     // tbl_employment_history FK
+
+                    DB::transaction(function () use (
+                        $employmentInfo,
+                        $employeeId,
+                        $userId,
+                        $lastPromotionDate
+                    ) {
+                        // 1. Close the current active history row
+                        $current = EmploymentHistory::where('user_id', $userId)
+                            ->whereNull('end_date')
+                            ->latest('effective_date')
+                            ->first();
+
+                        if ($current) {
+                            $current->update([
+                                'end_date' => Carbon::parse($lastPromotionDate)
+                                    ->subDay()
+                                    ->toDateString(),
+                            ]);
+                        }
+
+                        // 2. Resolve field values from the (already-updated)
+                        // snapshot, falling back to the closed history row.
+                        $position      = $employmentInfo->position       ?? $current?->position;
+                        $subPosition   = $employmentInfo->sub_position   ?? $current?->sub_position;
+                        $salaryGrade   = $employmentInfo->salary_grade   ?? $current?->salary_grade;
+                        $salaryStep    = $employmentInfo->salary_step    ?? $current?->salary_step;
+                        $natureAppoint = $employmentInfo->nature_appoint ?? $current?->nature_appoint;
+                        $statusAppoint = $employmentInfo->status_appoint ?? $current?->status_appoint;
+                        $station       = $employmentInfo->school_office_assign ?? $current?->station;
+
+                        // 3. Create the new history row.
+                        // PROMOTION always resets the step anchor to the new date.
+                        EmploymentHistory::create([
+                            'user_id'        => $userId,
+                            'position'       => $position,
+                            'sub_position'   => $subPosition,
+                            'salary_grade'   => $salaryGrade,
+                            'salary_step'    => $salaryStep,
+                            'nature_appoint' => $natureAppoint,
+                            'status_appoint' => $statusAppoint,
+                            'station'        => $station,
+                            'effective_date' => $lastPromotionDate,
+                            'end_date'       => null,
+                            'change_reason'  => 'PROMOTION',
+                            'step_anchor'    => $lastPromotionDate,
+                            'created_by'     => Auth::id(),
+                        ]);
+
+                        // 4. Refresh the snapshot's effective date to match.
+                        EmploymentInfo::where('user_id', $employeeId)->update([
+                            'salary_effect_date' => $lastPromotionDate,
+                        ]);
+
+                        // 5. Regenerate service records.
+                        $this->generator->generate($employeeId, $userId);
+                    });
                 }
 
                 $this->updated++;
