@@ -103,7 +103,7 @@
                         </td>
 
                         {{-- Status --}}
-                        <td style="text-align:center;">
+                        <td style="text-align:center; min-width: 3.5rem;">
                             {{ $rec->service_status ?? '—' }}
                         </td>
 
