@@ -53,6 +53,9 @@
                 <a href="{{ route('hr.employees.edit', $employee->user_id) }}" class="btn btn-primary btn-sm">
                     <i class="bi bi-pencil me-1"></i> Edit
                 </a>
+                <a href="{{ route('hr.leave-balances.show', $employee->id) }}" class="btn btn-outline-secondary btn-sm">
+                    <i class="bi bi-wallet2 me-1"></i> Leave Balance
+                </a>
                 <a href="{{ route('hr.employees.index') }}" class="btn btn-outline-secondary btn-sm">
                     <i class="bi bi-arrow-left me-1"></i> Back
                 </a>
@@ -271,6 +274,30 @@
     <div class="tab-panel" id="leaves">
         <div class="info-section anim-fade-up delay-2">
             <div class="info-section-title"><i class="bi bi-calendar-check"></i> Leave History</div>
+            @if ($leaveBalance)
+                <div style="display:flex;gap:10px;margin-bottom:1rem;">
+                    <div
+                        style="flex:1;padding:10px 14px;background:rgba(52,211,153,0.06);border-radius:var(--radius-sm);border:1px solid rgba(52,211,153,0.15);">
+                        <div
+                            style="font-size:10px;font-weight:700;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.06em;">
+                            VL Balance</div>
+                        <div style="font-size:18px;font-weight:700;color:var(--text-primary);">
+                            {{ $leaveBalance->vl_balance }}</div>
+                    </div>
+                    <div
+                        style="flex:1;padding:10px 14px;background:rgba(52,211,153,0.06);border-radius:var(--radius-sm);border:1px solid rgba(52,211,153,0.15);">
+                        <div
+                            style="font-size:10px;font-weight:700;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.06em;">
+                            SL Balance</div>
+                        <div style="font-size:18px;font-weight:700;color:var(--text-primary);">
+                            {{ $leaveBalance->sl_balance }}</div>
+                    </div>
+                    <a href="{{ route('hr.leave-balances.show', $employee->id) }}"
+                        style="flex-shrink:0;align-self:center;font-size:12px;color:#1D4ED8;font-weight:600;text-decoration:none;">
+                        <i class="bi bi-pencil-square me-1"></i> Manage
+                    </a>
+                </div>
+            @endif
             @if ($employee->leaves->count())
                 <div class="table-responsive">
                     <table class="table mb-0" style="font-size:13px;">

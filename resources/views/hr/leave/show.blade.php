@@ -32,6 +32,14 @@
         @endif
     </div>
 
+    @if ($errors->any())
+        <div class="alert alert-danger alert-dismissible fade show anim-fade-up">
+            <i class="bi bi-exclamation-triangle me-2"></i>
+            {{ $errors->first() }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    @endif
+
     @if (session('success'))
         <div class="alert alert-success alert-dismissible fade show anim-fade-up">
             <i class="bi bi-check-circle me-2"></i>{{ session('success') }}
@@ -52,6 +60,24 @@
                 border-bottom:1px solid rgba(59,130,246,0.15);">
                 <i class="bi bi-people me-2"></i>7A. Certification of Leave Credits &amp; 7C. Approved For
             </div>
+
+            @if ($leaveBalance)
+                <div
+                    style="background:rgba(34,197,94,0.06);border:1px solid rgba(34,197,94,0.15);border-radius:var(--radius-sm);padding:10px 14px;margin-bottom:1rem;font-size:12.5px;">
+                    <i class="bi bi-info-circle me-1" style="color:#059669;"></i>
+                    <strong>Current recorded balance (per ledger):</strong>
+                    VL {{ $leaveBalance->vl_balance }} · SL {{ $leaveBalance->sl_balance }}
+                    <span style="color:var(--text-secondary);">(as of
+                        {{ $leaveBalance->as_of_date?->format('M d, Y') ?? '—' }})</span>
+                    — for reference only, does not auto-fill the fields below yet.
+                </div>
+            @else
+                <div
+                    style="background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.15);border-radius:var(--radius-sm);padding:10px 14px;margin-bottom:1rem;font-size:12.5px;">
+                    <i class="bi bi-exclamation-circle me-1" style="color:#B45309;"></i>
+                    No ledger balance recorded yet for this employee.
+                </div>
+            @endif
 
             <form method="POST" action="{{ route('hr.leave.approve', $leave->id) }}">
                 @csrf @method('PUT')
@@ -84,22 +110,26 @@
                                 <td><em>Total Earned</em></td>
                                 <td>
                                     <input type="text" name="vl_earned" class="form-control form-control-sm"
-                                        style="text-align:center;" placeholder="0" value="{{ old('vl_earned') }}">
+                                        style="text-align:center;" placeholder="0"
+                                        value="{{ old('vl_earned', $prefill['vl_earned']) }}">
                                 </td>
                                 <td>
                                     <input type="text" name="sl_earned" class="form-control form-control-sm"
-                                        style="text-align:center;" placeholder="0" value="{{ old('sl_earned') }}">
+                                        style="text-align:center;" placeholder="0"
+                                        value="{{ old('sl_earned', $prefill['sl_earned']) }}">
                                 </td>
                             </tr>
                             <tr>
                                 <td><em>Less this application</em></td>
                                 <td>
                                     <input type="text" name="vl_less" class="form-control form-control-sm"
-                                        style="text-align:center;" placeholder="0" value="{{ old('vl_less') }}">
+                                        style="text-align:center;" placeholder="0"
+                                        value="{{ old('vl_less', $prefill['vl_less']) }}">
                                 </td>
                                 <td>
                                     <input type="text" name="sl_less" class="form-control form-control-sm"
-                                        style="text-align:center;" placeholder="0" value="{{ old('sl_less') }}">
+                                        style="text-align:center;" placeholder="0"
+                                        value="{{ old('sl_less', $prefill['sl_less']) }}">
                                 </td>
                             </tr>
                             <tr>
@@ -107,12 +137,12 @@
                                 <td>
                                     <input type="text" name="vl_balance" class="form-control form-control-sm"
                                         style="text-align:center;font-weight:700;" placeholder="0"
-                                        value="{{ old('vl_balance') }}">
+                                        value="{{ old('vl_balance', $prefill['vl_balance']) }}">
                                 </td>
                                 <td>
                                     <input type="text" name="sl_balance" class="form-control form-control-sm"
                                         style="text-align:center;font-weight:700;" placeholder="0"
-                                        value="{{ old('sl_balance') }}">
+                                        value="{{ old('sl_balance', $prefill['sl_balance']) }}">
                                 </td>
                             </tr>
                         </tbody>

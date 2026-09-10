@@ -16,6 +16,7 @@ use App\Models\ServiceRecord;
 use App\Models\SubPosition;
 use App\Models\User;
 use App\Models\AppointmentOption;
+use App\Models\LeaveBalance;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -51,9 +52,10 @@ class EmployeeController extends Controller
             'eligibility', 'serviceRecords', 'leaves',
         ])->where('user_id', $id)->firstOrFail();
 
-        return view('hr.employees.show', compact('employee'));
-    }
+        $leaveBalance = LeaveBalance::where('employee_id', $employee->id)->first();
 
+        return view('hr.employees.show', compact('employee', 'leaveBalance'));
+    }
     public function create()
     {
         $roles = Role::orderBy('role_desc')->get();

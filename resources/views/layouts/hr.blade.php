@@ -759,6 +759,10 @@
                     class="nav-link {{ request()->routeIs('hr.leave.*') ? 'active' : '' }}">
                     <i class="bi bi-calendar-check"></i> Leave Requests
                 </a>
+                <a href="{{ route('hr.leave-balances.index') }}"
+                    class="nav-link {{ request()->routeIs('hr.leave-balances.*') ? 'active' : '' }}">
+                    <i class="bi bi-wallet2"></i> Leave Balances
+                </a>
                 <a href="{{ route('hr.attendance.index') }}"
                     class="nav-link {{ request()->routeIs('hr.attendance.*') ? 'active' : '' }}">
                     <i class="bi bi-clock-history"></i> Attendance

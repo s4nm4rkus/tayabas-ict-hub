@@ -16,6 +16,7 @@ use App\Http\Controllers\Auth\TwoFactorController;
 use App\Http\Controllers\Head\HeadLeaveController;
 use App\Http\Controllers\HR\CertRequestController;
 use App\Http\Controllers\HR\HRLeaveController;
+use App\Http\Controllers\HR\LeaveBalanceController;
 use App\Http\Controllers\HR\AppointmentOptionController;
 use App\Http\Controllers\HR\ZktecoImportController;
 use App\Http\Controllers\ICT\IctDashboardController;
@@ -205,6 +206,17 @@ Route::middleware('auth')->group(function () {
         Route::get('/leave/{id}/print', [HRLeaveController::class, 'print'])->name('hr.leave.print');
         Route::get('/leave/{id}/pdf', [HRLeaveController::class, 'pdf'])->name('hr.leave.pdf');
 
+
+        Route::prefix('leave-balances')->name('hr.leave-balances.')->group(function () {
+            Route::get('/', [LeaveBalanceController::class, 'index'])->name('index');
+            Route::get('/monthly-computation', [LeaveBalanceController::class, 'monthlyComputationForm'])->name('monthly-computation.form');
+            Route::post('/monthly-computation', [LeaveBalanceController::class, 'runMonthlyComputation'])->name('monthly-computation.run');
+            Route::get('/{employeeId}', [LeaveBalanceController::class, 'show'])->name('show');
+            Route::get('/{employeeId}/history', [LeaveBalanceController::class, 'history'])->name('history');
+            Route::post('/opening-balance', [LeaveBalanceController::class, 'storeOpeningBalance'])->name('store-opening');
+            Route::post('/adjust', [LeaveBalanceController::class, 'adjust'])->name('adjust');
+
+        });
         // to follow
         // Route::get('/leave/{id}/preview', [HRLeaveController::class, 'preview'])->name('hr.leave.preview');
         // Route::get('/leave/{id}/pdf', [HRLeaveController::class, 'pdf'])->name('hr.leave.pdf');

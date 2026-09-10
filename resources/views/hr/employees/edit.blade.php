@@ -409,10 +409,10 @@
                         <button type="button" onclick="openRecordChangeModal()" class="btn btn-primary btn-sm">
                             <i class="bi bi-arrow-up-circle me-1"></i> Record Change
                         </button>
-                        <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal"
+                        {{-- <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal"
                             data-bs-target="#addServiceModal">
                             <i class="bi bi-plus me-1"></i> Add Manual Record
-                        </button>
+                        </button> --}}
                     </div>
                 </div>
 
