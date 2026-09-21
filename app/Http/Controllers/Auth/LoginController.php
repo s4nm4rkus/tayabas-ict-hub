@@ -12,6 +12,18 @@ use Illuminate\Support\Facades\Mail;
 
 class LoginController extends Controller
 {
+    /**
+     * Public routes that should NEVER be stored as url.intended.
+     * These are pages anyone can visit — landing on them after login
+     * is meaningless; the user should go to their role dashboard instead.
+     */
+    private array $publicPrefixes = [
+        '/units/',     // /units/personnel, /units/ict, etc.
+        '/ict/forms',  // public ICT request forms page
+        '/login',      // login page itself
+        '/2fa',        // OTP page
+    ];
+
     public function showLogin(Request $request)
     {
         if (Auth::check()) {
@@ -19,30 +31,23 @@ class LoginController extends Controller
                 ->redirectByRole(Auth::user());
         }
 
-        /*
-         * Store where the user intended to go BEFORE they were sent to login.
-         * Laravel puts this in session automatically via the 'auth' middleware,
-         * but when the user clicks a login button manually (e.g. from the ICT
-         * navbar), there is no middleware redirect — so we capture the HTTP
-         * Referer as a fallback intended URL.
-         *
-         * Priority:
-         *  1. session()->previousUrl()  — set by Laravel's auth middleware
-         *  2. HTTP Referer header        — set when user clicks a login link
-         *  3. Nothing (session already has it from a prior middleware redirect)
-         */
         $referer = $request->headers->get('referer');
 
         if ($referer && ! session()->has('url.intended')) {
-            // Only store it if it's from our own domain and not the login page itself
+            $appUrl  = rtrim(config('app.url'), '/');
             $loginUrl = route('login');
-            $appUrl   = config('app.url');
 
-            if (
-                str_starts_with($referer, $appUrl) &&
-                ! str_starts_with($referer, $loginUrl)
-            ) {
-                session()->put('url.intended', $referer);
+            // Must be from our own domain
+            if (str_starts_with($referer, $appUrl)) {
+                $path = str_replace($appUrl, '', $referer);
+
+                // Only store if it is NOT a public/guest-only page
+                $isPublic = collect($this->publicPrefixes)
+                    ->contains(fn ($prefix) => str_starts_with($path, $prefix));
+
+                if (! $isPublic) {
+                    session()->put('url.intended', $referer);
+                }
             }
         }
 
@@ -66,17 +71,14 @@ class LoginController extends Controller
             ])->withInput(['username' => $request->username]);
         }
 
-        // Store user temporarily before OTP verification
         session(['pre_auth_user_id' => $user->id]);
 
-        // Generate OTP
         $otp = rand(100000, 999999);
         $user->update([
             'otp'            => $otp,
             'otp_expires_at' => now()->addMinutes(10),
         ]);
 
-        // Send OTP via email
         Mail::to($user->username)->send(new OtpMail($otp));
 
         return redirect()->route('2fa.show');
