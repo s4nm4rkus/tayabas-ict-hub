@@ -11,3 +11,10 @@ Artisan::command('inspire', function () {
 Schedule::command('service-records:regenerate')
     ->yearlyOn(1, 1, '00:00')
     ->withoutOverlapping();
+
+Schedule::command('leave:compute-monthly')
+    ->monthlyOn(1, '00:30')
+    ->withoutOverlapping()
+    ->onFailure(function () {
+        \Illuminate\Support\Facades\Log::error('Scheduled monthly leave computation FAILED to run.');
+    });
