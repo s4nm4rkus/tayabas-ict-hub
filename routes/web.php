@@ -123,9 +123,13 @@ Route::middleware('auth')->group(function () {
         Route::delete('salary/{id}', [SalaryController::class, 'destroy'])->name('admin.salary.destroy');
 
         // Attendance
+        // Attendance
+        Route::get('attendance/export/csv', [AttendanceController::class, 'exportCsv'])->name('admin.attendance.export.csv');
         Route::get('attendance', [AttendanceController::class, 'index'])->name('admin.attendance.index');
-        Route::post('attendance', [AttendanceController::class, 'store'])->name('admin.attendance.store');
         Route::delete('attendance/{id}', [AttendanceController::class, 'destroy'])->name('admin.attendance.destroy');
+        Route::delete('attendance/reset/month', [AttendanceController::class, 'resetMonth'])->name('admin.attendance.reset.month');
+        Route::delete('attendance/reset/employee', [AttendanceController::class, 'resetEmployee'])->name('admin.attendance.reset.employee');
+
 
         // Messages
         Route::get('messages', [MessageController::class, 'index'])->name('admin.messages.index');
@@ -211,6 +215,9 @@ Route::middleware('auth')->group(function () {
             Route::get('/', [LeaveBalanceController::class, 'index'])->name('index');
             Route::get('/monthly-computation', [LeaveBalanceController::class, 'monthlyComputationForm'])->name('monthly-computation.form');
             Route::post('/monthly-computation', [LeaveBalanceController::class, 'runMonthlyComputation'])->name('monthly-computation.run');
+            Route::get('/import', [LeaveBalanceController::class, 'importForm'])->name('import.form');
+            Route::post('/import', [LeaveBalanceController::class, 'runImport'])->name('import.run');
+            Route::get('/import/template', [LeaveBalanceController::class, 'importTemplate'])->name('import.template');
             Route::get('/{employeeId}', [LeaveBalanceController::class, 'show'])->name('show');
             Route::get('/{employeeId}/history', [LeaveBalanceController::class, 'history'])->name('history');
             Route::post('/opening-balance', [LeaveBalanceController::class, 'storeOpeningBalance'])->name('store-opening');

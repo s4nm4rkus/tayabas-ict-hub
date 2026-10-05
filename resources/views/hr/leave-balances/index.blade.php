@@ -31,6 +31,9 @@
                 <a href="{{ route('hr.leave-balances.monthly-computation.form') }}" class="btn btn-primary btn-sm">
                     <i class="bi bi-calculator me-1"></i> Compute Monthly
                 </a>
+                <a href="{{ route('hr.leave-balances.import.form') }}" class="btn btn-outline-secondary btn-sm">
+                    <i class="bi bi-upload me-1"></i> Import Balances
+                </a>
                 <span
                     style="font-size:12px;font-weight:600;padding:4px 12px;border-radius:99px;
                              background:rgba(110,168,254,0.12);color:#1D4ED8;border:1px solid rgba(110,168,254,0.2);">

@@ -11,6 +11,10 @@ use App\Services\MonthlyLeaveComputationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use RuntimeException;
+use App\Imports\OpeningBalanceImport;
+use App\Services\OpeningBalanceImportService;
+use Maatwebsite\Excel\Facades\Excel;
+use Throwable;
 
 class LeaveBalanceController extends Controller
 {
@@ -160,4 +164,87 @@ class LeaveBalanceController extends Controller
             'month'  => (int) $request->month,
         ]);
     }
+
+    /**
+     * Show the bulk opening-balance upload page.
+     */
+    public function importForm()
+    {
+        return view('hr.leave-balances.import');
+    }
+
+    /**
+     * Download a CSV template with the exact column headings.
+     */
+    public function importTemplate()
+    {
+        $callback = function () {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, ['gov_email', 'vl_balance', 'sl_balance', 'as_of_date', 'notes']);
+            fputcsv($file, ['juan@deped.gov.ph', '15.250', '8.000', '2026-08-31', 'Migrated from Leave Card']);
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, [
+            'Content-Type'        => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="opening_balance_import_template.csv"',
+        ]);
+    }
+
+    /**
+     * Validate an uploaded file. mode=check  -> report only, saves nothing.
+     *                            mode=import -> saves ONLY if every row is clean.
+     */
+    public function runImport(Request $request, OpeningBalanceImportService $importService)
+    {
+        $request->validate([
+            'file' => 'required|file|max:5120',
+            'mode' => 'required|in:check,import',
+        ]);
+
+        try {
+            $import = new OpeningBalanceImport();
+            Excel::import($import, $request->file('file'));
+        } catch (Throwable $e) {
+            return back()->withErrors(['file' => 'Could not read that file. Please upload the CSV/Excel template.']);
+        }
+
+        $rows = $import->rows;
+
+        if ($rows->isEmpty()) {
+            return back()->withErrors(['file' => 'The file has no data rows.']);
+        }
+
+        $missing = $importService->missingHeaders($rows);
+        if (! empty($missing)) {
+            return back()->withErrors([
+                'file' => 'Missing column(s): '.implode(', ', $missing).'. Please use the template.',
+            ]);
+        }
+
+        $check    = $importService->validate($rows);
+        $imported = false;
+
+        if ($request->mode === 'import' && empty($check['errors']) && ! empty($check['valid'])) {
+            try {
+                $importService->import($check['valid'], Auth::id());
+                $imported = true;
+            } catch (RuntimeException $e) {
+                return back()->withErrors([
+                    'file' => 'Import stopped and NOTHING was saved: '.$e->getMessage(),
+                ]);
+            }
+        }
+
+        return view('hr.leave-balances.import', [
+            'result' => [
+                'mode'     => $request->mode,
+                'total'    => $check['total'],
+                'valid'    => $check['valid'],
+                'errors'   => $check['errors'],
+                'imported' => $imported,
+            ],
+        ]);
+    }
+
 }
