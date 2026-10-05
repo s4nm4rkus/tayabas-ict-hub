@@ -8,7 +8,7 @@
         // Optional routes — links are hidden if the admin route doesn't exist yet
 $hasUpload = Route::has('admin.zkteco.upload');
 $hasHistory = Route::has('admin.zkteco.history');
-$hasDtr = Route::has('admin.zkteco.dtr');
+
     @endphp
 
     {{-- Flash --}}
@@ -255,18 +255,16 @@ $hasDtr = Route::has('admin.zkteco.dtr');
                                 </div>
                             </div>
                             <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-                                @if ($hasDtr)
-                                    <a href="{{ route('admin.zkteco.dtr', ['employee_id' => $selectedEmployee->id, 'month' => $month]) }}"
-                                        target="_blank"
-                                        style="display:flex;align-items:center;gap:6px;padding:7px 15px;
-                                      border-radius:var(--radius-sm);font-size:12px;font-weight:700;
-                                      background:linear-gradient(135deg,#6EA8FE,#4A90E2);color:white;
-                                      text-decoration:none;box-shadow:0 2px 8px rgba(74,144,226,0.3);
-                                      transition:opacity 0.15s;"
-                                        onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">
-                                        <i class="bi bi-printer" style="font-size:12px;"></i> Print DTR
-                                    </a>
-                                @endif
+                                <a href="{{ route('admin.attendance.dtr', ['employee_id' => $selectedEmployee->id, 'month' => $month]) }}"
+                                    target="_blank"
+                                    style="display:flex;align-items:center;gap:6px;padding:7px 15px;
+                                    border-radius:var(--radius-sm);font-size:12px;font-weight:700;
+                                    background:linear-gradient(135deg,#6EA8FE,#4A90E2);color:white;
+                                    text-decoration:none;box-shadow:0 2px 8px rgba(74,144,226,0.3);
+                                    transition:opacity 0.15s;"
+                                    onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">
+                                    <i class="bi bi-printer" style="font-size:12px;"></i> Print DTR
+                                </a>
                                 <form method="POST" action="{{ route('admin.attendance.reset.employee') }}"
                                     onsubmit="return confirmReset('Delete ALL attendance for {{ addslashes($selectedEmployee->full_name) }} — {{ $monthLabel }}?\n\nAttendance, logs & points.\n\nCannot be undone.')">
                                     @csrf @method('DELETE')
