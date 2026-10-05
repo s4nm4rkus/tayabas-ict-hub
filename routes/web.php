@@ -126,6 +126,7 @@ Route::middleware('auth')->group(function () {
         // Attendance
         Route::get('attendance/export/csv', [AttendanceController::class, 'exportCsv'])->name('admin.attendance.export.csv');
         Route::get('attendance', [AttendanceController::class, 'index'])->name('admin.attendance.index');
+        Route::get('attendance/dtr', [AttendanceController::class, 'dtr'])->name('admin.attendance.dtr');
         Route::delete('attendance/{id}', [AttendanceController::class, 'destroy'])->name('admin.attendance.destroy');
         Route::delete('attendance/reset/month', [AttendanceController::class, 'resetMonth'])->name('admin.attendance.reset.month');
         Route::delete('attendance/reset/employee', [AttendanceController::class, 'resetEmployee'])->name('admin.attendance.reset.employee');

@@ -10,6 +10,7 @@ use App\Models\Point;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class AttendanceController extends Controller
 {
@@ -135,6 +136,60 @@ class AttendanceController extends Controller
         ])->with('success', 'Attendance recorded.');
     }
 
+    public function dtr(Request $request)
+    {
+        $request->validate([
+            'employee_id' => 'required|integer',
+            'month'       => 'required|date_format:Y-m',
+        ]);
+
+        $employee = Employee::with('user')->findOrFail($request->employee_id);
+        $start    = Carbon::parse($request->month . '-01');
+
+        $records = Attendance::where('user_id', $employee->id)
+            ->whereYear('t_date', $start->year)
+            ->whereMonth('t_date', $start->month)
+            ->get()
+            ->keyBy(fn ($r) => Carbon::parse($r->t_date)->day);
+
+        // Optional: ['2026-12-25' => 'Christmas Day', ...] — pull from your holidays table if you have one
+        $holidays = [];
+
+        $days = [];
+        for ($d = 1; $d <= $start->daysInMonth; $d++) {
+            $date    = $start->copy()->day($d);
+            $rec     = $records[$d] ?? null;
+            $holiday = $holidays[$date->toDateString()] ?? null;
+
+            $days[] = [
+                'day'          => $d,
+                'date'         => $date->toDateString(),
+                'is_weekend'   => $date->isWeekend(),
+                'is_holiday'   => (bool) $holiday,
+                'holiday_name' => $holiday,
+                'absent'       => !$rec,
+                'am_time_in'   => $rec?->am_time_in,
+                'am_time_out'  => $rec?->am_time_out,
+                'pm_time_in'   => $rec?->pm_time_in,
+                'pm_time_out'  => $rec?->pm_time_out,
+                'undertime'    => (int) ($rec?->undertime_minutes ?? 0),
+            ];
+        }
+
+        $dtr = [
+            'employee'        => $employee,
+            'month'           => $start->format('F Y'),
+            'days'            => $days,
+            'total_undertime' => (int) $records->sum('undertime_minutes'),
+            'total_late'      => (int) $records->sum('late_minutes'),
+            'total_hours'     => (float) $records->sum('total_hours'),
+        ];
+
+        return Pdf::loadView('admin.attendance.dtr.pdf', compact('dtr'))
+        ->setPaper('a4', 'portrait')
+        ->stream("DTR_{$employee->last_name}_{$start->format('Y-m')}.pdf");
+    }
+
     // ─────────────────────────────────────────────────────────────
     // DELETE: Remove a single attendance record
     // ─────────────────────────────────────────────────────────────
@@ -221,6 +276,8 @@ class AttendanceController extends Controller
             ->with('success', "{$employee->full_name}'s attendance for {$monthLabel} has been cleared.");
     }
 
+
+
     // ─────────────────────────────────────────────────────────────
     // GET: Export CSV
     // ─────────────────────────────────────────────────────────────
@@ -286,4 +343,6 @@ class AttendanceController extends Controller
 
         return round($total, 2);
     }
+
+
 }
