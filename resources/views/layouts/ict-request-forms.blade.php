@@ -1502,7 +1502,7 @@
     </script>
     @yield('scripts')
 
-    <x-quick-nav :current="'ict'" />
+    {{-- <x-quick-nav :current="'ict'" /> --}}
 </body>
 
 </html>
